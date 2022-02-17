@@ -78,12 +78,16 @@ m <- ceiling(max(A,B))
 mL <- floor(min(A,B))
 before <- A + runif(length(pp1),-.2,.2)
 after <-  B + runif(length(pp2),-.2,.2)
+
+before <- A #+ 0
+after <-  B #+ runif(length(pp2),-.2,.2)
+
 n <- length(before)
 d <- data.frame(y = c(before, after), 
                 x = rep(c(1,2), each=n),
                 id = factor(rep(1:n,2)))
 
-d$xj <- jitter(d$x, amount=.03)
+d$xj <- jitter(d$x, amount=.13)
 # code from count app
 AA <- ggplot(data=d, aes(y=y) ) +
   geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
