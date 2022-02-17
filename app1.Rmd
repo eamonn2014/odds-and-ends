@@ -132,6 +132,13 @@ Column {.sidebar}
   sliderInput('sd.', 'Common SD', 1,
                 min = 1, max = 100, step=1,ticks=F)
   
+  selectInput("SD.type", "Select SD type", choices = c("cons", "lin"), selected="cons")
+  selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  
+    selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
+
+  
+  
   # sliderInput('x_range', 'Plot x-range', value = c(0,10),
   #         min = 0, max = 80,step=5,ticks=F)
   # 
@@ -516,7 +523,7 @@ L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
            # axlim=c(0,20), 
            diflim=c(-L,L), 
            xaxs="i", yaxs="i",
-           las=1, eqn=TRUE,  pl.type="BA", sd.type="coms", dif.type = "const", # cons is simulatied
+           las=1, eqn=TRUE,  pl.type=input$Pl.type, sd.type=input$SD.type, dif.type = input$Dif.type, # cons is simulatied
            grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
 
 })
@@ -657,6 +664,8 @@ Column {data-width=400, height=300}
   ## assumptions do it yourself
 
   w$y <- w$before - w$after
+  w$y <- w$after - w$before
+  
   w$x <-  (w$before + w$after) /2
   
   # Constant difference - this is the test of 0 slope in the regression of differences on averages.
@@ -667,9 +676,9 @@ Column {data-width=400, height=300}
   # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
   w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
  # w$r <- (residuals(f) )
-  plot(r~x,w)
-  f <- summary(lm(r~x, w))
-  con.sd <- f$coefficients["x","Pr(>|t|)"]
+  #plot(r~x,w)
+  f1 <- summary(lm(r~x, w))
+  con.sd <- f1$coefficients["x","Pr(>|t|)"]
   
   ##
   # . A formal test of increasing or
@@ -706,7 +715,7 @@ con.sd <- r2()$con.sd
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("Regression of absolute residuals on averages, p=", con.sd),
+    labs(title = paste0("1 regressing the differences on the averages and then regressing the absolute residuals from this on the averages, p=", con.sd),
          x = "Averages",
          y = "Absolute residuals")
    
@@ -729,7 +738,25 @@ con.sd <- r2()$con.sd
 ```{r nb barplots, eval=TRUE}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+renderPlot({
+  
+w <- r2()$w
+con.diff <- r2()$con.diff
+#n <- input$n
 
+ library(ggplot2)
+  library(ggpubr)
+  ggplot(w, aes(x=x, y=y))+
+    geom_point() +  
+    geom_smooth(method="lm", col="black")  +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("Regression of differences on averages, p=", con.diff),
+         x = "Averages",
+         y = "After - before")
+   
+  
+})
  
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
