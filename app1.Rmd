@@ -229,13 +229,13 @@ Column {data-width=400, height=200}
 ```
 
 ```{r, test}
-
-# tags$style(type="text/css", ".span8 .well { background-color: #00FFFF; }")
-
+ 
+ # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
+ # help on font size
    h5(htmlOutput("text2"))      
  
-                                       
-                             withMathJax(
+                              withMathJax(
+                                tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                              helpText('
                              $${  
                              {\\sigma^2}{_{x \\pm y}} =  
@@ -243,49 +243,20 @@ Column {data-width=400, height=200}
                              \\pm 2\\rho{\\sigma}{_{x}} {\\sigma}{_{y}}           
                              }\\!$$'
                              ))   
-                                           
+                             )
    
-     h5(htmlOutput("text2a"))   
+   h5(htmlOutput("text2a"))   
      
                             withMathJax(
+                               tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                              helpText('
                               $${ 
                               \\rho {\\sigma}{_{x}}  {\\sigma}{_{y}}           
                               }\\!$$'))        
   
+                            )
   
-                              withMathJax()
-  tags$head(
-    tags$style(
-      HTML(
-        ".MathJax {
-            font-size: 3em !important;
-          }"
-      )
-    )
-  )
-  helpText('An irrational number \\(\\sqrt{2}\\)
-           and a fraction $$1-\\frac{1}{2}$$')
   
-  helpText('and a fact about \\(\\pi\\):
-           $$\\frac2\\pi = \\frac{\\sqrt2}2 \\cdot
-           \\frac{\\sqrt{2+\\sqrt2}}2 \\cdot
-           \\frac{\\sqrt{2+\\sqrt{2+\\sqrt2}}}2 \\cdots$$')
-                            
-                            
-                            
-   #HTML(" xxxxxxxx")
-                                       
-  withMathJax(
-                                           helpText('
-                             '))  
-   
-  br()
-  br()
-  # HTML(" xxxxxxxxxxxx  ")
-  # br()
-  # br()
-  # HTML("  xxxxxxxxxxxxxxx")
 
 
   
