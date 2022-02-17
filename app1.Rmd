@@ -222,39 +222,93 @@ cat(paste0("Based on the true parameters the variance of the difference is ", r1
 ```
 
 ```{r, test}
+
  
   HTML("  If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")
                                        
   withMathJax(
                                            helpText('
-                             $${{ }{{{\\sigma^2}{_{x \\pm y}} + \\frac{m^2}{k}}}}\\!$$'))      
+                             $${{ }{{{\\sigma^2}{_{x \\pm y}} =  {\\sigma^2}{_{x}}  +  {\\sigma^2}{_{y}}                \\pm 2\\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }}}\\!$$'))      
   
-  HTML(" Sometimes this relationship is used")
+  HTML(" The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract this component.")
                                        
   withMathJax(
                                            helpText('
-                             $${{ }{{{\\alpha} = \\frac{1}{k}}}}\\!$$'))      
+                              $${{{  \\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }}}\\!$$'))        
   
   
-  HTML(" And then the variance is expressed as")
+  HTML(" xxxxxxxx")
                                        
   withMathJax(
                                            helpText('
-                             $${{ }{{{m}  + {(\\alpha)}{ (m^2)}}}}\\!$$'))  
+                             '))  
    
   br()
   br()
-  HTML(" In short, either the parameter k or its reciprocal alpha is referred to as the 'dispersion parameter' or 'shape parameter' or 'clustering coefficient' or 'heterogeneity' or 'heterogeneity (ancillary) parameter' or 'aggregation' parameter.  ")
+  HTML(" xxxxxxxxxxxx  ")
   br()
   br()
-  HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha. R code below showing syntax.")
+  HTML("  xxxxxxxxxxxxxxx")
 
+  h5(htmlOutput("text3"))      ## print 
   
 ```
 
+ 
+ 
+```{r } 
+ 
+   output$text3 <- renderText({  # create interactive text t1
 
-```
+     #invisible(x <-pycr( pack.size=input$Decksize, card1=input$swap))   # R code
+    
+    # x1 <- x[1][[1]]
+    # x2 <- x[2][[1]]
+   
+    print(paste0(   
+       br(),# text
+     tags$hr(),
+        br(),
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;text-underline-position: under;", 
+               
+               "xxxxxxxx - xxxxxxxxxxxx")   ,
+      br(),
+      br(), 
+   
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "xxxxxxxxxx") 
+      
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
+     
+     
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     
+    ", xxxx ")
+    
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
+    
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    " xxxxxxxxxxxxxxxxxxx ")
+    
+      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    " or ")
+    
+     , tags$span(style="color:red ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    
+    
+                   ".
+      "))
 
+ })
+ 
+ 
+``` 
 
 
 Column {data-width=400}
