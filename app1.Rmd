@@ -1,0 +1,503 @@
+---
+title: "xxxxxxxxxxxxxx" 
+author: 
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    social: menu
+    source_code: embed
+runtime: shiny
+---
+tab 1
+===
+
+```{r global, include=FALSE}
+
+  rm(list=ls())
+  set.seed(6453)
+  library(MASS)      # for neg binomial analysis and correlated data generation
+  library(ggplot2)
+  library(lme4)
+  library(shiny)
+  library(utf8)      # codes for Greek letters
+  library(MethComp)
+  library(gridExtra)
+  library(tidyverse)
+  library(car)       # diagnostics
+  library(vcd)       # diagnostics
+  library(skewsamp)  # power for neg binom
+  lwd.=3             # used when plotting
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # function to format decimals
+  # https://stackoverflow.com/questions/3245862/format-numbers-to-significant-figures-nicely-in-r
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  formatz <- function(x){
+    
+    if (!is.na(x)  ) {
+      
+      formatC(signif(x,digits=5), digits=5,format="fg", flag="#",big.mark=",")
+      
+    }
+    
+  }
+  
+  formatz0 <- function(x){
+    sprintf(x, fmt = '%s')  
+  }
+  formatz1 <- function(x){
+    sprintf(x, fmt = '%#.1f')  
+  }
+  formatz2 <- function(x){
+    sprintf(x, fmt = '%#.2f')  
+  }
+  formatz00 <- function(x){
+    round(x,0) 
+  }
+  formatz3 <- function(x){
+    sprintf(x, fmt = '%#.3f')  
+  }
+  formatz4 <- function(x){
+    sprintf(x, fmt = '%#.4f')  
+  }
+  
+ 
+   
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# start of app
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**xxxxxxxxxxxxxxxx**
+
+```{r tab1}
+
+ 
+  sliderInput('mu', 'Common  \u03BC', value=1.5,
+                min = 1, max = 25, step=.5, ticks=F)
+  
+  sliderInput('alpha_a', '\u03B1 for red curve', value = c(1.3),
+                min = 0, max = 5 ,step=0.01, ticks=F)
+  
+  sliderInput('alpha_b', '\u03B1 for dark blue curve', value = c(1.3),
+                min = 0, max = 5 ,step=0.01, ticks=F)
+  
+  sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
+                min = 0, max = 5 ,step=0.01, ticks=F)
+  
+  sliderInput('sims', 'Simulations (chart 2)', 50000,
+                min = 50000, max = 500000,step=50000,ticks=F)
+  
+  sliderInput('x_range', 'Plot x-range', value = c(0,10),
+          min = 0, max = 80,step=5,ticks=F)
+  
+  sliderInput('y_range', 'Plot y-range', value = c(0,.5),
+          min = 0, max = 1,step=.05,ticks=F)
+
+  checkboxInput('perc','show stats on barplot', value=TRUE)
+
+```
+
+$\alpha$ xxxxxxxxxxxxxxxxxxxx
+
+xxxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxx
+
+xxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxxxxxx
+
+$\alpha$ xxxxxxxxxxxxxxxxxx 
+ 
+
+Column {data-width=400, height=200}
+-----------------------------------------------------------------------
+### Chart 1
+
+```{r tab1 plot1}
+
+
+```
+
+### Chart 2
+
+```{r, tab1 plot2}
+
+ 
+```
+
+Column {data-width=400}
+-------------------------------------
+
+### Chart 3
+
+```{r, tab1 plot3}
+
+ 
+```
+
+### Chart 4
+
+```{r, tab1 plot4}
+
+    
+```
+
+
+
+tab2 $\alpha$
+====
+
+```{r, k or A}
+  
+
+  
+```
+
+```{r syntax, eval=TRUE, echo=TRUE}
+
+ 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# End
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+```
+ 
+tab3
+====
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+
+```{r gammapoisson}
+
+    sliderInput('N.pg', 'Patients per arm', value=1000,
+                  min = 1000, max = 100000, step=5, ticks=F)
+    
+    sliderInput('mu0.pg', 'Placebo event rate \u03BC per patient yr of follow up', value=1,
+                  min = 0.1, max = 25, step=.05, ticks=F)
+    
+    sliderInput('eff.pg', 'Hypothesised treatment effect ', value=.75,  # 1/2 ing to doubling
+                  min = 0.5, max = 2, step=.05, ticks=F)
+  
+    sliderInput('k.pg', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 ,  
+                  min = 0, max = 5 ,step=0.01, ticks=F)
+    
+    sliderInput('d1.pg', 'Placebo discontinuation prob', value = c(0.1),
+                  min = 0, max = .5 ,step=0.05, ticks=F)
+    
+    sliderInput('d2.pg', 'Treatment discontinuation prob', value = c(0.1),
+                  min = 0, max = .5 ,step=0.05, ticks=F)
+  
+    sliderInput('fup.pg', 'Follow up (yrs)', value = c(1),
+            min = 1, max = 10, step=1,ticks=F)
+
+```
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+ 
+
+Column {data-width=400, height=300}
+-----------------------------------------------------------------------
+
+### xxxxxxxxxxx
+
+```{r, gp barplots, eval=TRUE}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``` 
+
+### xxxxxxxxxxxxxx
+
+
+```{r nb barplots, eval=TRUE}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+```
+   
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### xxxxxxxxxxxxxx
+  
+
+```{r diagnostics1, eval=TRUE}
+
+  
+
+```
+
+###  xxxxxxxxxxxxxxxxx
+ 
+ 
+```{r diagnostics2}
+
+  
+
+```
+
+### xxxxxxxxxxxxxxxxx
+  
+
+```{r diagnostics3, eval=TRUE}
+ 
+
+
+```
+
+### xxxxxxxxxxxxxxx 
+ 
+ 
+```{r diagnostics4}
+
+  
+```
+
+### xxxxxxxxxxxxxxx
+ 
+ 
+```{r diagnostics5}
+
+   
+
+```
+
+### xxxxxxxxxxxxx
+
+```{r diagnostics6, eval=TRUE}
+
+  
+``` 
+ 
+
+tab 4
+====
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+```{r, main power tab2}
+ 
+    sliderInput('N', 'Patients per arm', value=174,
+                  min = 10, max = 1000, step=5, ticks=F)
+
+    sliderInput('mu0', 'Placebo event rate \u03BC per patient yr of follow up', value=1.5,
+                  min = 0.1, max = 25, step=.05, ticks=F)
+
+    sliderInput('eff', 'Hypothesised treatment effect ', value=.6, 
+                  min = 0.1, max =5, step=.01, ticks=F)
+
+    sliderInput('k', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 , #c(10/13),
+                  min = 0, max = 5 ,step=0.1, ticks=F)
+
+    sliderInput('d1', 'Placebo discontinuation prob', value = c(0),
+                  min = 0, max = .5 ,step=0.05, ticks=F)
+
+    sliderInput('d2', 'Treatment discontinuation prob', value = c(0),
+                  min = 0, max = .5 ,step=0.05, ticks=F)
+
+    sliderInput('fup', 'Follow up (yrs)', value = c(1),
+            min = 1, max = 10, step=1,ticks=F)
+
+    sliderInput('sims2', 'Power simulations', value= 500,
+                  min = 500, max = 10000, step= 500, ticks=F)
+    
+    checkboxInput('perc1','show stats on barplot', value = TRUE)
+
+
+```
+
+Row {data- height=650}
+-----------------------------------------------------------------------
+### xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  
+```{r text power, eval=TRUE}
+
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+reactive({
+  
+cat(paste0("xxxxxxxxxxxxxxx"))
+})
+  
+
+```
+ 
+Row {data-height=700}
+-------------------------------------
+   
+### xxxxxxxxxxxxxxxxxx
+
+```{r power typical barplot}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+
+ 
+```   
+ 
+   
+### xxxxxxxxxxxxxxxxxxxx 1/$\alpha$
+
+```{r power typ output}
+
+ 
+  
+``` 
+
+tab 5
+====
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+
+```{r power canned}
+  
+ 
+ 
+```
+
+Row {data-height=600}
+-----------------------------------------------------------------------
+
+### **xxxxxxxxxxxxxxx $\\alpha$.**
+
+```{r power canned result, eval=TRUE}
+
+ 
+
+ 
+```
+
+tab 6
+====
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+
+Use the inputs below to generate correlated count data !
+
+```{r paired}
+
+  sliderInput('N.p', 'Patients per arm', value=28,
+                min = 10, max = 200, step=5, ticks=F)
+  
+  sliderInput('mu0.p', 'Placebo mean rate \u03BC', value=8,
+                min = 0.1, max = 25, step=.05, ticks=F)
+  
+  sliderInput('eff.p', 'Hypothesised treatment effect ', value=.75,   
+                min = 0.5, max = 2, step=.05, ticks=F)
+  
+  sliderInput('r', 'Correlation', value = c(.20),
+                min = -1, max = 1 ,step=0.05, ticks=F)
+   
+  sliderInput('sims.p', 'Power simulations', value= 10,
+                min = 10, max = 1000, step= 100, ticks=F)
+
+```
+
+Row {data-height=275}
+-----------------------------------------------------------------------
+
+### xxxxxxxxxxxxxxxx
+  
+
+```{r paired txt, eval=TRUE}
+
+reactive({
+  
+cat(paste0("xxxxxxxxxxx ",input$N.p,"xxxxxxxxxxxxxxx.\n"))
+
+cat(paste0("xxxxxxxxxxxxxxxxxxxx ",input$mu0.p, " xxxxxxxxxxxxxxxx ",input$eff.p,", xxxxxxxxxx " ,input$r,".\n")) 
+
+cat(paste0("\nxxxxxxxxxxxxxxxx"))
+
+cat(paste0("\nxxxxxxxxxxxxxxxxxx"))
+cat(paste0("\n1) xxxxxxxxxxxx"))
+cat(paste0("\n2) xxxxxxxxxxxx"))
+cat(paste0("\n3) xxxxxxxxxxxx"))
+ 
+})
+
+``` 
+
+Row {data-height=250}
+-----------------------------------------------------------------------
+
+### tab4
+
+
+```{r paired results, eval=TRUE}
+
+ 
+```
+
+   
+Row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### tab5
+  
+
+```{r paired boxplot, eval=TRUE}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   
+
+```
+
+### tab6
+
+```{r BAplot}
+
+  
+
+```
+
+Wiki
+====
+ 
+xxxxxxxxxxxxxxxxxxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxxxxxxxxx
+
+**xxxxxxxxxxxxxxxxxxxxxxx**
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+
+References
+====
+```{r, refs}
+ 
+    tags$a(href = "https://stats.stackexchange.com/questions/71194/fitting-a-poisson-distribution-with-lme4-and-nlme", target="_blank",
+           tags$span(style="color:blue", "[1] Poisson with lme4 and nlme"),) 
+    div(p(" "))
+    tags$a(href = "https://stats.stackexchange.com/questions/27869/fitting-a-poisson-glm-mixed-model-with-a-random-slope-and-intercept",target="_blank",
+           tags$span(style="color:blue", "[2] Mixed model Poisson"),)
+    div(p(" "))
+    
+    div(p(" "))
+  tags$hr()                        
+
+```
