@@ -86,6 +86,17 @@ mvrnorm <- function(n = 1, mu = 0, Sigma) {
   t(samples)
 }
    
+
+
+ # https://stackoverflow.com/questions/6461209/how-to-round-up-to-the-nearest-10-or-100-or-x/6468532#6468532
+ # nice function from link to round to selected value
+
+  roundUp <- function(x,to=10)
+  {
+    to*(x%/%to + as.logical(x%%to))
+  }
+
+ 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # start of app
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -99,12 +110,7 @@ Column {.sidebar}
 
 ```{r tab1}
 
-n     <- 100
-r     <- -.4
-mu0   <- 0
-eff.p <- 10
-sd.   <- 10
-
+ 
  
   sliderInput('n', 'n pairs of data', value=100,
                 min = 5, max = 1000, step=5, ticks=F)
@@ -112,11 +118,13 @@ sd.   <- 10
   sliderInput('mu0', 'Initial mean  \u03BC', value=0,
                 min = -100, max = 100, step=5, ticks=F)
   
-  sliderInput('r', 'Correlation', value = c(-.4),
-                min = -1, max = 1, step=0.05, ticks=F)
-  
+ 
   sliderInput('eff.p', 'Effect of treatment', value = c(10),
                 min = -25, max = 25 ,step=1, ticks=F)
+  
+   sliderInput('r', 'Correlation', value = c(.8),
+                min = -1, max = 1, step=0.05, ticks=F)
+  
   
   # sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
   #               min = 0, max = 5 ,step=0.01, ticks=F)
@@ -309,7 +317,7 @@ output$text3 <- renderText({  # create interactive text t1
      
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
      
-    ", We also have a true correlation between the paired results of ")
+    ", also there is a true correlation between the paired results of ")
     
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
     
@@ -364,8 +372,8 @@ B <- r1()$pp2
 
 m <- ceiling(max(A,B))
 mL <- floor(min(A,B))
-before <- A + runif(length(A),-.2,.2)
-after <-  B + runif(length(B),-.2,.2)
+before <- A #+ runif(length(A),-.2,.2) # had this jitter for counts but not needed for continuous
+after <-  B #+ runif(length(B),-.2,.2)
 n <- length(before)
 d <- data.frame(y = c(before, after), 
                 x = rep(c(1,2), each=n),
@@ -414,6 +422,53 @@ grid.arrange(plot1, plot2, ncol=2)
 ```{r, tab1 plot4}
 
     
+
+library(MethComp)
+
+renderPlot({
+  
+A <- r1()$pp1
+B <- r1()$pp2
+n <- input$n
+
+d <- data.frame(y = B , x = A)
+
+my_data <- data.frame( 
+  group = rep(c("before", "after"), each = n),
+  counts = c(d[,1],  d[,2]),
+  ID=rep(1:n,2)
+)
+
+m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+ 
+L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
+ 
+ L <- roundUp(L)
+  
+  # BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+  #         # axlim=c(0,20), 
+  #          diflim=c(-L,L), 
+  #          xaxs="i", yaxs="i",
+  #          las=1, eqn=TRUE, dif.type="lin", pl.type="BA", sd.type="lin", #cons
+  #          grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
+  
+  # BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+  #          # axlim=c(0,20), 
+  #          diflim=c(-L,L), 
+  #          xaxs="i", yaxs="i",
+  #          las=1, eqn=TRUE, dif.type="lin", pl.type="BA", sd.type="lin", #cons
+  #          grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
+  
+  # we st up const dif and const sd so this matches simulation
+  BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+           # axlim=c(0,20), 
+           diflim=c(-L,L), 
+           xaxs="i", yaxs="i",
+           las=1, eqn=TRUE,  pl.type="BA", sd.type="coms", dif.type = "const", # cons is simulatied
+           grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
+
+})
+
 ```
 
 
