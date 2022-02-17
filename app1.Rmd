@@ -62,7 +62,23 @@ tab 1
     sprintf(x, fmt = '%#.4f')  
   }
   
- 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# function to generate cor data , see count app
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+mvrnorm <- function(n = 1, mu = 0, Sigma) {
+  nvars <- nrow(Sigma)
+  # nvars x n matrix of Normal(0, 1)
+  nmls <- matrix(rnorm(n * nvars), nrow = nvars)
+  # scale and correlate Normal(0, 1), "nmls", to Normal(0, Sigma) by matrix mult
+  # with lower triangular of cholesky decomp of covariance matrix
+  scaled_correlated_nmls <- t(chol(Sigma)) %*% nmls
+  # shift to center around mus to get goal: Normal(mu, Sigma)
+  samples <- mu + scaled_correlated_nmls
+  # transpose so each variable is a column, not
+  # a row, to match what MASS::mvrnorm() returns
+  t(samples)
+}
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # start of app
@@ -77,29 +93,38 @@ Column {.sidebar}
 
 ```{r tab1}
 
- 
-  sliderInput('mu', 'Common  \u03BC', value=1.5,
-                min = 1, max = 25, step=.5, ticks=F)
-  
-  sliderInput('alpha_a', '\u03B1 for red curve', value = c(1.3),
-                min = 0, max = 5 ,step=0.01, ticks=F)
-  
-  sliderInput('alpha_b', '\u03B1 for dark blue curve', value = c(1.3),
-                min = 0, max = 5 ,step=0.01, ticks=F)
-  
-  sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
-                min = 0, max = 5 ,step=0.01, ticks=F)
-  
-  sliderInput('sims', 'Simulations (chart 2)', 50000,
-                min = 50000, max = 500000,step=50000,ticks=F)
-  
-  sliderInput('x_range', 'Plot x-range', value = c(0,10),
-          min = 0, max = 80,step=5,ticks=F)
-  
-  sliderInput('y_range', 'Plot y-range', value = c(0,.5),
-          min = 0, max = 1,step=.05,ticks=F)
+n     <- 100
+r     <- -.4
+mu0   <- 0
+eff.p <- 10
+sd.   <- 10
 
-  checkboxInput('perc','show stats on barplot', value=TRUE)
+ 
+  sliderInput('n', 'n pairs of data', value=100,
+                min = 5, max = 1000, step=5, ticks=F)
+
+  sliderInput('mu0', 'Initial mean  \u03BC', value=0,
+                min = -100, max = 100, step=5, ticks=F)
+  
+  sliderInput('r', 'Correlation', value = c(-.4),
+                min = -1, max = 1, step=0.05, ticks=F)
+  
+  sliderInput('eff.p', 'Effect of treatment', value = c(10),
+                min = -25, max = 25 ,step=1, ticks=F)
+  
+  # sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
+  #               min = 0, max = 5 ,step=0.01, ticks=F)
+  
+  sliderInput('sd.', 'Common SD', 10,
+                min = 1, max = 100, step=1,ticks=F)
+  
+  # sliderInput('x_range', 'Plot x-range', value = c(0,10),
+  #         min = 0, max = 80,step=5,ticks=F)
+  # 
+  # sliderInput('y_range', 'Plot y-range', value = c(0,.5),
+  #         min = 0, max = 1,step=.05,ticks=F)
+  # 
+  # checkboxInput('perc','show stats on barplot', value=TRUE)
 
 ```
 
@@ -118,15 +143,119 @@ Column {data-width=400, height=200}
 
 ```{r tab1 plot1}
 
+ 
+  r1 <- reactive({
+ 
+    
+    L1 <-     input$mu0
+    L2 <-     input$mu0+input$eff.p
+    r  <-     input$r
+    n <-      input$n
+    sd. <-    input$sd.
+    
+ 
+# generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
+# Sample correlated N(0, 1) distributions from a multivariate normal distribution.
+# Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
+# Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
 
-```
+    Sigma <- matrix(c(1, r, r, 1), 2, 2)
 
-### Chart 2
+    px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
 
-```{r, tab1 plot2}
+    U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
+    
+    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal
+    pp2 <- qnorm(U[, 2], L2, sd.)      # correlated normal
+
+    cor. <- cor(pp1, pp2)              # capture correlation
+ 
+    # create a data frame
+    my_data <- data.frame( 
+      group = rep(c("A.before", "B.after"), each = n),
+      counts = c(pp1,  pp2),
+      ID=rep(1:n,2)
+    )
+
+    ## variance of a difference from a simulation
+    est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
+    
+    ## true variance of difference
+    true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
+    
+    ## variance of a sum
+    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
+    # 
+    # 
+    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
+
+ return(list( est=est, true=true  ))
+     
+  })
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  # renderPrint({
+  #  
+  #    f <- r1()$est
+  #    print(f)
+  #    
+  #    f2 <- r1()$true
+  #    print(f2)
+  #      
+  # })
+
+  
+  
+
+
+reactive({
+  
+cat(paste0("A method comparison with ",input$n," samples assayed on each method."))
+
+cat(paste0(" There is a true bias of ", input$eff.p, " We also have a true correlation ",input$r," and between sample sd commmon to both methods of ", input$sd.,".\nThere are no technical replicates. "))
+
+cat(paste0("Based on the true parameters the variance of the difference is ", r1()$true," and the estimate from a simulated experiment is ", r1()$est) )
 
  
+})
+  
 ```
+
+```{r, test}
+ 
+  HTML("  If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")
+                                       
+  withMathJax(
+                                           helpText('
+                             $${{ }{{{\\sigma^2}{_{x \\pm y}} + \\frac{m^2}{k}}}}\\!$$'))      
+  
+  HTML(" Sometimes this relationship is used")
+                                       
+  withMathJax(
+                                           helpText('
+                             $${{ }{{{\\alpha} = \\frac{1}{k}}}}\\!$$'))      
+  
+  
+  HTML(" And then the variance is expressed as")
+                                       
+  withMathJax(
+                                           helpText('
+                             $${{ }{{{m}  + {(\\alpha)}{ (m^2)}}}}\\!$$'))  
+   
+  br()
+  br()
+  HTML(" In short, either the parameter k or its reciprocal alpha is referred to as the 'dispersion parameter' or 'shape parameter' or 'clustering coefficient' or 'heterogeneity' or 'heterogeneity (ancillary) parameter' or 'aggregation' parameter.  ")
+  br()
+  br()
+  HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha. R code below showing syntax.")
+
+  
+```
+
+
+```
+
+
 
 Column {data-width=400}
 -------------------------------------
