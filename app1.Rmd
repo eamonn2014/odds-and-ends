@@ -337,21 +337,25 @@ output$text3 <- renderText({  # create interactive text t1
                
                "Based on the true parameters the variance of the difference is ") 
     
-         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", r1()$true ,
+         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz3( r1()$true )),
+                     
+                     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
      " this equates to an SD of the differences of ") 
     
-       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", sqrt(r1()$true)) ,
+       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1()$true))) ,
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                " and the estimate from a simulated experiment is ") 
     
-     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",  r1()$est ,
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1()$est )),
+                 
+                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
         " this equates to an SD of the differences of ")
     
-     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",  sqrt(r1()$est),
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
     
         ".") ))
 
