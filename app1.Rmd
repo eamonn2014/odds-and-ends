@@ -151,7 +151,7 @@ xxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxxxxxx
 $\alpha$ xxxxxxxxxxxxxxxxxx 
  
 
-Column {data-width=400, height=200}
+Column {data-width=400, height=75}
 -----------------------------------------------------------------------
 ### Chart 1
 
@@ -206,32 +206,7 @@ Column {data-width=400, height=200}
  return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
      
   })
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  # renderPrint({
-  #  
-  #    f <- r1()$est
-  #    print(f)
-  #    
-  #    f2 <- r1()$true
-  #    print(f2)
-  #      
-  # })
-
   
-  
-
-
-# reactive({
-#   
-# cat(paste0("A method comparison with ",input$n," samples assayed on each method."))
-# 
-# cat(paste0(" There is a true bias of ", input$eff.p, " We also have a true correlation ",input$r," and between sample sd commmon to both methods of ", input$sd.,".\nThere are no technical replicates. "))
-# 
-# cat(paste0("Based on the true parameters the variance of the difference is ", r1()$true," and the estimate from a simulated experiment is ", r1()$est) )
-# 
-#  
-# })
   h5(htmlOutput("text3"))      ## print 
   
 ```
@@ -265,7 +240,8 @@ Column {data-width=400, height=200}
   
                             )
   
- 
+    h5(htmlOutput("text4"))   
+     
 ```
 
  
@@ -330,9 +306,74 @@ output$text3 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " There are no technical replicates. "),
+    " There are no technical replicates. ", #),
     
     
+     #    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     #           
+     #           "Based on the true parameters the variance of the difference is ") 
+     # 
+     #     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz3( r1()$true )),
+     #                 
+     #                 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     # 
+     # " this equates to an SD of the differences of ") 
+     # 
+     #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1()$true))) ,
+     # 
+     # tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     #           
+     #           " and the estimate from a simulated experiment is ") 
+     # 
+     # , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1()$est )),
+     #             
+     #              tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     # 
+     #    " this equates to an SD of the differences of ")
+     # 
+     # , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
+    
+        ".") ))
+
+ })
+ 
+
+output$text4 <- renderText({  # create interactive text t1
+
+    
+    print(paste0(   
+    
+    # tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    #            
+    #            "A method comparison with ") 
+    # 
+    #  , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
+    # 
+    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    #            
+    #            " samples assayed on each of two methods. There is a true bias of ") 
+    #   
+    #   , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
+    #  
+    #  
+    #     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    #  
+    # ", also there is a true correlation between the paired results of ")
+    # 
+    #   , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
+    # 
+    # 
+    #     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    # 
+    # " and between sample sd commmon to both methods of ")
+    # 
+    #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    # 
+    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    #            
+    # " There are no technical replicates. "),
+    # 
+    # 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                "Based on the true parameters the variance of the difference is ") 
@@ -360,7 +401,6 @@ output$text3 <- renderText({  # create interactive text t1
         ".") ))
 
  })
- 
  
 ``` 
 
@@ -481,6 +521,20 @@ L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
 
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 
@@ -542,11 +596,127 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Column {data-width=400, height=300}
 -----------------------------------------------------------------------
 
-### xxxxxxxxxxx
+### abc
 
 ```{r, gp barplots, eval=TRUE}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+ 
+  r2 <- reactive({
+ 
+    
+    L1 <-     input$mu0
+    L2 <-     input$mu0+input$eff.p
+    r  <-     input$r
+    n <-      input$n
+    sd. <-    input$sd.
+    
+
+    A <- r1()$pp1
+    B <- r1()$pp2
+    n <- input$n
+    
+    d <- data.frame(y = A , x = B)
+    
+    my_data <- data.frame( 
+      group = rep(c("before", "after"), each = n),
+      counts = c(d[,1],  d[,2]),
+      ID=rep(1:n,2)
+    )
+    
+    m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+     
+    
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # code from my useful code, adjusted slightly
+
+  BA <- DA.reg(m, DA.slope = TRUE)
+  BA
+
+  a1<-as.data.frame(unlist(BA))
+  #DA.slope.p<-a1[14,]
+  #cons.sd.p.value<-a1[38,]
+  
+  res<-rbind(a1[14,], a1[38,])
+  res<-as.matrix(res)
+  
+  rownames(res)<-c( 
+                   "DA Slope P-value",
+                   "P-value for Changing SD")
+  
+  colnames(res) <- c("Bland Altman Analysis")
+ # print(res)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ## **Assess Bland Altman assumptions P-values for two hypotheses:**
+  w <- to.wide(m)
+  ## assumptions do it yourself
+
+  w$y <- w$before - w$after
+  w$x <-  (w$before + w$after) /2
+  
+  # Constant difference - this is the test of 0 slope in the regression of differences on averages.
+  f <- summary(lm(y~x, w))
+  con.diff <- f$coefficients["x","Pr(>|t|)"]
+  
+  
+  # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
+  w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
+ # w$r <- (residuals(f) )
+  plot(r~x,w)
+  f <- summary(lm(r~x, w))
+  con.sd <- f$coefficients["x","Pr(>|t|)"]
+  
+  ##
+  # . A formal test of increasing or
+  # decreasing variance by the level of measurement can be obtained by
+  # first regressing the differences on the averages and then regressing the
+  # absolute residuals from this on the averages 
+  # 
+  # library(ggplot2)
+  # library(ggpubr)
+  # ggplot(w, aes(x=x, y=r))+
+  #   geom_point() +  
+  #   geom_smooth(method="lm", col="black")  +
+  #   stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+  #   theme_bw() +
+  #   labs(title = paste0("Regression of absolute residuals on averages, p=", assump2),
+  #        x = "Averages",
+  #        y = "Absolute residuals")
+   
+  return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
+  
+
+})
+
+renderPlot({
+  
+w <- r2()$w
+con.sd <- r2()$con.sd
+#n <- input$n
+
+ library(ggplot2)
+  library(ggpubr)
+  ggplot(w, aes(x=x, y=r))+
+    geom_point() +  
+    geom_smooth(method="lm", col="black")  +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("Regression of absolute residuals on averages, p=", con.sd),
+         x = "Averages",
+         y = "Absolute residuals")
+   
+  
+})
+
+
+
+
+
  
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
