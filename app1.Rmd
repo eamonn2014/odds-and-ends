@@ -208,30 +208,34 @@ Column {data-width=400, height=200}
   
 
 
-reactive({
-  
-cat(paste0("A method comparison with ",input$n," samples assayed on each method."))
-
-cat(paste0(" There is a true bias of ", input$eff.p, " We also have a true correlation ",input$r," and between sample sd commmon to both methods of ", input$sd.,".\nThere are no technical replicates. "))
-
-cat(paste0("Based on the true parameters the variance of the difference is ", r1()$true," and the estimate from a simulated experiment is ", r1()$est) )
-
- 
-})
+# reactive({
+#   
+# cat(paste0("A method comparison with ",input$n," samples assayed on each method."))
+# 
+# cat(paste0(" There is a true bias of ", input$eff.p, " We also have a true correlation ",input$r," and between sample sd commmon to both methods of ", input$sd.,".\nThere are no technical replicates. "))
+# 
+# cat(paste0("Based on the true parameters the variance of the difference is ", r1()$true," and the estimate from a simulated experiment is ", r1()$est) )
+# 
+#  
+# })
+  h5(htmlOutput("text3"))      ## print 
   
 ```
 
 ```{r, test}
 
+  h5(htmlOutput("text2"))      
  
-  HTML("  If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")
                                        
   withMathJax(
+                                           
                                            helpText('
-                             $${{ }{{{\\sigma^2}{_{x \\pm y}} =  {\\sigma^2}{_{x}}  +  {\\sigma^2}{_{y}}                \\pm 2\\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }}}\\!$$'))      
-  
-  HTML(" The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract this component.")
-                                       
+                                           
+                             $${  {\\sigma^2}{_{x \\pm y}} =  {\\sigma^2}{_{x}}  +  {\\sigma^2}{_{y}}                \\pm 2\\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }\\!$$'))   
+                                           
+   
+     h5(htmlOutput("text2a"))   
+     
   withMathJax(
                                            helpText('
                               $${{{  \\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }}}\\!$$'))        
@@ -245,61 +249,92 @@ cat(paste0("Based on the true parameters the variance of the difference is ", r1
    
   br()
   br()
-  HTML(" xxxxxxxxxxxx  ")
-  br()
-  br()
-  HTML("  xxxxxxxxxxxxxxx")
+  # HTML(" xxxxxxxxxxxx  ")
+  # br()
+  # br()
+  # HTML("  xxxxxxxxxxxxxxx")
 
-  h5(htmlOutput("text3"))      ## print 
+
   
 ```
 
  
  
 ```{r } 
- 
-   output$text3 <- renderText({  # create interactive text t1
 
-     #invisible(x <-pycr( pack.size=input$Decksize, card1=input$swap))   # R code
+
+output$text2 <- renderText({  # create interactive text t1
+
     
-    # x1 <- x[1][[1]]
-    # x2 <- x[2][[1]]
-   
     print(paste0(   
-       br(),# text
-     tags$hr(),
-        br(),
-    tags$span(style="color:blue;font-weight:bold;font-size: 20px;text-underline-position: under;", 
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "xxxxxxxx - xxxxxxxxxxxx")   ,
-      br(),
-      br(), 
+               "If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")))
+  
+})
+
+
+output$text2a <- renderText({  # create interactive text t1
+
+    
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract this component. ")))
+  
+})
+ 
+   
+
+output$text3 <- renderText({  # create interactive text t1
+
+    
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "A method comparison with ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
    
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "xxxxxxxxxx") 
+               " samples assayed on each of two methods. There is a true bias of ") 
       
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
      
      
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
      
-    ", xxxx ")
+    ", We also have a true correlation between the paired results of ")
     
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
     
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-    " xxxxxxxxxxxxxxxxxxx ")
+    " and between sample sd commmon to both methods of ")
     
       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " or ")
+    " There are no technical replicates. "),
     
-     , tags$span(style="color:red ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Based on the true parameters the variance of the difference is ") 
+    
+         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", r1()$true) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " and the estimate from a simulated experiment is ") 
+    
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",  r1()$est) ,
     
     
                    ".
