@@ -119,17 +119,17 @@ Column {.sidebar}
                 min = -100, max = 100, step=5, ticks=F)
   
  
-  sliderInput('eff.p', 'Effect of treatment', value = c(10),
+  sliderInput('eff.p', 'Effect of treatment', value = c(0),
                 min = -25, max = 25 ,step=1, ticks=F)
   
    sliderInput('r', 'Correlation', value = c(.8),
-                min = -1, max = 1, step=0.05, ticks=F)
+                min = -.9, max = .9, step=0.05, ticks=F)
   
   
   # sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
   #               min = 0, max = 5 ,step=0.01, ticks=F)
   
-  sliderInput('sd.', 'Common SD', 10,
+  sliderInput('sd.', 'Common SD', 1,
                 min = 1, max = 100, step=1,ticks=F)
   
   # sliderInput('x_range', 'Plot x-range', value = c(0,10),
@@ -291,7 +291,7 @@ output$text2a <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract this component. ")))
+               "The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract 2 x this component. ")))
   
 })
  
@@ -337,17 +337,23 @@ output$text3 <- renderText({  # create interactive text t1
                
                "Based on the true parameters the variance of the difference is ") 
     
-         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", r1()$true) ,
+         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", r1()$true ,
+    
+     " this equates to an SD of the differences of ") 
+    
+       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", sqrt(r1()$true)) ,
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                " and the estimate from a simulated experiment is ") 
     
-     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",  r1()$est) ,
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",  r1()$est ,
     
+        " this equates to an SD of the differences of ")
     
-                   ".
-      "))
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",  sqrt(r1()$est),
+    
+        ".") ))
 
  })
  
@@ -431,7 +437,7 @@ A <- r1()$pp1
 B <- r1()$pp2
 n <- input$n
 
-d <- data.frame(y = B , x = A)
+d <- data.frame(y = A , x = B)
 
 my_data <- data.frame( 
   group = rep(c("before", "after"), each = n),
@@ -460,6 +466,8 @@ L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
   #          grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
   
   # we st up const dif and const sd so this matches simulation
+  par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
+ 
   BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
            # axlim=c(0,20), 
            diflim=c(-L,L), 
