@@ -12,9 +12,15 @@ runtime: shiny
 tab 1
 ===
 
+
+
 ```{r global, include=FALSE}
 
   rm(list=ls())
+
+
+
+
   set.seed(6453)
   library(MASS)      # for neg binomial analysis and correlated data generation
   library(ggplot2)
@@ -224,24 +230,51 @@ Column {data-width=400, height=200}
 
 ```{r, test}
 
-  h5(htmlOutput("text2"))      
+# tags$style(type="text/css", ".span8 .well { background-color: #00FFFF; }")
+
+   h5(htmlOutput("text2"))      
  
                                        
-  withMathJax(
-                                           
-                                           helpText('
-                                           
-                             $${  {\\sigma^2}{_{x \\pm y}} =  {\\sigma^2}{_{x}}  +  {\\sigma^2}{_{y}}                \\pm 2\\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }\\!$$'))   
+                             withMathJax(
+                             helpText('
+                             $${  
+                             {\\sigma^2}{_{x \\pm y}} =  
+                             {\\sigma^2}{_{x}}  +   {\\sigma^2}{_{y}} 
+                             \\pm 2\\rho{\\sigma}{_{x}} {\\sigma}{_{y}}           
+                             }\\!$$'
+                             ))   
                                            
    
      h5(htmlOutput("text2a"))   
      
-  withMathJax(
-                                           helpText('
-                              $${{{  \\rho{\\sigma}{_{x}}   {\\sigma}{_{y}}           }}}\\!$$'))        
+                            withMathJax(
+                             helpText('
+                              $${ 
+                              \\rho {\\sigma}{_{x}}  {\\sigma}{_{y}}           
+                              }\\!$$'))        
   
   
-  HTML(" xxxxxxxx")
+                              withMathJax()
+  tags$head(
+    tags$style(
+      HTML(
+        ".MathJax {
+            font-size: 3em !important;
+          }"
+      )
+    )
+  )
+  helpText('An irrational number \\(\\sqrt{2}\\)
+           and a fraction $$1-\\frac{1}{2}$$')
+  
+  helpText('and a fact about \\(\\pi\\):
+           $$\\frac2\\pi = \\frac{\\sqrt2}2 \\cdot
+           \\frac{\\sqrt{2+\\sqrt2}}2 \\cdot
+           \\frac{\\sqrt{2+\\sqrt{2+\\sqrt2}}}2 \\cdots$$')
+                            
+                            
+                            
+   #HTML(" xxxxxxxx")
                                        
   withMathJax(
                                            helpText('
