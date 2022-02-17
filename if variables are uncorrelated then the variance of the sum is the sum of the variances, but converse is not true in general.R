@@ -255,12 +255,14 @@ L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
   # if we multiply the above by sqrt(pi) / sqrt(2) we are left with sigma!
   # so knowing the mean we can find the SD!!!
   
+  
+  # an aside
   # checking out the mean sd relationship between stand normal and half standard normal
-  mu=0      # 0 so half negative
+  mu=0      # 0 so half data is negative
   sigma=runif(1, 1,100)
   sigma
 
-  x <- rnorm(10000, mean=mu, sd=sigma)  # if this is all positive abs value will make no difference
+  x <- rnorm(10000, mean=mu, sd=sigma)  # note if this is all positive, abs value will make no difference, hence mu=0
   
   hn <- abs(x)
   # mean of half normal
