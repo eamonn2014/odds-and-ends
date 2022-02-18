@@ -138,7 +138,15 @@ Column {.sidebar}
     selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
 
   # actionButton("reset",   "Refresh")
-      actionButton("resample",   "resample")
+      actionButton("resample",   "Simulate a new sample")
+      
+                                 
+                                  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         
+                                  
+                                  tags$head(
+                                    tags$style(HTML('#resample{background-color:orange}'))
+                                  )
 
   
   # sliderInput('x_range', 'Plot x-range', value = c(0,10),
@@ -165,23 +173,14 @@ Column {data-width=400, height=75}
 ### Chart 1
 
 ```{r tab1 plot1}
-
-# 
-  # observeEvent(input$reset, {
-  #    refresh()
-  #  })
-
-# this reloads the app not what I want
- # observeEvent(input$reset,{
- #      session$reload()
- #       return()
- #    })
  
    # --------------------------------------------------------------------------
+    # I looked back to two period cross over trial to get this button working
     # This is where a new sample is instigated only random noise is required to be generated
     random.sample <- reactive({
-    #     # Dummy line to trigger off button-press
-         foo <- input$resample
+      
+    # Dummy line to trigger off button-press
+    foo <- input$resample
          
     L1 <-     input$mu0
     L2 <-     input$mu0+input$eff.p
@@ -203,8 +202,8 @@ Column {data-width=400, height=75}
     
     pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
     pp2 <- qnorm(U[, 2], L2, sd.) 
-    #     
-         return(list(pp1=pp1, pp2=pp2))
+        
+         return(list(pp1=pp1, pp2=pp2, sd.=sd.))
      })
    
     # --------------------------------------------------------------------------
@@ -216,7 +215,7 @@ Column {data-width=400, height=75}
     
 #    L1 <-     input$mu0
 #     L2 <-     input$mu0+input$eff.p
-    r  <-     input$r
+     r  <-     input$r
      n <-      input$n
      sd. <-    sample$sd.
 #     
@@ -263,17 +262,18 @@ Column {data-width=400, height=75}
      
   })
   
+  # --------------------------------------------------------------------------
   h5(htmlOutput("text3"))      ## print 
   
 ```
 
 
 ```{r, test}
- 
- # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
- # help on font size
+   # --------------------------------------------------------------------------
+   # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
+   # help on font size
    h5(htmlOutput("text2"))      
- 
+   # --------------------------------------------------------------------------
                               withMathJax(
                                 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                              helpText('
@@ -284,7 +284,7 @@ Column {data-width=400, height=75}
                              }\\!$$'
                              ))   
                              )
-   
+    # --------------------------------------------------------------------------
    h5(htmlOutput("text2a"))   
      
                             withMathJax(
@@ -295,15 +295,15 @@ Column {data-width=400, height=75}
                               }\\!$$'))        
   
                             )
-  
+    # --------------------------------------------------------------------------
     h5(htmlOutput("text4"))   
-     
+    # --------------------------------------------------------------------------
 ```
 
  
 ```{r } 
 
-
+  # --------------------------------------------------------------------------
 output$text2 <- renderText({  # create interactive text t1
 
     
@@ -314,7 +314,7 @@ output$text2 <- renderText({  # create interactive text t1
                "If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")))
   
 })
-
+  # --------------------------------------------------------------------------
 
 output$text2a <- renderText({  # create interactive text t1
 
@@ -326,7 +326,7 @@ output$text2a <- renderText({  # create interactive text t1
                "The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract 2 x this component. ")))
   
 })
- 
+   # --------------------------------------------------------------------------
    
 
 output$text3 <- renderText({  # create interactive text t1
@@ -362,35 +362,11 @@ output$text3 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " There are no technical replicates. ", #),
+    " There are no technical replicates ", #),
     
-    
-     #    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-     #           
-     #           "Based on the true parameters the variance of the difference is ") 
-     # 
-     #     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz3( r1()$true )),
-     #                 
-     #                 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-     # 
-     # " this equates to an SD of the differences of ") 
-     # 
-     #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1()$true))) ,
-     # 
-     # tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-     #           
-     #           " and the estimate from a simulated experiment is ") 
-     # 
-     # , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1()$est )),
-     #             
-     #              tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-     # 
-     #    " this equates to an SD of the differences of ")
-     # 
-     # , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
     
         ".") ))
-
+  # --------------------------------------------------------------------------
  })
  
 
@@ -399,37 +375,7 @@ output$text4 <- renderText({  # create interactive text t1
     
     print(paste0(   
     
-    # tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    #            
-    #            "A method comparison with ") 
-    # 
-    #  , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
-    # 
-    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    #            
-    #            " samples assayed on each of two methods. There is a true bias of ") 
-    #   
-    #   , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
-    #  
-    #  
-    #     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    #  
-    # ", also there is a true correlation between the paired results of ")
-    # 
-    #   , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
-    # 
-    # 
-    #     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    # 
-    # " and between sample sd commmon to both methods of ")
-    # 
-    #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
-    # 
-    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-    #            
-    # " There are no technical replicates. "),
-    # 
-    # 
+   
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                "Based on the true parameters the variance of the difference is ") 
@@ -457,6 +403,7 @@ output$text4 <- renderText({  # create interactive text t1
         ".") ))
 
  })
+  # --------------------------------------------------------------------------
  
 ``` 
 
@@ -468,7 +415,7 @@ Column {data-width=400}
 
 ```{r, tab1 plot3}
 
- 
+   # --------------------------------------------------------------------------
 library(ggplot2)
 
 renderPlot({
@@ -518,7 +465,7 @@ grid.arrange(plot1, plot2, ncol=2)
 
 
 })
-
+  # --------------------------------------------------------------------------
 
 
 ```
@@ -528,7 +475,7 @@ grid.arrange(plot1, plot2, ncol=2)
 ```{r, tab1 plot4}
 
     
-
+  # --------------------------------------------------------------------------
 library(MethComp)
 
 renderPlot({
@@ -577,20 +524,8 @@ L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
 
 })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # --------------------------------------------------------------------------
+ 
 ```
 
 
