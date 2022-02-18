@@ -18,21 +18,20 @@ tab 1
 
   rm(list=ls())
 
-
-
-
-  set.seed(6453)
+  set.seed(64453)
   library(MASS)      # for neg binomial analysis and correlated data generation
   library(ggplot2)
-  library(lme4)
+  library(gridExtra)
+    library(ggpubr)
+  #library(lme4)
   library(shiny)
   library(utf8)      # codes for Greek letters
   library(MethComp)
   library(gridExtra)
   library(tidyverse)
-  library(car)       # diagnostics
-  library(vcd)       # diagnostics
-  library(skewsamp)  # power for neg binom
+  #library(car)       # diagnostics
+  #library(vcd)       # diagnostics
+  #library(skewsamp)  # power for neg binom
   lwd.=3             # used when plotting
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,38 +123,25 @@ Column {.sidebar}
   
    sliderInput('r', 'Correlation', value = c(.8),
                 min = -.9, max = .9, step=0.05, ticks=F)
-  
-  
-  # sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
-  #               min = 0, max = 5 ,step=0.01, ticks=F)
-  
+     
   sliderInput('sd.', 'Common SD', 1,
                 min = 1, max = 100, step=1,ticks=F)
   
   selectInput("SD.type", "Select SD type", choices = c("cons", "lin"), selected="cons")
+  
   selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
   
-    selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
-
-  # actionButton("reset",   "Refresh")
-      actionButton("resample",   "Simulate a new sample")
+  selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
+#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # orange button
+   actionButton("resample",   "Hit to simulate a new sample")
       
-                                 
-                                  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         
-                                  
-                                  tags$head(
-                                    tags$style(HTML('#resample{background-color:orange}'))
-                                  )
-
-  
-  # sliderInput('x_range', 'Plot x-range', value = c(0,10),
-  #         min = 0, max = 80,step=5,ticks=F)
-  # 
-  # sliderInput('y_range', 'Plot y-range', value = c(0,.5),
-  #         min = 0, max = 1,step=.05,ticks=F)
-  # 
-  # checkboxInput('perc','show stats on barplot', value=TRUE)
+   #  tags$head(
+   tags$style(HTML('#resample{background-color:orange}'))
+   # )
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
 
 ```
 
@@ -175,7 +161,7 @@ Column {data-width=400, height=75}
 ```{r tab1 plot1}
  
    # --------------------------------------------------------------------------
-    # I looked back to two period cross over trial to get this button working
+    # I looked back to two period cross over trial to get this button working to resimulate
     # This is where a new sample is instigated only random noise is required to be generated
     random.sample <- reactive({
       
@@ -188,7 +174,6 @@ Column {data-width=400, height=75}
     n <-      input$n
     sd. <-    input$sd.
     
- 
 # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
 # Sample correlated N(0, 1) distributions from a multivariate normal distribution.
 # Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
@@ -203,7 +188,7 @@ Column {data-width=400, height=75}
     pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
     pp2 <- qnorm(U[, 2], L2, sd.) 
         
-         return(list(pp1=pp1, pp2=pp2, sd.=sd.))
+    return(list(pp1=pp1, pp2=pp2, sd.=sd.))
      })
    
     # --------------------------------------------------------------------------
@@ -217,7 +202,7 @@ Column {data-width=400, height=75}
 #     L2 <-     input$mu0+input$eff.p
      r  <-     input$r
      n <-      input$n
-     sd. <-    sample$sd.
+     sd. <-    sample$sd.  
 #     
 #  
 # # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
@@ -306,7 +291,6 @@ Column {data-width=400, height=75}
   # --------------------------------------------------------------------------
 output$text2 <- renderText({  # create interactive text t1
 
-    
     print(paste0(   
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
@@ -318,7 +302,6 @@ output$text2 <- renderText({  # create interactive text t1
 
 output$text2a <- renderText({  # create interactive text t1
 
-    
     print(paste0(   
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
@@ -331,7 +314,6 @@ output$text2a <- renderText({  # create interactive text t1
 
 output$text3 <- renderText({  # create interactive text t1
 
-    
     print(paste0(   
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
@@ -372,31 +354,29 @@ output$text3 <- renderText({  # create interactive text t1
 
 output$text4 <- renderText({  # create interactive text t1
 
-    
     print(paste0(   
-    
-   
+
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Based on the true parameters the variance of the difference is ") 
+               "Based on the true parameters, the variance of the difference is ") 
     
          , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz3( r1()$true )),
                      
                      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-     " this equates to an SD of the differences of ") 
+     ", this equates to an SD of the differences of ") 
     
        , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1()$true))) ,
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " and the estimate from a simulated experiment is ") 
+               ". The estimate from a simulated experiment is ") 
     
      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1()$est )),
                  
                   tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-        " this equates to an SD of the differences of ")
+        ", this equates to an SD of the differences of ")
     
      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
     
@@ -416,52 +396,51 @@ Column {data-width=400}
 ```{r, tab1 plot3}
 
    # --------------------------------------------------------------------------
-library(ggplot2)
+ 
 
 renderPlot({
   
-A <- r1()$pp1
-B <- r1()$pp2
+  A <- r1()$pp1
+  B <- r1()$pp2
+  
+  m <- ceiling(max(A,B))
+  mL <- floor(min(A,B))
+  before <- A #+ runif(length(A),-.2,.2) # had this jitter for counts but not needed for continuous
+  after <-  B #+ runif(length(B),-.2,.2)
+  n <- length(before)
+  d <- data.frame(y = c(before, after), 
+                  x = rep(c(1,2), each=n),
+                  id = factor(rep(1:n,2)))
+  
+  d$xj <- jitter(d$x, amount=.13)
+  # code from count app
+  AA <- ggplot(data=d, aes(y=y) ) +
+    geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
+    geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
+    geom_point(aes(x=xj), size=2) +
+    xlab("Phase") + ylab("Count") +  
+    scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
+   # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
+    theme_bw() + theme(legend.position = "none") 
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ scatter plot
+  
 
-m <- ceiling(max(A,B))
-mL <- floor(min(A,B))
-before <- A #+ runif(length(A),-.2,.2) # had this jitter for counts but not needed for continuous
-after <-  B #+ runif(length(B),-.2,.2)
-n <- length(before)
-d <- data.frame(y = c(before, after), 
-                x = rep(c(1,2), each=n),
-                id = factor(rep(1:n,2)))
-
-d$xj <- jitter(d$x, amount=.13)
-# code from count app
-AA <- ggplot(data=d, aes(y=y) ) +
-  geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
-  geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
-  geom_point(aes(x=xj), size=2) +
-  xlab("Phase") + ylab("Count") +  
-  scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
- # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
-  theme_bw() + theme(legend.position = "none") 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ scatter plot
-
-library(gridExtra)
-
-d <- data.frame(y = B , x = A)
-
-BB <- ggplot(d, aes(x, y)) +
-  geom_jitter(width = 0.1, height = 0.1, size=2) +
- #  scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
- # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
-  scale_x_continuous( limits=c(mL,m)) +
-  scale_y_continuous(  limits=c(mL,m)) +
-  xlab("Before count") +ylab("After count") +
-  theme_bw() + theme(legend.position = "none") +
-  geom_abline(intercept=0, slope=1)
-
-plot1 <- AA
-plot2 <- BB
-grid.arrange(plot1, plot2, ncol=2)
+  d <- data.frame(y = B , x = A)
+  
+  BB <- ggplot(d, aes(x, y)) +
+    geom_jitter(width = 0.1, height = 0.1, size=2) +
+   #  scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
+   # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
+    scale_x_continuous( limits=c(mL,m)) +
+    scale_y_continuous(  limits=c(mL,m)) +
+    xlab("Before count") +ylab("After count") +
+    theme_bw() + theme(legend.position = "none") +
+    geom_abline(intercept=0, slope=1)
+  
+  plot1 <- AA
+  plot2 <- BB
+  grid.arrange(plot1, plot2, ncol=2)
 
 
 })
@@ -476,51 +455,40 @@ grid.arrange(plot1, plot2, ncol=2)
 
     
   # --------------------------------------------------------------------------
-library(MethComp)
+
 
 renderPlot({
   
-A <- r1()$pp1
-B <- r1()$pp2
-n <- input$n
-
-d <- data.frame(y = A , x = B)
-
-my_data <- data.frame( 
-  group = rep(c("before", "after"), each = n),
-  counts = c(d[,1],  d[,2]),
-  ID=rep(1:n,2)
-)
-
-m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
- 
-L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
- 
- L <- roundUp(L)
+    A <- r1()$pp1
+    B <- r1()$pp2
+    n <- input$n
+    
+    d <- data.frame(y = A , x = B)
   
-  # BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
-  #         # axlim=c(0,20), 
-  #          diflim=c(-L,L), 
-  #          xaxs="i", yaxs="i",
-  #          las=1, eqn=TRUE, dif.type="lin", pl.type="BA", sd.type="lin", #cons
-  #          grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
+    my_data <- data.frame( 
+      group = rep(c("before", "after"), each = n),
+      counts = c(d[,1],  d[,2]),
+      ID=rep(1:n,2)
+    )
   
-  # BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
-  #          # axlim=c(0,20), 
-  #          diflim=c(-L,L), 
-  #          xaxs="i", yaxs="i",
-  #          las=1, eqn=TRUE, dif.type="lin", pl.type="BA", sd.type="lin", #cons
-  #          grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
-  
-  # we st up const dif and const sd so this matches simulation
-  par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
- 
-  BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
-           # axlim=c(0,20), 
-           diflim=c(-L,L), 
-           xaxs="i", yaxs="i",
-           las=1, eqn=TRUE,  pl.type=input$Pl.type, sd.type=input$SD.type, dif.type = input$Dif.type, # cons is simulatied
-           grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
+   m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+   
+   L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
+   
+   L <- roundUp(L)
+    
+    # we set up const dif and const sd so that will matches true data genrting mechanism
+    par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
+   
+    BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+             # axlim=c(0,20), 
+             diflim=c(-L,L), 
+             xaxs="i", yaxs="i",
+             las=1, eqn=TRUE,  
+             pl.type=input$Pl.type, 
+             sd.type=input$SD.type, 
+             dif.type = input$Dif.type, # cons is simulatied
+             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
 
 })
 
@@ -690,17 +658,13 @@ renderPlot({
   
 w <- r2()$w
 con.sd <- r2()$con.sd
-#n <- input$n
-
- library(ggplot2)
-  library(ggpubr)
+  
   ggplot(w, aes(x=x, y=r))+
     geom_point() +  
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("1 regressing the differences on the averages and then regressing the absolute residuals from this on the averages.
-                        Testing hypothesis slope=0, p=", con.sd),
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
          x = "Averages",
          y = "Absolute residuals")
    
@@ -727,17 +691,14 @@ renderPlot({
   
 w <- r2()$w
 con.diff <- r2()$con.diff
-#n <- input$n
+ 
 
- library(ggplot2)
-  library(ggpubr)
   ggplot(w, aes(x=x, y=y))+
     geom_point() +  
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("Regression of differences on averages.
-                        Testing hypothesis slope=0, p=", con.diff),
+    labs(title = paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
          x = "Averages",
          y = "After - before")
    
@@ -757,6 +718,31 @@ Column {.tabset .tabset-fade}
   
 
 ```{r diagnostics1, eval=TRUE}
+renderPlot({
+  
+w <- r2()$w
+con.diff <- r2()$con.diff
+
+
+(mod1 <- lm(y ~ x, data = w) )
+w$pred = predict(mod1 )  
+
+p <- w %>%
+  ggplot(aes(x = x, y = y) ) +
+  geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+  geom_smooth(method = "lm", colour = "black") +
+  
+  geom_segment(
+    aes(xend = x, yend = pred),
+    size = 0.5, alpha = 0.5, lineend = "round", col="pink"
+  ) +
+  
+  theme_bw(base_size = 12)
+
+print(p)
+
+})
+
 
   
 
@@ -1011,12 +997,12 @@ References
 ====
 ```{r, refs}
  
-    tags$a(href = "https://stats.stackexchange.com/questions/71194/fitting-a-poisson-distribution-with-lme4-and-nlme", target="_blank",
-           tags$span(style="color:blue", "[1] Poisson with lme4 and nlme"),) 
+    tags$a(href = "https://pubmed.ncbi.nlm.nih.gov/8337548/", target="_blank",
+           tags$span(style="color:blue", "[1] Construction of age-related reference centiles using absolute residuals, Doug Altman shows how to model the SD"),) 
     div(p(" "))
-    tags$a(href = "https://stats.stackexchange.com/questions/27869/fitting-a-poisson-glm-mixed-model-with-a-random-slope-and-intercept",target="_blank",
-           tags$span(style="color:blue", "[2] Mixed model Poisson"),)
-    div(p(" "))
+    # tags$a(href = "https://stats.stackexchange.com/questions/27869/fitting-a-poisson-glm-mixed-model-with-a-random-slope-and-intercept",target="_blank",
+    #        tags$span(style="color:blue", "[2] Mixed model Poisson"),)
+    # div(p(" "))
     
     div(p(" "))
   tags$hr()                        
