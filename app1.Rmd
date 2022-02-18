@@ -137,7 +137,9 @@ Column {.sidebar}
   
     selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
 
-  
+  # actionButton("reset",   "Refresh")
+      actionButton("resample",   "resample")
+
   
   # sliderInput('x_range', 'Plot x-range', value = c(0,10),
   #         min = 0, max = 80,step=5,ticks=F)
@@ -164,10 +166,23 @@ Column {data-width=400, height=75}
 
 ```{r tab1 plot1}
 
+# 
+  # observeEvent(input$reset, {
+  #    refresh()
+  #  })
+
+# this reloads the app not what I want
+ # observeEvent(input$reset,{
+ #      session$reload()
+ #       return()
+ #    })
  
-  r1 <- reactive({
- 
-    
+   # --------------------------------------------------------------------------
+    # This is where a new sample is instigated only random noise is required to be generated
+    random.sample <- reactive({
+    #     # Dummy line to trigger off button-press
+         foo <- input$resample
+         
     L1 <-     input$mu0
     L2 <-     input$mu0+input$eff.p
     r  <-     input$r
@@ -186,9 +201,43 @@ Column {data-width=400, height=75}
 
     U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
     
-    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal
-    pp2 <- qnorm(U[, 2], L2, sd.)      # correlated normal
+    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
+    pp2 <- qnorm(U[, 2], L2, sd.) 
+    #     
+         return(list(pp1=pp1, pp2=pp2))
+     })
+   
+    # --------------------------------------------------------------------------
 
+
+  r1 <- reactive({
+ 
+    sample <- random.sample()
+    
+#    L1 <-     input$mu0
+#     L2 <-     input$mu0+input$eff.p
+    r  <-     input$r
+     n <-      input$n
+     sd. <-    sample$sd.
+#     
+#  
+# # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
+# # Sample correlated N(0, 1) distributions from a multivariate normal distribution.
+# # Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
+# # Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
+# 
+#     Sigma <- matrix(c(1, r, r, 1), 2, 2)
+# 
+#     px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
+# 
+#     U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
+#     
+#     pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
+#     pp2 <- qnorm(U[, 2], L2, sd.) 
+     
+     pp1 <- sample$pp1     # correlated normal  
+     pp2 <- sample$pp2 
+    
     cor. <- cor(pp1, pp2)              # capture correlation
  
     # create a data frame
@@ -524,7 +573,7 @@ L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
            diflim=c(-L,L), 
            xaxs="i", yaxs="i",
            las=1, eqn=TRUE,  pl.type=input$Pl.type, sd.type=input$SD.type, dif.type = input$Dif.type, # cons is simulatied
-           grid=1:9*10, digits=3,font.eqn=1  , eqax=F)
+           grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
 
 })
 
@@ -603,7 +652,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 Column {data-width=400, height=300}
 -----------------------------------------------------------------------
 
-### abc
+### Constant SD assumption
 
 ```{r, gp barplots, eval=TRUE}
 
@@ -715,7 +764,8 @@ con.sd <- r2()$con.sd
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("1 regressing the differences on the averages and then regressing the absolute residuals from this on the averages, p=", con.sd),
+    labs(title = paste0("1 regressing the differences on the averages and then regressing the absolute residuals from this on the averages.
+                        Testing hypothesis slope=0, p=", con.sd),
          x = "Averages",
          y = "Absolute residuals")
    
@@ -732,7 +782,7 @@ con.sd <- r2()$con.sd
 
 ``` 
 
-### xxxxxxxxxxxxxx
+### Constant difference assumption
 
 
 ```{r nb barplots, eval=TRUE}
@@ -751,7 +801,8 @@ con.diff <- r2()$con.diff
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("Regression of differences on averages, p=", con.diff),
+    labs(title = paste0("Regression of differences on averages.
+                        Testing hypothesis slope=0, p=", con.diff),
          x = "Averages",
          y = "After - before")
    
