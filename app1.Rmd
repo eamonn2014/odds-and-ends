@@ -39,6 +39,8 @@ tab 1
   # function to format decimals
   # https://stackoverflow.com/questions/3245862/format-numbers-to-significant-figures-nicely-in-r
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  p3 <- function(x) {formatC(x, format="f", digits=3)}
+  
   formatz <- function(x){
     
     if (!is.na(x)  ) {
@@ -938,10 +940,9 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
       textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))), value= "100")
       textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD)"))), value= "50")
       textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))), value= "60")
-      textInput("v2", div(h5(tags$span(style="color:blue", "Confidence Level"))), value= ".90")
-      textInput("v3", div(h5(tags$span(style="color:blue", "QC Level"))), value= "0.85")
-
- 
+      textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))), value= ".90")
+      textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))), value= "0.85")
+      textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
 
                                     
                                     
@@ -958,33 +959,67 @@ Row {data- height=650}
 
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # random.sample <- reactive({
-  #   
-  #   foo <- input$resample
-  #   
-  #   #n <- as.numeric(input$n )
-  #   
-  #   # writing like this I can write log and fraction into input boxes!
-  #   v1 <- as.numeric(    eval(parse(text= (input$v1)) ) )
-  #   v2 <- as.numeric(    eval(parse(text= (input$v2)) ) )
-  #   v3 <- as.numeric(    eval(parse(text= (input$v3)) ) )    
-  #    
-  #   
-  #   check =c(v1 , v2 , v3   )
-  #   
-  #   return(list(
-  #     v1=v1, v2=v2, v3=v3 
-  #     
-  #   ))
-  # })
-  
+  random.sample2 <- reactive({
+
+    foo <- input$resample
+
+    #n <- as.numeric(input$n )
+
+    # writing like this I can write log and fraction into input boxes!
+    mux  <- as.numeric(    eval(parse(text= (input$v1)) ) )
+    a    <- as.numeric(    eval(parse(text= (input$v2)) ) )
+    n    <- as.numeric(    eval(parse(text= (input$v3)) ) )
+    conf <- as.numeric(    eval(parse(text= (input$v4)) ) )
+    qc   <- as.numeric(    eval(parse(text= (input$v5)) ) )
+    zx   <- as.numeric(    eval(parse(text= (input$v6)) ) )
+    #normal_to_lognormal(normmean = mux, normsd = a)
+    
+    v <- a^2
+    m <- mux
+    
+    phi = sqrt(v + m^2);
+    mu    = log(m^2/phi)          # mean of log(Y)     
+    sigma = sqrt(log(phi^2/m^2))   # std dev of log(Y)  
+      
+    # feed normal distirbution parameters into this function:
+    zz <- power.t.test(n=n, delta =log(zx), sd=sigma, sig.level=0.05,
+                      # power=pow,
+                       type="two.sample", alternative=c("two.sided"))
+    
+     
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # this duplicates my code
+    #lognormal_to_normal(meanlog=mu, sdlog=sigma)
+    
+    v <- sigma^2
+    logN.mu <- exp(mu+0.5* v)
+    logN.SD <- logN.mu*sqrt(exp(v)-1)
+    
+    #------------------------------------------------------------------------------
+    
+    N <- ceiling(zz$n)
+    sd    <- sigma
+    delta <- log(zx)
+    
+    A <- lapply(1:N, function(i) rlnorm(1, meanlog=mu,       sdlog=sd))
+    B <- lapply(1:N, function(i) rlnorm(1, meanlog=mu+delta, sdlog=sd))
+    
+    A <- unlist(A)
+    B <- unlist(B)
+    
+    A.GM <- exp(mean(log(A)))
+    B.GM <- exp(mean(log(B)))
+    
+    #------------------------------------------------------------------------------
+        return(list(
+          
+         mu=mu, sd=sd, zz=zz, logN.mu=logN.mu, logN.SD=logN.SD, delta=delta, A.GM=A.GM, B.GM=B.GM, zx=zx, A=A, B=B, N=N,
+         mux=mux
+    
+        ))
+      })
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-
-
-
 
 
 
@@ -1016,7 +1051,81 @@ Row {data-height=700}
 
 ```{r power typical barplot}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+renderPlot({
+  
+  
+  N <-  random.sample2()$N
+  mu <-  random.sample2()$mu
+  mux <-  random.sample2()$mux
+  logN.mu <-  random.sample2()$logN.mu
+  logN.SD<-  random.sample2()$logN.SD
+  zx<-  random.sample2()$zx
+  sd<-  random.sample2()$sd
+ 
+  A<-  random.sample2()$A
+  B<-  random.sample2()$B#
+  A.GM<-  random.sample2()$A.GM
+  B.GM<-  random.sample2()$B.GM
+ 
+  delta <-  random.sample2()$delta
+ 
+  
+  
+  
+  
+par(mfrow=c(2,2))
+
+x<-seq(-8+mu,+8+mu,by=0.02)
+
+br <- ifelse(N<100, N, 100) # breaks in histogram
+
+#~~~~~~~~~~~~~~~~~~~
+MASS::truehist(A, 
+              yaxt='n' ,
+              nbins=br,  axes=FALSE,
+               main=paste0("N=",N," realisations from log-normal m\nu=",p3(logN.mu),", SD=",p3(logN.SD),
+                           ",\n Geo.Mean=",p3(A.GM)), col = "#75AADB", 
+              border = "white", xlab="Original scale")
+
+curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)
+Axis(side=1, labels=TRUE)
+Axis(side=2, labels=FALSE)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MASS::truehist(B, 
+                yaxt='n' ,
+                nbins=br,  axes=FALSE,
+               main=paste0("N=",N," realisations true log-normal \nmu=",mux*zx,", SD=", p3(logN.SD),
+                           ", \nGeo.Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
+               col = "red", border = "white", xlab="Original scale")
+ 
+curve(dlnorm(x, meanlog = mu+delta, sdlog =sd, log = FALSE), add=TRUE)
+Axis(side=1, labels=TRUE)
+Axis(side=2, labels=FALSE)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MASS::truehist(log(A), yaxt='n' , nbins=br,  axes=FALSE,
+               main=paste0("N=",N," realisations true Normal \nmu=",p3(mu),", SD=",
+                           p3(sd),""), col = "#75AADB", border = "white",  xlab="log scale")
+curve(dnorm(x,mu,sd), add=TRUE)
+Axis(side=1, labels=TRUE)
+Axis(side=2, labels=FALSE)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MASS::truehist(log(B), yaxt='n' , nbins=br, axes=FALSE, 
+               main=paste0("N=",N," realisations true Normal \nmu=",p3(mu+delta),
+                           ", SD=",p3(sd)," \nTreatment effect ", p3(mu+delta)," - ",p3(mu),"=",
+                           p3(log(zx))), col = "red", border = "white", xlab="log scale" )
+curve(dnorm(x,mu+delta,sd), add=TRUE)
+Axis(side=1, labels=TRUE)
+Axis(side=2, labels=FALSE)
+
+par(mfrow=c(1,1))
+
+
+
+
+})
 
  
 
