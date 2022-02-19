@@ -730,11 +730,11 @@ renderPlot({
   p <- w %>%
     ggplot(aes(x = x, y = y) ) +
     geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
-    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="lightgreen") +
+    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="cornflowerblue") +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$y))+
     
      labs(title = 
-    paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
+    paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff)),
          x = "Averages",
          y = "After - before") +
 
@@ -749,8 +749,6 @@ renderPlot({
 
 })
 
-
-  
 
 ```
 
@@ -779,10 +777,10 @@ w <- r2()$w
   
 p1 <-  ggplot(w, aes(x=x, y=r))+
     geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
-    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="lightgreen") +
+    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="cornflowerblue") +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages. Testing hypothesis slope=0, p=", formatz3(con.sd)),
          x = "Averages",
          y = "Absolute residuals") +
     
@@ -801,12 +799,54 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 
 ```
 
-### xxxxxxxxxxxxxxxxx
+### histogram of diffferences
   
 
 ```{r diagnostics3, eval=TRUE}
  
+# https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
+ 
+# calculate mean and sd by group
+# stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
+ 
+ 
+renderPlot({
+  
+w <- r2()$w
 
+df <- w
+
+ggplot(df, aes(y)) +        # Draw histogram with density
+  geom_histogram(aes(y = ..density..),
+                 colour = "white", fill = "cornflowerblue", size = 0.1) +
+  stat_function(fun = dnorm,
+                args = list(mean = mean(df$y),
+                            sd = sd(df$y)),
+                col = "black",
+                size = 1.5) +
+      theme_bw()
+
+  
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 ```
 
