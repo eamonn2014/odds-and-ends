@@ -23,6 +23,7 @@ tab 1
   library(ggplot2)
   library(gridExtra)
     library(ggpubr)
+  library(ggExtra)
   #library(lme4)
   library(shiny)
   library(utf8)      # codes for Greek letters
@@ -132,7 +133,12 @@ Column {.sidebar}
   selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
   
   selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
+  
+  # shinyWidgets::sliderTextInput("Mu","Mu",
+  #                           choices=c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6),
+  #                           selected=4000, grid = T)
 #
+  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
    actionButton("resample",   "Hit to simulate a new sample")
@@ -385,6 +391,9 @@ output$text4 <- renderText({  # create interactive text t1
  })
   # --------------------------------------------------------------------------
  
+
+
+
 ``` 
 
 
@@ -526,6 +535,7 @@ tab3
 
 ```{r gammapoisson}
 
+                                
     # sliderInput('N.pg', 'Patients per arm', value=1000,
     #               min = 1000, max = 100000, step=5, ticks=F)
     # 
@@ -741,7 +751,8 @@ renderPlot({
     
     theme_bw(base_size = 12)
   
-  print(p)
+#  print(p)
+    ggMarginal(p, type = "histogram", bins = 50)
 
 })
 
@@ -787,7 +798,10 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
     
     theme_bw(base_size = 12)
 
-  print(p1)
+ # print(p1)
+  
+  ggMarginal(p1, type = "histogram", bins = 50)
+
    
   
 })
@@ -795,7 +809,7 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 
 ```
 
-### histogram of diffferences
+### histogram of differences
   
 
 ```{r diagnostics3, eval=TRUE}
@@ -891,32 +905,47 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 ```{r, main power tab2}
  
-    sliderInput('N', 'Patients per arm', value=174,
-                  min = 10, max = 1000, step=5, ticks=F)
-
-    sliderInput('mu0', 'Placebo event rate \u03BC per patient yr of follow up', value=1.5,
-                  min = 0.1, max = 25, step=.05, ticks=F)
-
-    sliderInput('eff', 'Hypothesised treatment effect ', value=.6, 
-                  min = 0.1, max =5, step=.01, ticks=F)
-
-    sliderInput('k', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 , #c(10/13),
-                  min = 0, max = 5 ,step=0.1, ticks=F)
-
-    sliderInput('d1', 'Placebo discontinuation prob', value = c(0),
-                  min = 0, max = .5 ,step=0.05, ticks=F)
-
-    sliderInput('d2', 'Treatment discontinuation prob', value = c(0),
-                  min = 0, max = .5 ,step=0.05, ticks=F)
-
-    sliderInput('fup', 'Follow up (yrs)', value = c(1),
-            min = 1, max = 10, step=1,ticks=F)
-
-    sliderInput('sims2', 'Power simulations', value= 500,
-                  min = 500, max = 10000, step= 500, ticks=F)
+    # sliderInput('N', 'Patients per arm', value=174,
+    #               min = 10, max = 1000, step=5, ticks=F)
+    # 
+    # sliderInput('mu0', 'Placebo event rate \u03BC per patient yr of follow up', value=1.5,
+    #               min = 0.1, max = 25, step=.05, ticks=F)
+    # 
+    # sliderInput('eff', 'Hypothesised treatment effect ', value=.6, 
+    #               min = 0.1, max =5, step=.01, ticks=F)
+    # 
+    # sliderInput('k', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 , #c(10/13),
+    #               min = 0, max = 5 ,step=0.1, ticks=F)
+    # 
+    # sliderInput('d1', 'Placebo discontinuation prob', value = c(0),
+    #               min = 0, max = .5 ,step=0.05, ticks=F)
+    # 
+    # sliderInput('d2', 'Treatment discontinuation prob', value = c(0),
+    #               min = 0, max = .5 ,step=0.05, ticks=F)
+    # 
+    # sliderInput('fup', 'Follow up (yrs)', value = c(1),
+    #         min = 1, max = 10, step=1,ticks=F)
+    # 
+    # sliderInput('sims2', 'Power simulations', value= 500,
+    #               min = 500, max = 10000, step= 500, ticks=F)
+    # 
+    # checkboxInput('perc1','show stats on barplot', value = TRUE)
+    # 
     
-    checkboxInput('perc1','show stats on barplot', value = TRUE)
+ div(h5(tags$span(style="color:blue", "Enter True Population values:")))
+                                  
+                               
+      textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))), value= "100")
+      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD)"))), value= "50")
+      textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))), value= "60")
+      textInput("v2", div(h5(tags$span(style="color:blue", "Confidence Level"))), value= ".90")
+      textInput("v3", div(h5(tags$span(style="color:blue", "QC Level"))), value= "0.85")
 
+ 
+
+                                    
+                                    
+                                    
 
 ```
 
@@ -925,6 +954,49 @@ Row {data- height=650}
 ### xxxxxxxxxxxxxxxxxxxxxxxxxxxx
   
 ```{r text power, eval=TRUE}
+
+
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # random.sample <- reactive({
+  #   
+  #   foo <- input$resample
+  #   
+  #   #n <- as.numeric(input$n )
+  #   
+  #   # writing like this I can write log and fraction into input boxes!
+  #   v1 <- as.numeric(    eval(parse(text= (input$v1)) ) )
+  #   v2 <- as.numeric(    eval(parse(text= (input$v2)) ) )
+  #   v3 <- as.numeric(    eval(parse(text= (input$v3)) ) )    
+  #    
+  #   
+  #   check =c(v1 , v2 , v3   )
+  #   
+  #   return(list(
+  #     v1=v1, v2=v2, v3=v3 
+  #     
+  #   ))
+  # })
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
