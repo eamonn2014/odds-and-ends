@@ -671,10 +671,6 @@ con.sd <- r2()$con.sd
   
 })
 
-
-
-
-
  
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -824,8 +820,10 @@ ggplot(df, aes(y)) +        # Draw histogram with density
                             sd = sd(df$y)),
                 col = "black",
                 size = 1.5) +
-      theme_bw()
-
+      theme_bw() +
+  
+  annotate("text", x=min(df$y), y=.8, label= paste0("Mean = ", formatz3(mean(df$y))," SD = ", formatz3(sd(df$y))))  
+ 
   
 
 })
