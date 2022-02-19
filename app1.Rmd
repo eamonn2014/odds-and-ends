@@ -714,32 +714,38 @@ con.diff <- r2()$con.diff
 Column {.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
-### xxxxxxxxxxxxxx
+### ads res
   
 
 ```{r diagnostics1, eval=TRUE}
+
 renderPlot({
   
-w <- r2()$w
-con.diff <- r2()$con.diff
-
-
-(mod1 <- lm(y ~ x, data = w) )
-w$pred = predict(mod1 )  
-
-p <- w %>%
-  ggplot(aes(x = x, y = y) ) +
-  geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
-  geom_smooth(method = "lm", colour = "black") +
+  w <- r2()$w
+  con.diff <- r2()$con.diff
   
-  geom_segment(
-    aes(xend = x, yend = pred),
-    size = 0.5, alpha = 0.5, lineend = "round", col="pink"
-  ) +
+  mod1 <- lm(y ~ x, data = w) 
+  w$pred = predict(mod1)  
   
-  theme_bw(base_size = 12)
+  p <- w %>%
+    ggplot(aes(x = x, y = y) ) +
+    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="purple") +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$y))+
+    
+     labs(title = 
+    paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
+         x = "Averages",
+         y = "After - before") +
 
-print(p)
+    geom_segment(
+      aes(xend = x, yend = pred),
+      size = 0.5, alpha = 0.5, lineend = "round", col="pink"
+    ) +
+    
+    theme_bw(base_size = 12)
+  
+  print(p)
 
 })
 
@@ -753,6 +759,43 @@ print(p)
  
 ```{r diagnostics2}
 
+# x averages
+# y differences
+# r abs residuals
+
+renderPlot({
+  
+w <- r2()$w
+
+  con.sd <- r2()$con.sd
+  
+  f <- summary(lm(y~x, w))
+  w$r <- abs(residuals(f) ) 
+  mod1 <- lm(r ~ x , data = w) 
+  w$pred = predict(mod1) # pred and fitted no dif on linear model
+  w$pred = fitted(mod1) 
+  
+  
+p1 <-  ggplot(w, aes(x=x, y=r))+
+    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="purple") +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
+         x = "Averages",
+         y = "Absolute residuals") +
+    
+    geom_segment(
+      aes(xend = x, yend = pred),   ## trying to join to reg line
+      size = 0.5, alpha = 0.3, lineend = "round", col="pink"
+    ) +
+    
+    theme_bw(base_size = 12)
+
+  print(p1)
+   
+  
+})
   
 
 ```
