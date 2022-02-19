@@ -520,32 +520,32 @@ tab2 $\alpha$
 tab3
 ====
 
-Column {.sidebar}
------------------------------------------------------------------------
+<!-- Column {.sidebar} -->
+<!-- ----------------------------------------------------------------------- -->
 
 
 ```{r gammapoisson}
 
-    sliderInput('N.pg', 'Patients per arm', value=1000,
-                  min = 1000, max = 100000, step=5, ticks=F)
-    
-    sliderInput('mu0.pg', 'Placebo event rate \u03BC per patient yr of follow up', value=1,
-                  min = 0.1, max = 25, step=.05, ticks=F)
-    
-    sliderInput('eff.pg', 'Hypothesised treatment effect ', value=.75,  # 1/2 ing to doubling
-                  min = 0.5, max = 2, step=.05, ticks=F)
-  
-    sliderInput('k.pg', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 ,  
-                  min = 0, max = 5 ,step=0.01, ticks=F)
-    
-    sliderInput('d1.pg', 'Placebo discontinuation prob', value = c(0.1),
-                  min = 0, max = .5 ,step=0.05, ticks=F)
-    
-    sliderInput('d2.pg', 'Treatment discontinuation prob', value = c(0.1),
-                  min = 0, max = .5 ,step=0.05, ticks=F)
-  
-    sliderInput('fup.pg', 'Follow up (yrs)', value = c(1),
-            min = 1, max = 10, step=1,ticks=F)
+    # sliderInput('N.pg', 'Patients per arm', value=1000,
+    #               min = 1000, max = 100000, step=5, ticks=F)
+    # 
+    # sliderInput('mu0.pg', 'Placebo event rate \u03BC per patient yr of follow up', value=1,
+    #               min = 0.1, max = 25, step=.05, ticks=F)
+    # 
+    # sliderInput('eff.pg', 'Hypothesised treatment effect ', value=.75,  # 1/2 ing to doubling
+    #               min = 0.5, max = 2, step=.05, ticks=F)
+    # 
+    # sliderInput('k.pg', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 ,  
+    #               min = 0, max = 5 ,step=0.01, ticks=F)
+    # 
+    # sliderInput('d1.pg', 'Placebo discontinuation prob', value = c(0.1),
+    #               min = 0, max = .5 ,step=0.05, ticks=F)
+    # 
+    # sliderInput('d2.pg', 'Treatment discontinuation prob', value = c(0.1),
+    #               min = 0, max = .5 ,step=0.05, ticks=F)
+    # 
+    # sliderInput('fup.pg', 'Follow up (yrs)', value = c(1),
+    #         min = 1, max = 10, step=1,ticks=F)
 
 ```
 
@@ -805,7 +805,7 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 # calculate mean and sd by group
 # stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
  
-  
+
 renderPlot({
   
 w <- r2()$w
@@ -818,17 +818,17 @@ colz <-  c("black", "red")
 
 xv <- argz1[2]+1.2
 
- p <- ggplot(df, aes(y)) +        # Draw histogram with density
+ p <- ggplot(df, aes(y)) +      
   
   geom_histogram(aes(y = ..density..),
                  colour = "white", fill = "cornflowerblue", size = 0.1) +
  
    theme_bw() +
   
-  annotate("text",  x=xv, y=.8, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ", formatz3(sd(df$y)), " (black)"))  +
-  annotate("text",  x=xv, y=.7, label= paste0("True Mean difference = ", formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
+  annotate("text",  x=xv, y=.8, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ",          formatz3(sd(df$y)), " (black)"))  +
+  annotate("text",  x=xv, y=.7, label= paste0("True Mean difference = ",      formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
   
-
+# https://stackoverflow.com/questions/2237600/how-can-i-plot-multiple-functions-in-r
  for(i in 1:2)
     p <- p +  stat_function(fun = dnorm,
                 args = list( mean = argz1[i], sd = argz2[i] ),
