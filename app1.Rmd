@@ -1044,8 +1044,10 @@ cat(paste0("xxxxxxxxxxxxxxx"))
 
 ```
  
-Row {data-height=700}
--------------------------------------
+
+   
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
    
 ### xxxxxxxxxxxxxxxxxx
 
@@ -1128,11 +1130,30 @@ par(mfrow=c(1,1))
 })
 
  
+```
+
+
+### tabz
+  
+
+```{r pairyed boxplot, eval=TRUE}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   
+
+```
+
+### taby
+
+```{r BApylot}
+
+  
+
 
  
 ```   
- 
-   
+
 ### xxxxxxxxxxxxxxxxxxxx 1/$\alpha$
 
 ```{r power typ output}
