@@ -1011,8 +1011,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     #------------------------------------------------------------------------------
         return(list(
           
-         mu=mu, sd=sd, zz=zz, logN.mu=logN.mu, logN.SD=logN.SD, delta=delta, A.GM=A.GM, B.GM=B.GM, zx=zx, A=A, B=B, N=N,
-         mux=mux
+         mu=mu, sd=sd, zz=zz, logN.mu=logN.mu, logN.SD=logN.SD, delta=delta, A.GM=A.GM, B.GM=B.GM, zx=zx, A=A, B=B, N=N, conf=conf, qc=qc,  mux=mux
     
         ))
       })
@@ -1111,6 +1110,91 @@ Column {data-width=400}
 -------------------------------------
 
 ### tabz
+  
+```{r}  
+  
+  renderPlot({
+  
+    
+  N <-  random.sample2()$N
+  mu <-  random.sample2()$mu
+  mux <-  random.sample2()$mux
+  logN.mu <-  random.sample2()$logN.mu
+  logN.SD<-  random.sample2()$logN.SD
+  zx<-  random.sample2()$zx
+  sd<-  random.sample2()$sd
+ 
+  A<-  random.sample2()$A
+  B<-  random.sample2()$B#
+  A.GM<-  random.sample2()$A.GM
+  B.GM<-  random.sample2()$B.GM
+ # conf <-  random.sample2()$conf
+
+ 
+  delta <-  random.sample2()$delta
+ 
+conf    <- random.sample2()$conf
+qclevel <- random.sample2()$qc
+
+d <- data.frame(x =c(rep( "A" , N), rep( "B" , N)), y=c(A,B))
+
+res <- t.test(log(d$y)~d$x, var.equal = TRUE, conf.level=conf) # t test
+
+ci <- exp(-res$conf.int)
+hi <- round(ci[1],3)
+lo <- round(ci[2],3)
+
+qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS spec. of ", qclevel), paste0("FAIL spec. of ", qclevel))
+GmeanR <- round(exp(res$estimate[1]),3) # geometric means
+GmeanT <- round(exp(res$estimate[2]),3) # geometric means
+
+# %CV get the sd of the logged data and exponenitate
+cv1 <-exp(tapply(log(d$y), d$x, sd))
+GmeanRcv <-  round((((cv1[1])-1)*100),3)
+GmeanTcv <-  round((((cv1[2])-1)*100),3)
+
+ratio. <- exp( (res$estimate)[2] - (res$estimate)[1])
+ratio. <- round(ratio.,3)
+ 
+ 
+
+# run a ggplot 
+d$Y <-  (d$y)  # choose response
+
+gx <- ggplot(d, aes(x=x, y=Y)) +
+  geom_point(aes(fill=x), size=3, shape=21, colour="grey20",
+             position =position_jitter(width=.22, height=0))+
+  geom_boxplot(outlier.colour=NA, fill=NA,colour="grey20") +
+  
+  labs(title=paste0("QC=", qc)) + xlab("") + ylab("score") +
+  labs(subtitle = 
+         paste0("Geometric mean A=" ,GmeanR,"; %CV=",GmeanRcv,
+                "\nGeometric mean B=" ,GmeanT,"; %CV=",GmeanTcv,
+                "\nRatio B/A " ,ratio.,", ",conf*100,"%CI (",lo,", ",hi,")")) +
+  
+  annotate("text", x=0.5, y=max(d$y), label=paste0("n=", table(d$x)[1][[1]])) +
+  annotate("text", x=1.5, y=max(d$y), label=paste0("n=", table(d$x)[2][[1]]))    +
+  theme(legend.position="none") +
+  guides(fill="none") +
+  theme_bw() 
+ 
+  
+  
+print(gx)
+  
+  
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+```
+  
+  
   
 
 ```{r pairyed boxplot, eval=TRUE}
