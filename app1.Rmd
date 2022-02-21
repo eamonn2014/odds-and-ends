@@ -1297,36 +1297,96 @@ ratio. <- round(ratio.,3)
     
   })
   
- 
 ``` 
-
-
 
 
 tab 5
 ====
-
+  
 Column {.sidebar}
 -----------------------------------------------------------------------
+  
+  
 
+**xxxxxxxxxxxxxxxx**
 
-```{r power canned}
+ 
+```{r}
+
+ 
+ 
+  sliderInput('nx', 'n pairs of data', value=100,
+                min = 5, max = 1000, step=5, ticks=F)
+
+  sliderInput('mu0x', 'Initial mean  \u03BC', value=0,
+                min = -100, max = 100, step=5, ticks=F)
   
  
+  sliderInput('eff.px', 'Effect of treatment', value = c(0),
+                min = -25, max = 25 ,step=1, ticks=F)
+  
+   sliderInput('rx', 'Correlation', value = c(.8),
+                min = -.9, max = .9, step=0.05, ticks=F)
+     
+  sliderInput('sd.x', 'Common SD', 1,
+                min = 1, max = 100, step=1,ticks=F)
+  
+  selectInput("SD.typex", "Select SD type", choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Dif.typex", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Pl.typex", "Select difference type", choices = c("BA", "conv"), selected="BA")
+  
+  # shinyWidgets::sliderTextInput("Mu","Mu",
+  #                           choices=c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6),
+  #                           selected=4000, grid = T)
+#
+  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # orange button
+   actionButton("resamplex",   "Hit to simulate a new sample")
+      
+   #  tags$head(
+   tags$style(HTML('#resamplex{background-color:orange}'))
+   # )
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
+
+
+
+
+
+
 ```
 
-Row {data-height=600}
+
+Column {data-width=400, height=75}
 -----------------------------------------------------------------------
-
-### **xxxxxxxxxxxxxxx $\\alpha$.**
-
-```{r power canned result, eval=TRUE}
+  
+### xxxxxxxxxxxxxxxxxx
+  
+```{r left}
 
  
+
+```
+
+Column {data-width=400}
+-------------------------------------
+  
+### tabz
+  
+```{r right}  
 
  
 ```
+### tabz
+
+```{r right2}
+
+
+
+``` 
 
 tab 6
 ====
@@ -1419,7 +1479,12 @@ Wiki
 ====
  
 xxxxxxxxxxxxxxxxxxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxxxxxxxxx
-
+lines from residials, pi/2 explanation
+vickers code
+gelmans book residuals
+replicates
+drop some reps
+bioequivalence 4 group pool and ratio?
 **xxxxxxxxxxxxxxxxxxxxxxx**
 
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  
