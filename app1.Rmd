@@ -1313,36 +1313,24 @@ Column {.sidebar}
  
 ```{r}
 
+       sliderInput("range1", 
+                   "Select group sizes: randomly select using range or uniquely select:", 
+                    min = 2, max = 50, value = c(25, 25), ticks=FALSE) 
+                            
+      sliderInput("range2", 
+                  "Select lognormal baseline group mean",  
+                  min = 0.5, max = 40000, value = c(400),ticks=FALSE)
+                            
+      sliderInput("range3", 
+    "Select true group standard deviations: randomly select using range or uniquely select", 
+                  min = 20, max = 10000, value = c(1000, 1000), ticks=FALSE) 
+      
+      
+      textInput("pr1", div(h5(tags$span(style="color:blue", "Prop Chg"))), value= "0.90")
+      textInput("pr2", div(h5(tags$span(style="color:blue", "Prop Chg"))), value= "0.90")
+      textInput("pr3", div(h5(tags$span(style="color:blue", "Prop Chg"))), value= "1.00")
  
- 
-  sliderInput('nx', 'n pairs of data', value=100,
-                min = 5, max = 1000, step=5, ticks=F)
-
-  sliderInput('mu0x', 'Initial mean  \u03BC', value=0,
-                min = -100, max = 100, step=5, ticks=F)
-  
- 
-  sliderInput('eff.px', 'Effect of treatment', value = c(0),
-                min = -25, max = 25 ,step=1, ticks=F)
-  
-   sliderInput('rx', 'Correlation', value = c(.8),
-                min = -.9, max = .9, step=0.05, ticks=F)
-     
-  sliderInput('sd.x', 'Common SD', 1,
-                min = 1, max = 100, step=1,ticks=F)
-  
-  selectInput("SD.typex", "Select SD type", choices = c("cons", "lin"), selected="cons")
-  
-  selectInput("Dif.typex", "Select difference type", choices = c("cons", "lin"), selected="cons")
-  
-  selectInput("Pl.typex", "Select difference type", choices = c("BA", "conv"), selected="BA")
-  
-  # shinyWidgets::sliderTextInput("Mu","Mu",
-  #                           choices=c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6),
-  #                           selected=4000, grid = T)
-#
-  
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
    actionButton("resamplex",   "Hit to simulate a new sample")
       
@@ -1365,7 +1353,148 @@ Column {data-width=400, height=75}
   
 ### xxxxxxxxxxxxxxxxxx
   
-```{r left}
+```{r top}
+
+random.sample2 <- reactive({
+        
+        # Dummy line to trigger off button-press
+        foo <- input$resample
+        
+        x1 <- input$range1[1]  #size
+        x2 <- input$range1[2]
+        x3 <- input$range2[1]  #mean
+        x5 <- input$range3[1]  #sd
+        x6 <- input$range3[2]
+        
+    zx1    <- as.numeric(    eval(parse(text= (input$zx1)) ) )
+    zx2    <- as.numeric(    eval(parse(text= (input$zx2)) ) )
+    zx3    <- as.numeric(    eval(parse(text= (input$zx3)) ) )
+        
+        
+         delta1 <- log(zx1)
+ delta2 <- log(zx2)
+ delta3 <- log(zx3)
+   
+         x1 <-   25
+        x2 <-  25
+        x3 <-  200
+        x5 <- 400
+        x6 <-  5000
+        
+    zx1    <-  .8
+    zx2    <-  .8
+    zx3    <-  .8
+        
+        
+         delta1 <- log(zx1)
+ delta2 <- log(zx2)
+ delta3 <- log(zx3)
+   
+        
+        top <-  4  # number of groups
+
+# seems that I need to use both c(x1,x2) c(x1:x2) so sample function works correctly
+
+if (x1==x2) {
+  
+  middle <-  sample(c(x1,x2),   top, replace=TRUE)    # choose top count between sliders 
+  
+} else {
+  
+  middle <-  sample(c(x1:x2),   top, replace=TRUE)    #  
+}
+
+  
+  lower <-   x3# groups means 
+ 
+
+if (x5==x6) {
+  
+  replicates <-  sample(c(x5,x6),  top, replace=TRUE )   #group sds
+  
+} else {
+  
+  replicates <-  sample(c(x5:x6),   top, replace=TRUE )   #grp sds
+  
+}
+
+ 
+ 
+
+
+# i dont like the naming of these functions!!
+# try these functions https://github.com/davidski/collector/blob/main/R/fit_distributions.R
+
+#' Given a set of parameters describing a lognormal distribution, return
+#'   the parameters of the underlying normal distribution.
+
+lognormal_to_normal <- function(meanlog, sdlog) {
+  norm_mean <- exp(meanlog + sdlog^2 / 2)
+  norm_sd <- sqrt( (exp(sdlog^2) - 1) * exp(2*meanlog + sdlog^2))
+  list(mean = norm_mean, sd = norm_sd)
+}
+
+#' normal_to_lognormal(normmean = 20, normsd = 3)
+normal_to_lognormal <- function(normmean=10, normsd=2) {
+  phi <- sqrt(normsd ^ 2 + normmean ^ 2)
+  lognorm_meanlog <- log(normmean ^ 2 / phi)
+  lognorm_sdlog <- sqrt(log(phi ^ 2 / normmean ^ 2))
+  list(meanlog = lognorm_meanlog, sdlog = lognorm_sdlog)
+}
+
+
+temp <- rep(lower, top)
+#-----------------------------------------------------------------------
+
+x<- matrix(data = NA, nrow = 4, ncol = 2, byrow = FALSE,
+            dimnames = NULL)
+ 
+ for( i in 1:4) {
+   x[i,] <- unlist(normal_to_lognormal(normmean=temp[i], normsd=replicates[i]))
+   }
+  
+ # get the sds
+ replicates<-x[,2]  #sds
+ 
+
+ x[1,1] ->mu  # intercept
+ lower <- c(mu, mu+delta1, mu+delta2, mu+delta3)  # true means
+
+#-----------------------
+ 
+  Nj    <- sum(middle)                  # sum each group size 
+  
+  muJ   <- rep(lower, times=rep(middle))      # expand means by group sizes
+  
+  sds   <- rep(replicates, times=rep(middle)) # expand sd by group sizes
+  
+  grpnames <- LETTERS[1:4]
+  
+  IV <- factor( rep( grpnames, times=rep(middle) ) )
+  
+  d <- data.frame(IV=IV,
+                  mu= muJ, 
+                  sd= sds,
+                  x=1
+  )
+  
+  
+  d$DV = rlnorm(d$x, meanlog=d$mu, sdlog = d$sd)  # create the response
+  
+  df <- as.data.frame(d)
+  
+  dd <- plyr::arrange(df, IV)    # sort and create for better order
+  
+  dd$x <- NULL
+
+  
+  return(list(dd=dd, x1=x1))
+
+})
+
+
+
+
 
  
 
@@ -1374,17 +1503,96 @@ Column {data-width=400, height=75}
 Column {data-width=400}
 -------------------------------------
   
-### tabz
+### tabx
   
-```{r right}  
+```{r left1, eval=TRUE}  
+
+ # renderPrint({
+ # 
+ # df <-  random.sample2()$dd
+ # print(df)
+ # #print(x1)
+ # 
+ # })
+
+
+renderPlot({
+  
+   df <-  random.sample2()$dd
+   
+   
+ yy <- ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
+
+    stat_boxplot(geom ='errorbar',width = 0.4) +
+    geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
+    labs(title="Boxplot, dotplot and Standard error of mean for groups", 
+         x = "Groups (sorted)",
+         y = "Response",
+         subtitle ="Blue dots=sample data points, Yellow dot=mean, Red=1 x standard error ",
+         caption = "") +
+    guides(fill="none") +
+    
+    geom_jitter(shape=21, fill="blue", color="darkred", size=3, width= 0.1) +
+     
+    stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
+    stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
+    theme_bw() 
+  
+  print(yy)
+  
+})
+
 
  
 ```
+Column {data-width=400, height=75}
+-----------------------------------------------------------------------
+  
 ### tabz
 
 ```{r right2}
 
-
+renderPlot({
+  
+   d <-  random.sample2()$dd
+   
+   df <-  random.sample2()$dd
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  scalez <- c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6)
+  top <-    min(which( max(d$DV) < scalez))
+  bottom <- max(which( min(d$DV) > scalez))
+  scalez <- scalez[bottom:top]
+  ticks= log(scalez)
+  labs <- exp(ticks)  # exponentiate the labels
+  
+  df$DV <- log(df$DV)
+  
+xx<-  ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
+    
+    stat_boxplot(geom ='errorbar',width = 0.4) +
+    geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
+    labs(title="Boxplot, dotplot and Standard error of mean for groups", 
+         x = "Groups (sorted)",
+         y = "Response",
+         subtitle ="Blue dots=sample data points, Yellow dot=mean, Red=1 x standard error ",
+         caption = "") +
+    guides(fill="none") +
+    
+    scale_y_continuous(
+      
+      limits=c(   ticks[1],  ticks[length(ticks)]  ), 
+      breaks= ticks,    # this is where the values go
+      labels= labs) +   # these are labels
+    
+    geom_jitter(shape=21, fill="blue", color="darkred", size=3, width= 0.1) +
+    
+    stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
+    stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
+    theme_bw() 
+ 
+print(xx)
+})
 
 ``` 
 
