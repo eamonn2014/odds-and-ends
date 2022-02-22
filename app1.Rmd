@@ -1299,15 +1299,12 @@ ratio. <- round(ratio.,3)
   
 ``` 
 
-
 tab 5
 ====
   
 Column {.sidebar}
 -----------------------------------------------------------------------
   
-  
-
 **xxxxxxxxxxxxxxxx**
 
  
@@ -1355,10 +1352,10 @@ Column {data-width=400, height=75}
   
 ```{r top}
 
-random.sample2 <- reactive({
+random.sample3 <- reactive({
         
         # Dummy line to trigger off button-press
-        foo <- input$resamplex
+       foo <- input$resamplex
         
         x1 <- input$range1[1]  #size
         x2 <- input$range1[2]
@@ -1523,7 +1520,7 @@ Column {data-width=400}
 
 renderPlot({
   
-   df <-  random.sample2()$dd
+   df <-  random.sample3()$dd
    
    
  yy <- ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
@@ -1542,8 +1539,7 @@ renderPlot({
     stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
     stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
     theme_bw() 
-  
-  print(yy)
+    print(yy)
   
 })
 
@@ -1559,9 +1555,9 @@ Column {data-width=400, height=75}
 
 renderPlot({
   
-   d <-  random.sample2()$dd
+   d <-  random.sample3()$dd
    
-   df <-  random.sample2()$dd
+   df <-  random.sample3()$dd
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   scalez <- c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6)
@@ -1597,6 +1593,7 @@ xx<-  ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
     theme_bw() 
  
 print(xx)
+
 })
 
 ```  
