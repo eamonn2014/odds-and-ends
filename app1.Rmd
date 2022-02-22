@@ -1437,14 +1437,35 @@ inference <- reactive({
    # ------------------------------------
     
     # lt <- levels(df$IV)
-     qq <-    input$qq
+   qq <-    input$qq
     
-   i <- gsub("^(.*?),.*", "\\1", qq)
-   j <- sub('.*,\\s*', '', qq)
+   i <- gsub("^(.*?),.*", "\\1", qq)  # pull out before comma
+   j <- sub('.*,\\s*', '', qq)        # pull out after comma
     
-    res <- contrast(f, list(IV=i),
-                        list(IV= j), type='average')
-  
+   #-------------------------------------------------
+   if (nchar(i)==1 && nchar(j)==1) {
+     
+              res <- contrast(f, list(IV=i),
+                              
+                                 list(IV= j), 
+                              
+                              type='average')
+    }
+    #-------------------------------------------------
+      if (nchar(i)==1 && nchar(j)==2) {
+     
+              res <- contrast(f, list(IV=i),
+                    
+                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), 
+                    
+                    type='average')
+    }
+    #-------------------------------------------------
+
+   
+   
+   
+   
     res <- res$Contrast[1][[1]]
        # ------------------------------------
 
@@ -1452,16 +1473,16 @@ inference <- reactive({
     
     # Compare each treatment with average of all others
     
-    lt <- levels(df$IV)
+    # lt <- levels(df$IV)
+    # 
+    # for(i in 1 : length(lt)) {
+    #   cat('Comparing with', lt[i], '\n\n')
+    #   print(contrast(f, list(IV=lt[-i]),
+    #                     list(IV=lt[ i]), type='average'))
+    # }
+    # options(datadist=NULL)
     
-    for(i in 1 : length(lt)) {
-      cat('Comparing with', lt[i], '\n\n')
-      print(contrast(f, list(IV=lt[-i]),
-                        list(IV=lt[ i]), type='average'))
-    }
-    options(datadist=NULL)
-    
-   return(list(cc=cc, res ))   
+   return(list(cc=cc, res=res ))   
         
 })
 
