@@ -1,5 +1,5 @@
 ---
-title: "xxxxxxxxxxxxxx" 
+title: "Method Comparison and beyond" 
 author: 
 output: 
   flexdashboard::flex_dashboard:
@@ -9,7 +9,7 @@ output:
     source_code: embed
 runtime: shiny
 ---
-tab 1
+Method Comparison
 ===
 
 
@@ -19,20 +19,17 @@ tab 1
   rm(list=ls())
 
   set.seed(64453)
-  library(MASS)      # for neg binomial analysis and correlated data generation
+  #library(MASS)      # for correlated data generation
   library(ggplot2)
   library(gridExtra)
-    library(ggpubr)
+  library(ggpubr)
   library(ggExtra)
-  #library(lme4)
   library(shiny)
   library(utf8)      # codes for Greek letters
   library(MethComp)
   library(gridExtra)
   library(tidyverse)
-  #library(car)       # diagnostics
-  #library(vcd)       # diagnostics
-  #library(skewsamp)  # power for neg binom
+  library(rms)
   lwd.=3             # used when plotting
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,13 +132,9 @@ Column {.sidebar}
   selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
   
   selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
+ 
   
-  # shinyWidgets::sliderTextInput("Mu","Mu",
-  #                           choices=c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6),
-  #                           selected=4000, grid = T)
-#
-  
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
    actionButton("resample",   "Hit to simulate a new sample")
       
@@ -205,28 +198,11 @@ Column {data-width=400, height=75}
   r1 <- reactive({
  
     sample <- random.sample()
-    
-#    L1 <-     input$mu0
-#     L2 <-     input$mu0+input$eff.p
+     
      r  <-     input$r
      n <-      input$n
      sd. <-    sample$sd.  
-#     
-#  
-# # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
-# # Sample correlated N(0, 1) distributions from a multivariate normal distribution.
-# # Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
-# # Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
-# 
-#     Sigma <- matrix(c(1, r, r, 1), 2, 2)
-# 
-#     px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
-# 
-#     U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
-#     
-#     pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
-#     pp2 <- qnorm(U[, 2], L2, sd.) 
-     
+ 
      pp1 <- sample$pp1     # correlated normal  
      pp2 <- sample$pp2 
     
@@ -352,7 +328,7 @@ output$text3 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " There are no technical replicates ", #),
+    ". By design the SD is constant across the range of values. There are no technical replicates ", #),
     
     
         ".") ))
@@ -392,8 +368,45 @@ output$text4 <- renderText({  # create interactive text t1
 
  })
   # --------------------------------------------------------------------------
- 
 
+# see line 1412
+output$text5 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "contrast ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$res) ,
+   
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " xxxxxxxxxxxxxxxxx ") 
+      
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
+     
+     
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     
+    ", xxxxxxxxxxxxxxxxxxxxxxxxxx ")
+    
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
+    
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    " xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ")
+    
+      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    ". xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ", #),
+    
+    
+        ".") ))
+})
 
 
 ``` 
@@ -416,8 +429,8 @@ renderPlot({
   
   m <- ceiling(max(A,B))
   mL <- floor(min(A,B))
-  before <- A #+ runif(length(A),-.2,.2) # had this jitter for counts but not needed for continuous
-  after <-  B #+ runif(length(B),-.2,.2)
+  before <- A  
+  after <-  B  
   n <- length(before)
   d <- data.frame(y = c(before, after), 
                   x = rep(c(1,2), each=n),
@@ -441,7 +454,7 @@ renderPlot({
   
   BB <- ggplot(d, aes(x, y)) +
     geom_jitter(width = 0.1, height = 0.1, size=2) +
-   #  scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
+   # scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
    # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
     scale_x_continuous( limits=c(mL,m)) +
     scale_y_continuous(  limits=c(mL,m)) +
@@ -508,19 +521,15 @@ renderPlot({
 ```
 
 
-
 tab2 $\alpha$
 ====
 
 ```{r, k or A}
   
 
-  
 ```
 
 ```{r syntax, eval=TRUE, echo=TRUE}
-
- 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # End
@@ -528,7 +537,7 @@ tab2 $\alpha$
 
 ```
  
-tab3
+Diagnostics
 ====
 
 <!-- Column {.sidebar} -->
@@ -573,12 +582,9 @@ Column {data-width=400, height=300}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
  
   r2 <- reactive({
  
-    
     L1 <-     input$mu0
     L2 <-     input$mu0+input$eff.p
     r  <-     input$r
@@ -600,13 +606,10 @@ Column {data-width=400, height=300}
     
     m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
      
-    
- 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # code from my useful code, adjusted slightly
 
   BA <- DA.reg(m, DA.slope = TRUE)
-  BA
 
   a1<-as.data.frame(unlist(BA))
   #DA.slope.p<-a1[14,]
@@ -680,7 +683,6 @@ con.sd <- r2()$con.sd
          x = "Averages",
          y = "Absolute residuals")
    
-  
 })
 
  
@@ -690,7 +692,6 @@ con.sd <- r2()$con.sd
 ``` 
 
 ### Constant difference assumption
-
 
 ```{r nb barplots, eval=TRUE}
 
@@ -709,11 +710,9 @@ con.diff <- r2()$con.diff
     labs(title = paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
          x = "Averages",
          y = "After - before")
-   
-  
+
 })
  
-  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -753,7 +752,6 @@ renderPlot({
     
     theme_bw(base_size = 12)
   
-#  print(p)
     ggMarginal(p, type = "histogram", bins = 50)
 
 })
@@ -762,7 +760,6 @@ renderPlot({
 ```
 
 ###  Constant variance assumption
- 
  
 ```{r diagnostics2}
 
@@ -782,8 +779,7 @@ w <- r2()$w
   
   w$pred = predict(mod1) # pred and fitted no dif with linear model
  # w$pred = fitted(mod1) 
-  
-  
+
 p1 <-  ggplot(w, aes(x=x, y=r))+
     geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
     geom_smooth(method = "lm", colour = "red", se=TRUE, level=.95, fill="#69b3a2") +
@@ -800,12 +796,8 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
     
     theme_bw(base_size = 12)
 
- # print(p1)
-  
   ggMarginal(p1, type = "histogram", bins = 50)
 
-   
-  
 })
   
 
@@ -817,7 +809,6 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 ```{r diagnostics3, eval=TRUE}
  
 # https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
- 
 # calculate mean and sd by group
 # stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
  
@@ -826,13 +817,13 @@ renderPlot({
   
 w <- r2()$w
 
-df <- w
-
-argz1 <- c(   mean(df$y),   input$eff.p  )
-argz2 <- c(   sd(df$y),     sqrt(r1()$true)        )
-colz <-  c("black", "red")
-
-xv <- argz1[2]+1.2
+  df <- w
+  
+  argz1 <- c(   mean(df$y),   input$eff.p)
+  argz2 <- c(   sd(df$y),     sqrt(r1()$true) )
+  colz <-  c("black", "red")
+  
+  xv <- argz1[2]+1.2
 
  p <- ggplot(df, aes(y)) +      
   
@@ -845,31 +836,19 @@ xv <- argz1[2]+1.2
   annotate("text",  x=xv, y=.7, label= paste0("True Mean difference = ",      formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
   
 # https://stackoverflow.com/questions/2237600/how-can-i-plot-multiple-functions-in-r
+ # adding density plots
  for(i in 1:2)
+   
     p <- p +  stat_function(fun = dnorm,
                 args = list( mean = argz1[i], sd = argz2[i] ),
                 col = colz[i],
                 size = 1.5)
-print(p)
- 
- 
+    print(p)
+
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
  
-
 ```
 
 ### xxxxxxxxxxxxxxx 
@@ -897,72 +876,44 @@ print(p)
 ``` 
  
 
-tab 4
+T-test 
 ====
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Here we define the parameters of a lognormal distribution and a proportional change
 
 ```{r, main power tab2}
  
-    # sliderInput('N', 'Patients per arm', value=174,
-    #               min = 10, max = 1000, step=5, ticks=F)
-    # 
-    # sliderInput('mu0', 'Placebo event rate \u03BC per patient yr of follow up', value=1.5,
-    #               min = 0.1, max = 25, step=.05, ticks=F)
-    # 
-    # sliderInput('eff', 'Hypothesised treatment effect ', value=.6, 
-    #               min = 0.1, max =5, step=.01, ticks=F)
-    # 
-    # sliderInput('k', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 , #c(10/13),
-    #               min = 0, max = 5 ,step=0.1, ticks=F)
-    # 
-    # sliderInput('d1', 'Placebo discontinuation prob', value = c(0),
-    #               min = 0, max = .5 ,step=0.05, ticks=F)
-    # 
-    # sliderInput('d2', 'Treatment discontinuation prob', value = c(0),
-    #               min = 0, max = .5 ,step=0.05, ticks=F)
-    # 
-    # sliderInput('fup', 'Follow up (yrs)', value = c(1),
-    #         min = 1, max = 10, step=1,ticks=F)
-    # 
-    # sliderInput('sims2', 'Power simulations', value= 500,
-    #               min = 500, max = 10000, step= 500, ticks=F)
-    # 
-    # checkboxInput('perc1','show stats on barplot', value = TRUE)
-    # 
     
- div(h5(tags$span(style="color:blue", "Enter True Population values:")))
+      div(h5(tags$span(style="color:blue", "Enter True Population values:")))
                                   
-                               
-      textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))), value= "100")
-      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD)"))), value= "50")
-      textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))), value= "60")
-      textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))), value= ".90")
-      textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))), value= "0.85")
+      textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))),     value= "100")
+      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD)"))),      value= "50")
+      textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))),     value= "60")
+      textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))),    value= "0.90")
+      textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))),            value= "0.85")
       textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
-
-                                    
-                                    
-                                    
+       
+# try these means and sds
+# 0.3  0.08
+# 0.19 0.15 
+# 0.42 0.32
+# 0.96 0.1
+# 0.9  0.09
 
 ```
 
 
-  
 ```{r text power, eval=TRUE}
 
 
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   random.sample2 <- reactive({
 
     foo <- input$resample
-
-    #n <- as.numeric(input$n )
-
+    
     # writing like this I can write log and fraction into input boxes!
     mux  <- as.numeric(    eval(parse(text= (input$v1)) ) )
     a    <- as.numeric(    eval(parse(text= (input$v2)) ) )
@@ -1011,7 +962,8 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     #------------------------------------------------------------------------------
         return(list(
           
-         mu=mu, sd=sd, zz=zz, logN.mu=logN.mu, logN.SD=logN.SD, delta=delta, A.GM=A.GM, B.GM=B.GM, zx=zx, A=A, B=B, N=N, conf=conf, qc=qc,  mux=mux
+         mu=mu, sd=sd, zz=zz, logN.mu=logN.mu, logN.SD=logN.SD, 
+         delta=delta, A.GM=A.GM, B.GM=B.GM, zx=zx, A=A, B=B, N=N, conf=conf, qc=qc,  mux=mux
     
         ))
       })
@@ -1053,53 +1005,49 @@ renderPlot({
   
   
   
-par(mfrow=c(2,2))
-
-x<-seq(-8+mu,+8+mu,by=0.02)
-
-br <- ifelse(N<100, N, 100) # breaks in histogram
-
-#~~~~~~~~~~~~~~~~~~~
-MASS::truehist(A, 
-              yaxt='n' ,
-              nbins=br,  axes=FALSE,
-               main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=",p3(logN.SD),", Geometric Mean=",p3(A.GM)), col = "blue", 
-              border = "white", xlab="Original scale")
-
-curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)
-Axis(side=1, labels=TRUE)
-Axis(side=2, labels=FALSE)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-MASS::truehist(log(A), yaxt='n' , nbins=br,  axes=FALSE,
-               main=paste0("A. N=",N," realisations true Normal mu=",p3(mu),", SD=", p3(sd),""), col = "blue", border = "white",  xlab="log scale")
-curve(dnorm(x,mu,sd), add=TRUE)
-Axis(side=1, labels=TRUE)
-Axis(side=2, labels=FALSE)
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-MASS::truehist(B, 
-                yaxt='n' ,
-                nbins=br,  axes=FALSE,
-               main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=", p3(logN.SD),", Geometric Mean=",p3(B.GM) ," Treatment effect ",mux*zx," / ",mux,"=",zx), 
-               col = "orange", border = "white", xlab="Original scale")
- 
-curve(dlnorm(x, meanlog = mu+delta, sdlog =sd, log = FALSE), add=TRUE)
-Axis(side=1, labels=TRUE)
-Axis(side=2, labels=FALSE)
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-MASS::truehist(log(B), yaxt='n' , nbins=br, axes=FALSE, 
-               main=paste0("B. N=",N," realisations true Normal mu=",p3(mu+delta),", SD=",p3(sd)," Treatment effect ", p3(mu+delta)," - ",p3(mu),"=",
-                           p3(log(zx))), col = "orange", border = "white", xlab="log scale" )
-curve(dnorm(x,mu+delta,sd), add=TRUE)
-Axis(side=1, labels=TRUE)
-Axis(side=2, labels=FALSE)
-
-par(mfrow=c(1,1))
-
-
+    par(mfrow=c(2,2))
+    
+    x<-seq(-8+mu,+8+mu,by=0.02) # range of values to plot over
+    
+    br <- ifelse(N<100, N, 100) # bins in histograms
+    
+    #~~~~~~~~~~~~~~~~~~~
+    MASS::truehist(A, 
+                  yaxt='n' ,
+                  nbins=br,  axes=FALSE,
+                   main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=",p3(logN.SD),", Geometric Mean=",p3(A.GM)), col = "blue", 
+                  border = "white", xlab="Original scale")
+    
+    curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)   #adding log normal curve, here the mean and sd of the transformed dist are entered
+    Axis(side=1, labels=TRUE)
+    Axis(side=2, labels=FALSE)
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    MASS::truehist(log(A), yaxt='n' , nbins=br,  axes=FALSE,
+                   main=paste0("A. N=",N," log transformed of left data, theoretical mu=",p3(mu),", SD=", p3(sd),""), col = "blue", border = "white",  xlab="log scale")
+    curve(dnorm(x,mu,sd), add=TRUE)           #adding normal curve, here the mean and sd of the transformed dist are entered, as above, just dist differs
+    Axis(side=1, labels=TRUE)
+    Axis(side=2, labels=FALSE)
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    MASS::truehist(B, 
+                    yaxt='n' ,
+                    nbins=br,  axes=FALSE,
+                   main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=", p3(logN.SD),", Geometric Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
+                   col = "orange", border = "white", xlab="Original scale")
+     
+    curve(dlnorm(x, meanlog = mu+delta, sdlog =sd, log = FALSE), add=TRUE)  
+    Axis(side=1, labels=TRUE)
+    Axis(side=2, labels=FALSE)
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    MASS::truehist(log(B), yaxt='n' , nbins=br, axes=FALSE, 
+                   main=paste0("B. N=",N," log transformed of left data, theoretical mu=",p3(mu+delta),", SD=",p3(sd),"\nTreatment effect ", p3(mu+delta)," - ",p3(mu),"=",
+                               p3(log(zx))), col = "orange", border = "white", xlab="log scale" )
+    curve(dnorm(x,mu+delta,sd), add=TRUE)
+    Axis(side=1, labels=TRUE)
+    Axis(side=2, labels=FALSE)
+    
+    par(mfrow=c(1,1))
 
 
 })
@@ -1136,30 +1084,28 @@ Column {data-width=400}
   conf    <- random.sample2()$conf
   qclevel <- random.sample2()$qc
 
-d <- data.frame(x =c(rep( "A" , N), rep( "B" , N)), y=c(A,B))
-
-res <- t.test(log(d$y)~d$x, var.equal = TRUE, conf.level=conf) # t test
-
-ci <- exp(-res$conf.int)
-hi <- round(ci[1],3)
-lo <- round(ci[2],3)
-
-qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS spec. of ", qclevel), paste0("FAIL spec. of ", qclevel))
-GmeanR <- round(exp(res$estimate[1]),3) # geometric means
-GmeanT <- round(exp(res$estimate[2]),3) # geometric means
-
-# %CV get the sd of the logged data and exponenitate
-cv1 <-exp(tapply(log(d$y), d$x, sd))
-GmeanRcv <-  round((((cv1[1])-1)*100),3)
-GmeanTcv <-  round((((cv1[2])-1)*100),3)
-
-ratio. <- exp( (res$estimate)[2] - (res$estimate)[1])
-ratio. <- round(ratio.,3)
- 
- 
-
-# run a ggplot 
-d$Y <-  (d$y)  # choose response
+  d <- data.frame(x =c(rep( "A" , N), rep( "B" , N)), y=c(A,B))
+  
+  res <- t.test(log(d$y)~d$x, var.equal = TRUE, conf.level=conf) # t test
+  
+  ci <- exp(-res$conf.int)
+  hi <- round(ci[1],3)
+  lo <- round(ci[2],3)
+  
+  qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS spec. of ", qclevel), paste0("FAIL spec. of ", qclevel))
+  GmeanR <- round(exp(res$estimate[1]),3) # geometric means
+  GmeanT <- round(exp(res$estimate[2]),3) # geometric means
+  
+  # %CV get the sd of the logged data and exponenitate
+  cv1 <-exp(tapply(log(d$y), d$x, sd))
+  GmeanRcv <-  round((((cv1[1])-1)*100),3)
+  GmeanTcv <-  round((((cv1[2])-1)*100),3)
+  
+  ratio. <- exp( (res$estimate)[2] - (res$estimate)[1])
+  ratio. <- round(ratio.,3)
+  
+ # run a ggplot 
+  d$Y <-  (d$y)  # choose response
 
 gx <- ggplot(d, aes(x=x, y=Y)) +
   
@@ -1174,7 +1120,6 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   scale_colour_manual(values = c(A = 'blue', 
                                B = 'orange'))+
   
-  
   labs(title=paste0("QC=", qc)) + xlab("") + ylab("score") +
   labs(subtitle = 
          paste0("Geometric mean A=" ,GmeanR,"; %CV=",GmeanRcv,
@@ -1187,23 +1132,11 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   guides(fill="none") +
   theme_bw() 
  
-  
-  
-print(gx)
-  
-  
+  print(gx)
+
   })
-  
-  
-  
-  
-  
-  
-  
-  
+ 
 ```
-  
-  
   
 
 ```{r pairyed boxplot, eval=TRUE}
@@ -1213,7 +1146,7 @@ print(gx)
 
 ```
 
-### taby
+### Plot of original data (true lognormal)
 
 ```{r BApylot}
 
@@ -1245,33 +1178,31 @@ print(gx)
   d <- data.frame(x =c(rep( "A" , N), rep( "B" , N)), y=c(A,B))
   res <- t.test(log(d$y)~d$x, var.equal = TRUE, conf.level=conf) # t test
 
-ci <- exp(-res$conf.int)
-hi <- round(ci[1],3)
-lo <- round(ci[2],3)
+  ci <- exp(-res$conf.int)
+  hi <- round(ci[1],3)
+  lo <- round(ci[2],3)
   qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS spec. of ", qclevel), paste0("FAIL spec. of ", qclevel))
-GmeanR <- round(exp(res$estimate[1]),3) # geometric means
-GmeanT <- round(exp(res$estimate[2]),3) # geometric means
+  GmeanR <- round(exp(res$estimate[1]),3) # geometric means
+  GmeanT <- round(exp(res$estimate[2]),3) # geometric means
 
-# %CV get the sd of the logged data and exponenitate
-cv1 <-exp(tapply(log(d$y), d$x, sd))
-GmeanRcv <-  round((((cv1[1])-1)*100),3)
-GmeanTcv <-  round((((cv1[2])-1)*100),3)
+  # %CV get the sd of the logged data and exponenitate
+  cv1 <-exp(tapply(log(d$y), d$x, sd))
+  GmeanRcv <-  round((((cv1[1])-1)*100),3)
+  GmeanTcv <-  round((((cv1[2])-1)*100),3)
 
-ratio. <- exp( (res$estimate)[2] - (res$estimate)[1])
-ratio. <- round(ratio.,3)
+  ratio. <- exp( (res$estimate)[2] - (res$estimate)[1])
+  ratio. <- round(ratio.,3)
  
    # now use the tick info on ggplot of log response
    d$Y <-  log(d$y)  # choose response
  
-   # choose appropriate scale
-   # next scale bigger than max d$y
+   # choose appropriate scale next scale bigger than max d$y
    scalez <- c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6)
    top <-    min(which( max(d$y) < scalez))
    bottom <- max(which( min(d$y) > scalez))
    scalez <- scalez[bottom:top]
    
- 
-    ticks= log(scalez)
+   ticks= log(scalez)
  
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
@@ -1287,8 +1218,6 @@ ratio. <- round(ratio.,3)
   scale_colour_manual(values = c(A = 'blue', 
                                B = 'orange'))+
   
-     
-     
     scale_y_continuous(
       
      limits=c(   ticks[1],  ticks[length(ticks)]  ), 
@@ -1316,7 +1245,7 @@ ratio. <- round(ratio.,3)
   
 ``` 
 
-tab 5
+Anova (linear model)
 ====
   
 Column {.sidebar}
@@ -1327,7 +1256,7 @@ Column {.sidebar}
  
 ```{r}
 
-       sliderInput("range1", 
+      sliderInput("range1", 
                    "Select group sizes: randomly select using range or uniquely select:", 
                     min = 2, max = 50, value = c(25, 25), ticks=FALSE) 
                             
@@ -1338,7 +1267,6 @@ Column {.sidebar}
       sliderInput("range3", 
     "Select true group standard deviations: randomly select using range or uniquely select", 
                   min = 20, max = 10000, value = c(1000, 1000), ticks=FALSE) 
-      
       
       textInput("pr1", div(h5(tags$span(style="color:blue", "Prop Chg Grp B v Grp A"))), value= "0.90")
       textInput("pr2", div(h5(tags$span(style="color:blue", "Prop Chg Grp C v Grp A"))), value= "0.90")
@@ -1352,15 +1280,14 @@ Column {.sidebar}
    tags$style(HTML('#resamplex{background-color:orange}'))
    # )
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-
-
-
-
+   
+   splitLayout(
+    textInput("qq", div(h5(tags$span(style="color:blue", "contrast"))), value= "A, B"),
+    
+    )
 
 
 ```
-
 
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
@@ -1369,73 +1296,55 @@ Column {data-width=400, height=75}
   
 ```{r top}
 
+ h5(htmlOutput("text5"))  
+
 random.sample3 <- reactive({
         
         # Dummy line to trigger off button-press
-       foo <- input$resamplex
+        foo <- input$resamplex
         
-        x1 <- input$range1[1]  #size
+        x1 <- input$range1[1]  # size
         x2 <- input$range1[2]
-        x3 <- input$range2  #mean
-        x5 <- input$range3[1]  #sd
+        x3 <- input$range2     # mean
+        x5 <- input$range3[1]  # sd
         x6 <- input$range3[2]
         
-    zx1    <- as.numeric(    eval(parse(text= (input$pr1)) ) )
-    zx2    <- as.numeric(    eval(parse(text= (input$pr2)) ) )
-    zx3    <- as.numeric(    eval(parse(text= (input$pr3)) ) )
-    
-    # 
-    #     x1 <-   25
-    #     x2 <-  25
-    #     x3 <-  200
-    #     x5 <-  400
-    #     x6 <-  5000
-    # 
-    # zx1    <-  .8
-    # zx2    <-  .8
-    # zx3    <-  .8
-
- 
- #   
-
-        
-        
-         delta1 <- log(zx1)
- delta2 <- log(zx2)
- delta3 <- log(zx3)
-   
-
-        
+        zx1 <- as.numeric( eval(parse(text= (input$pr1)) ) )
+        zx2 <- as.numeric( eval(parse(text= (input$pr2)) ) )
+        zx3 <- as.numeric( eval(parse(text= (input$pr3)) ) )
+         
+        delta1 <- log(zx1)
+        delta2 <- log(zx2)
+        delta3 <- log(zx3)
+         
         top <-  4  # number of groups
 
-# seems that I need to use both c(x1,x2) c(x1:x2) so sample function works correctly
+    #----------------------------------------------------
+    # seems that I need to use both c(x1,x2) c(x1:x2) so sample function works correctly
 
-if (x1==x2) {
-  
-  middle <-  sample(c(x1,x2),   top, replace=TRUE)    # choose top count between sliders 
-  
-} else {
-  
-  middle <-  sample(c(x1:x2),   top, replace=TRUE)    #  
-}
-
-  
-  lower <-   x3# groups means 
- 
-
-if (x5==x6) {
-  
-  replicates <-  sample(c(x5,x6),  top, replace=TRUE )   #group sds
-  
-} else {
-  
-  replicates <-  sample(c(x5:x6),   top, replace=TRUE )   #grp sds
-  
-}
-
- 
- 
-
+    if (x1==x2) {
+      
+      middle <-  sample(c(x1,x2),   top, replace=TRUE)    # choose top count between sliders 
+      
+    } else {
+      
+      middle <-  sample(c(x1:x2),   top, replace=TRUE)    #  
+    }
+    
+    #----------------------------------------------------
+    lower <-   x3# groups mean
+    #----------------------------------------------------
+    
+    if (x5==x6) {
+      
+      replicates <-  sample(c(x5,x6),  top, replace=TRUE )   #group sds
+      
+    } else {
+      
+      replicates <-  sample(c(x5:x6),   top, replace=TRUE )   #grp sds
+      
+    }
+    #----------------------------------------------------
 
 # i dont like the naming of these functions!!
 # try these functions https://github.com/davidski/collector/blob/main/R/fit_distributions.R
@@ -1461,23 +1370,23 @@ normal_to_lognormal <- function(normmean=10, normsd=2) {
 temp <- rep(lower, top)
 #-----------------------------------------------------------------------
 
-x<- matrix(data = NA, nrow = 4, ncol = 2, byrow = FALSE,
+  x <- matrix(data = NA, nrow = 4, ncol = 2, byrow = FALSE,
             dimnames = NULL)
  
+ #transform to normal distributions
  for( i in 1:4) {
    x[i,] <- unlist(normal_to_lognormal(normmean=temp[i], normsd=replicates[i]))
    }
   
  # get the sds
- replicates<-x[,2]  #sds
+ replicates <- x[,2]  
  
-
- x[1,1] ->mu  # intercept
+ x[1,1] -> mu  # intercept
  lower <- c(mu, mu+delta1, mu+delta2, mu+delta3)  # true means
 
 #-----------------------
  
-  Nj    <- sum(middle)                  # sum each group size 
+  Nj    <- sum(middle)                        # sum each group size 
   
   muJ   <- rep(lower, times=rep(middle))      # expand means by group sizes
   
@@ -1502,21 +1411,78 @@ x<- matrix(data = NA, nrow = 4, ncol = 2, byrow = FALSE,
   
   dd$x <- NULL
 
-  
-  return(list(dd=dd, x1=x1))
+  return(list(dd=dd ))
 
 })
 
 
 
-#
+# reported in text5
+
+inference <- reactive({
+        
+    df <-  random.sample3()$dd
+   
+ 
+    f <- ols(log(DV) ~ IV, df)
+
+    cc <- contrast(f, list(IV='B', IV='D'),
+                      list(IV='A', IV='C'), 
+             type='average',
+             conf.int=.9)
+
+
+    exp(cc$Contrast)
+        
+   # ------------------------------------
+    
+    # lt <- levels(df$IV)
+     qq <-    input$qq
+    
+   i <- gsub("^(.*?),.*", "\\1", qq)
+   j <- sub('.*,\\s*', '', qq)
+    
+    res <- contrast(f, list(IV=i),
+                        list(IV= j), type='average')
+  
+    res <- res$Contrast[1][[1]]
+       # ------------------------------------
+
+    
+    
+    # Compare each treatment with average of all others
+    
+    lt <- levels(df$IV)
+    
+    for(i in 1 : length(lt)) {
+      cat('Comparing with', lt[i], '\n\n')
+      print(contrast(f, list(IV=lt[-i]),
+                        list(IV=lt[ i]), type='average'))
+    }
+    options(datadist=NULL)
+    
+   return(list(cc=cc, res ))   
+        
+})
+
+
+
+# v0. <- isolate(as.numeric(    eval(parse(text= (input$adj.smoking)) ) ))
+
+# If i enter A B   [remove not A  remove not B]
+# 
+# if I enter AB C  [remove not AB remove not C]
+# 
+# if I enter A ABC [remove not AB remove not ABC]
+
+
+
 
 
 
 
 
  
-
 ```
 
 Column {data-width=400}
@@ -1526,21 +1492,12 @@ Column {data-width=400}
   
 ```{r left1, eval=TRUE}  
 
- # renderPrint({
- # 
- # df <-  random.sample2()$dd
- # print(df)
- # #print(x1)
- # 
- # })
-
 
 renderPlot({
   
    df <-  random.sample3()$dd
    
-   
- yy <- ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
+  yy <- ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
 
     stat_boxplot(geom ='errorbar',width = 0.4) +
     geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
@@ -1561,7 +1518,6 @@ renderPlot({
 })
 
 
- 
 ```
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
@@ -1575,7 +1531,7 @@ renderPlot({
    d <-  random.sample3()$dd
    
    df <-  random.sample3()$dd
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   scalez <- c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6)
   top <-    min(which( max(d$DV) < scalez))
