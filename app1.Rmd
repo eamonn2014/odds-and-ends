@@ -1458,8 +1458,8 @@ inference <- reactive({
                     
                                  list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), 
                     
-                    type='average')
-    }
+                    type='average') 
+    }  
     #-------------------------------------------------
 
    
