@@ -1063,7 +1063,7 @@ br <- ifelse(N<100, N, 100) # breaks in histogram
 MASS::truehist(A, 
               yaxt='n' ,
               nbins=br,  axes=FALSE,
-               main=paste0("N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=",p3(logN.SD),", Geometric Mean=",p3(A.GM)), col = "#75AADB", 
+               main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=",p3(logN.SD),", Geometric Mean=",p3(A.GM)), col = "blue", 
               border = "white", xlab="Original scale")
 
 curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)
@@ -1071,27 +1071,28 @@ Axis(side=1, labels=TRUE)
 Axis(side=2, labels=FALSE)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MASS::truehist(log(A), yaxt='n' , nbins=br,  axes=FALSE,
+               main=paste0("A. N=",N," realisations true Normal mu=",p3(mu),", SD=", p3(sd),""), col = "blue", border = "white",  xlab="log scale")
+curve(dnorm(x,mu,sd), add=TRUE)
+Axis(side=1, labels=TRUE)
+Axis(side=2, labels=FALSE)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 MASS::truehist(B, 
                 yaxt='n' ,
                 nbins=br,  axes=FALSE,
-               main=paste0("N=",N," realisations true log-normal mu=",mux*zx,", SD=", p3(logN.SD),", Geometric Mean=",p3(B.GM) ," Treatment effect ",mux*zx," / ",mux,"=",zx), 
-               col = "red", border = "white", xlab="Original scale")
+               main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=", p3(logN.SD),", Geometric Mean=",p3(B.GM) ," Treatment effect ",mux*zx," / ",mux,"=",zx), 
+               col = "orange", border = "white", xlab="Original scale")
  
 curve(dlnorm(x, meanlog = mu+delta, sdlog =sd, log = FALSE), add=TRUE)
 Axis(side=1, labels=TRUE)
 Axis(side=2, labels=FALSE)
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-MASS::truehist(log(A), yaxt='n' , nbins=br,  axes=FALSE,
-               main=paste0("N=",N," realisations true Normal mu=",p3(mu),", SD=", p3(sd),""), col = "#75AADB", border = "white",  xlab="log scale")
-curve(dnorm(x,mu,sd), add=TRUE)
-Axis(side=1, labels=TRUE)
-Axis(side=2, labels=FALSE)
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 MASS::truehist(log(B), yaxt='n' , nbins=br, axes=FALSE, 
-               main=paste0("N=",N," realisations true Normal mu=",p3(mu+delta),", SD=",p3(sd)," Treatment effect ", p3(mu+delta)," - ",p3(mu),"=",
-                           p3(log(zx))), col = "red", border = "white", xlab="log scale" )
+               main=paste0("B. N=",N," realisations true Normal mu=",p3(mu+delta),", SD=",p3(sd)," Treatment effect ", p3(mu+delta)," - ",p3(mu),"=",
+                           p3(log(zx))), col = "orange", border = "white", xlab="log scale" )
 curve(dnorm(x,mu+delta,sd), add=TRUE)
 Axis(side=1, labels=TRUE)
 Axis(side=2, labels=FALSE)
@@ -1161,9 +1162,18 @@ ratio. <- round(ratio.,3)
 d$Y <-  (d$y)  # choose response
 
 gx <- ggplot(d, aes(x=x, y=Y)) +
+  
   geom_point(aes(fill=x), size=3, shape=21, colour="grey20",
              position =position_jitter(width=.22, height=0))+
+  
   geom_boxplot(outlier.colour=NA, fill=NA,colour="grey20") +
+  
+  
+  scale_fill_manual(values = c(A = 'blue', 
+                               B = 'orange')) + 
+  scale_colour_manual(values = c(A = 'blue', 
+                               B = 'orange'))+
+  
   
   labs(title=paste0("QC=", qc)) + xlab("") + ylab("score") +
   labs(subtitle = 
@@ -1272,6 +1282,13 @@ ratio. <- round(ratio.,3)
                 position =position_jitter(width=.22, height=0))+
      geom_boxplot(outlier.colour=NA, fill=NA,colour="grey20") +
   
+       scale_fill_manual(values = c(A = 'blue', 
+                               B = 'orange')) + 
+  scale_colour_manual(values = c(A = 'blue', 
+                               B = 'orange'))+
+  
+     
+     
     scale_y_continuous(
       
      limits=c(   ticks[1],  ticks[length(ticks)]  ), 
