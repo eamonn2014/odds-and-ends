@@ -1489,7 +1489,7 @@ inference <- reactive({
                     
                     type='average') 
      }  else if  (nchar(i)==2 && nchar(j)==1) {
-     
+      
               res <- contrast(f, 
                     
                                  list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), 
