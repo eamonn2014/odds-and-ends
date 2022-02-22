@@ -1326,9 +1326,9 @@ Column {.sidebar}
                   min = 20, max = 10000, value = c(1000, 1000), ticks=FALSE) 
       
       
-      textInput("pr1", div(h5(tags$span(style="color:blue", "Prop Chg"))), value= "0.90")
-      textInput("pr2", div(h5(tags$span(style="color:blue", "Prop Chg"))), value= "0.90")
-      textInput("pr3", div(h5(tags$span(style="color:blue", "Prop Chg"))), value= "1.00")
+      textInput("pr1", div(h5(tags$span(style="color:blue", "Prop Chg Grp B v Grp A"))), value= "0.90")
+      textInput("pr2", div(h5(tags$span(style="color:blue", "Prop Chg Grp C v Grp A"))), value= "0.90")
+      textInput("pr3", div(h5(tags$span(style="color:blue", "Prop Chg Grp D v Grp A"))), value= "1.00")
  
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
@@ -1358,38 +1358,39 @@ Column {data-width=400, height=75}
 random.sample2 <- reactive({
         
         # Dummy line to trigger off button-press
-        foo <- input$resample
+        foo <- input$resamplex
         
         x1 <- input$range1[1]  #size
         x2 <- input$range1[2]
-        x3 <- input$range2[1]  #mean
+        x3 <- input$range2  #mean
         x5 <- input$range3[1]  #sd
         x6 <- input$range3[2]
         
-    zx1    <- as.numeric(    eval(parse(text= (input$zx1)) ) )
-    zx2    <- as.numeric(    eval(parse(text= (input$zx2)) ) )
-    zx3    <- as.numeric(    eval(parse(text= (input$zx3)) ) )
+    zx1    <- as.numeric(    eval(parse(text= (input$pr1)) ) )
+    zx2    <- as.numeric(    eval(parse(text= (input$pr2)) ) )
+    zx3    <- as.numeric(    eval(parse(text= (input$pr3)) ) )
+    
+    # 
+    #     x1 <-   25
+    #     x2 <-  25
+    #     x3 <-  200
+    #     x5 <-  400
+    #     x6 <-  5000
+    # 
+    # zx1    <-  .8
+    # zx2    <-  .8
+    # zx3    <-  .8
+
+ 
+ #   
+
         
         
          delta1 <- log(zx1)
  delta2 <- log(zx2)
  delta3 <- log(zx3)
    
-         x1 <-   25
-        x2 <-  25
-        x3 <-  200
-        x5 <- 400
-        x6 <-  5000
-        
-    zx1    <-  .8
-    zx2    <-  .8
-    zx3    <-  .8
-        
-        
-         delta1 <- log(zx1)
- delta2 <- log(zx2)
- delta3 <- log(zx3)
-   
+
         
         top <-  4  # number of groups
 
@@ -1494,6 +1495,10 @@ x<- matrix(data = NA, nrow = 4, ncol = 2, byrow = FALSE,
 
 
 
+#
+
+
+
 
 
  
@@ -1594,7 +1599,7 @@ xx<-  ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
 print(xx)
 })
 
-``` 
+```  
 
 tab 6
 ====
