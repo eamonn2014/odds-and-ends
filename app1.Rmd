@@ -376,29 +376,41 @@ output$text5 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "contrast ") 
+               "The contrast of ") 
     
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$res) ,
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
+    
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " versus ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
+    
+       , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " is estimated as ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$res)) ,
    
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " xxxxxxxxxxxxxxxxx ") 
+               " with confidence interval ( ") 
       
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$L)) ,
      
      
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
      
-    ", xxxxxxxxxxxxxxxxxxxxxxxxxx ")
+    ",  ")
     
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$H) ),
     
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-    " xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ")
+    " ) ")
     
-      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd. ),
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
@@ -1258,7 +1270,7 @@ Column {.sidebar}
 
       sliderInput("range1", 
                    "Select group sizes: randomly select using range or uniquely select:", 
-                    min = 2, max = 50, value = c(25, 25), ticks=FALSE) 
+                    min = 2, max = 5000, value = c(100, 100), ticks=FALSE) 
                             
       sliderInput("range2", 
                   "Select lognormal baseline group mean",  
@@ -1280,9 +1292,9 @@ Column {.sidebar}
    tags$style(HTML('#resamplex{background-color:orange}'))
    # )
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+   div(h5(tags$span(style="color:blue", "Enter a level followed by a comma and the level(s) to contrast, eg A,BCD. For example, let's evaluate this contrast,\nthe proportional change\n of B compared to A")))
    splitLayout(
-    textInput("qq", div(h5(tags$span(style="color:blue", "contrast"))), value= "A, B"),
+    textInput("qq", div(h5(tags$span(style="color:blue", ""))), value= "B,A"),
     
     )
 
@@ -1426,13 +1438,13 @@ inference <- reactive({
  
     f <- ols(log(DV) ~ IV, df)
 
-    cc <- contrast(f, list(IV='B', IV='D'),
-                      list(IV='A', IV='C'), 
-             type='average',
-             conf.int=.9)
-
-
-    exp(cc$Contrast)
+    # cc <- contrast(f, list(IV='B', IV='D'),
+    #                   list(IV='A', IV='C'), 
+    #          type='average',
+    #          conf.int=.9)
+    # 
+    # 
+    # exp(cc$Contrast)
         
    # ------------------------------------
     
@@ -1450,24 +1462,70 @@ inference <- reactive({
                                  list(IV= j), 
                               
                               type='average')
-    }
+    
     #-------------------------------------------------
-      if (nchar(i)==1 && nchar(j)==2) {
+    } else if (nchar(i)==1 && nchar(j)==2) {
      
-              res <- contrast(f, list(IV=i),
+              res <- contrast(f, list(IV= substr(i, 1, 1)),
                     
                                  list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), 
                     
                     type='average') 
-    }  
-    #-------------------------------------------------
-
+              
+    }  else if  (nchar(i)==1 && nchar(j)==3) {
+     
+              res <- contrast(f, list(IV= substr(i, 1, 1)),
+                    
+                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ,  IV=  substr(j, 3, 3)  ), 
+                    
+                    type='average') 
+      }  else if  (nchar(i)==2 && nchar(j)==2) {
+     
+              res <- contrast(f, 
+                    
+                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), 
+                              
+                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), 
+                    
+                    type='average') 
+     }  else if  (nchar(i)==2 && nchar(j)==1) {
+     
+              res <- contrast(f, 
+                    
+                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), 
+                              
+                                  list(IV= substr(j, 1, 1)),
+                    
+                    type='average') 
+    }  else if (nchar(i)==3 && nchar(j)==1) {
+     
+              res <- contrast(f, 
+                    
+                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ,  IV=  substr(i, 3, 3)  ), 
+                                 list(IV= substr(j, 1, 1)),
+                    
+                    type='average') 
+        }  
+   #-------------------------------------------------
    
    
    
    
-    res <- res$Contrast[1][[1]]
-       # ------------------------------------
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+    est <- exp(res$Contrast[1][[1]])
+    L <- exp(res$Lower[1][[1]])
+    H <- exp( res$Upper[1][[1]])
+    # ------------------------------------
 
     
     
@@ -1482,7 +1540,7 @@ inference <- reactive({
     # }
     # options(datadist=NULL)
     
-   return(list(cc=cc, res=res ))   
+   return(list(res=est , L=L, H=H,i=i, j=j))   
         
 })
 
