@@ -1459,7 +1459,7 @@ inference <- reactive({
      
               res <- contrast(f, list(IV=i),
                               
-                                 list(IV= j), 
+                                 list(IV= j),  conf.int=0.95, #weights=table(df$IV),
                               
                               type='average')
     
@@ -1468,7 +1468,7 @@ inference <- reactive({
      
               res <- contrast(f, list(IV= substr(i, 1, 1)),
                     
-                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), 
+                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), conf.int=0.95,  #weights=table(df$IV),
                     
                     type='average') 
               
@@ -1476,7 +1476,8 @@ inference <- reactive({
      
               res <- contrast(f, list(IV= substr(i, 1, 1)),
                     
-                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ,  IV=  substr(j, 3, 3)  ), 
+                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ,  IV=  substr(j, 3, 3)  ), conf.int=0.95,
+                              #weights=table(df$IV),
                     
                     type='average') 
       }  else if  (nchar(i)==2 && nchar(j)==2) {
@@ -1485,16 +1486,16 @@ inference <- reactive({
                     
                                  list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), 
                               
-                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), 
+                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), conf.int=0.95, #weights=table(df$IV),
                     
                     type='average') 
      }  else if  (nchar(i)==2 && nchar(j)==1) {
       
               res <- contrast(f, 
                     
-                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), 
+                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), conf.int=0.95,
                               
-                                  list(IV= substr(j, 1, 1)),
+                                  list(IV= substr(j, 1, 1)), #weights=table(df$IV),
                     
                     type='average') 
     }  else if (nchar(i)==3 && nchar(j)==1) {
@@ -1502,7 +1503,7 @@ inference <- reactive({
               res <- contrast(f, 
                     
                                  list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ,  IV=  substr(i, 3, 3)  ), 
-                                 list(IV= substr(j, 1, 1)),
+                                 list(IV= substr(j, 1, 1)),   conf.int=0.95,  #weights=table(df$IV),
                     
                     type='average') 
         }  
