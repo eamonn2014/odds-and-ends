@@ -20,6 +20,7 @@ Method Comparison
 
   set.seed(64453)
   #library(MASS)      # for correlated data generation
+  library(flexdashboard)
   library(ggplot2)
   library(gridExtra)
   library(ggpubr)
@@ -29,6 +30,7 @@ Method Comparison
   library(MethComp)
   library(gridExtra)
   library(tidyverse)
+  library(plyr)
   library(rms)
   lwd.=3             # used when plotting
   
@@ -1419,7 +1421,7 @@ temp <- rep(lower, top)
   
   df <- as.data.frame(d)
   
-  dd <- plyr::arrange(df, IV)    # sort and create for better order
+  dd <- arrange(df, IV)    # sort and create for better order
   
   dd$x <- NULL
 
