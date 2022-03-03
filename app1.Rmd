@@ -408,18 +408,19 @@ output$text5 <- renderText({  # create interactive text t1
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$H) ),
     
     
-        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-    " ) ")
+    " ) ")#,
     
-      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd. ),
+     # , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd. ),
     
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    # tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    ". xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ", #),
+  #  ". xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ", #),
     
     
-        ".") ))
+  #      ".")
+  ))
 })
 
 
@@ -1306,11 +1307,35 @@ Column {.sidebar}
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
   
-### xxxxxxxxxxxxxxxxxx
+### xxxxxxxxxxxxxxxxxx split this in two
   
 ```{r top}
 
  h5(htmlOutput("text5"))  
+
+renderPrint({
+  
+  model <- inference()$f
+  print(model)
+  
+})
+
+renderPrint({
+
+  model <- inference()$x
+  print(model)
+
+})
+
+
+```
+
+try this
+
+```{r topr}
+
+ 
+
 
 random.sample3 <- reactive({
         
@@ -1331,6 +1356,29 @@ random.sample3 <- reactive({
         delta2 <- log(zx2)
         delta3 <- log(zx3)
          
+        
+        # 
+        # x1 <- 40  # size
+        # x2 <- 40
+        # x3 <- 100     # mean
+        # x5 <- 23  # sd
+        # x6 <- 26
+        # 
+        # zx1 <- .9
+        # zx2 <- .8
+        # zx3 <- 1.2
+        #  
+        # delta1 <- log(zx1)
+        # delta2 <- log(zx2)
+        # delta3 <- log(zx3)
+        #  
+        # 
+        # 
+        
+        
+        
+        
+        
         top <-  4  # number of groups
 
     #----------------------------------------------------
@@ -1424,6 +1472,9 @@ temp <- rep(lower, top)
   dd <- arrange(df, IV)    # sort and create for better order
   
   dd$x <- NULL
+  
+  # ddz <<- datadist(dd) ;    options(datadist='ddz')
+  # f <- ols(log(DV) ~ IV, dd)
 
   return(list(dd=dd ))
 
@@ -1437,9 +1488,11 @@ inference <- reactive({
         
     df <-  random.sample3()$dd
    
- 
+    ddz <<- datadist(df) ;    options(datadist='ddz')
     f <- ols(log(DV) ~ IV, df)
 
+    x0 <- summary(f)
+    x <-  exp(x0[,4])
     # cc <- contrast(f, list(IV='B', IV='D'),
     #                   list(IV='A', IV='C'), 
     #          type='average',
@@ -1456,71 +1509,16 @@ inference <- reactive({
    i <- gsub("^(.*?),.*", "\\1", qq)  # pull out before comma
    j <- sub('.*,\\s*', '', qq)        # pull out after comma
     
-   #-------------------------------------------------
-   if (nchar(i)==1 && nchar(j)==1) {
-     
-              res <- contrast(f, list(IV=i),
-                              
-                                 list(IV= j),  conf.int=0.95, #weights=table(df$IV),
-                              
-                              type='average')
-    
-    #-------------------------------------------------
-    } else if (nchar(i)==1 && nchar(j)==2) {
-     
-              res <- contrast(f, list(IV= substr(i, 1, 1)),
-                    
-                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), conf.int=0.95,  #weights=table(df$IV),
-                    
-                    type='average') 
-              
-    }  else if  (nchar(i)==1 && nchar(j)==3) {
-     
-              res <- contrast(f, list(IV= substr(i, 1, 1)),
-                    
-                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ,  IV=  substr(j, 3, 3)  ), conf.int=0.95,
-                              #weights=table(df$IV),
-                    
-                    type='average') 
-      }  else if  (nchar(i)==2 && nchar(j)==2) {
-     
-              res <- contrast(f, 
-                    
-                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), 
-                              
-                                 list(IV= substr(j, 1, 1)   , IV=  substr(j, 2, 2)  ), conf.int=0.95, #weights=table(df$IV),
-                    
-                    type='average') 
-     }  else if  (nchar(i)==2 && nchar(j)==1) {
-      
-              res <- contrast(f, 
-                    
-                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ), conf.int=0.95,
-                              
-                                  list(IV= substr(j, 1, 1)), #weights=table(df$IV),
-                    
-                    type='average') 
-    }  else if (nchar(i)==3 && nchar(j)==1) {
-     
-              res <- contrast(f, 
-                    
-                                 list(IV= substr(i, 1, 1)   , IV=  substr(i, 2, 2)  ,  IV=  substr(i, 3, 3)  ), 
-                                 list(IV= substr(j, 1, 1)),   conf.int=0.95,  #weights=table(df$IV),
-                    
-                    type='average') 
-        }  
+  
    #-------------------------------------------------
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   res <- contrast(f, 
+                  
+       list(IV= dput(strsplit(i, "")[[1]])   ), 
+       list(IV= dput(strsplit(j, "")[[1]])   ),   conf.int=0.95,  #weights=table(df$IV),
+                  type='average') 
+  
+   des.mat <-  print(res, X=TRUE)
    
    
    
@@ -1529,25 +1527,117 @@ inference <- reactive({
     L <- exp(res$Lower[1][[1]])
     H <- exp( res$Upper[1][[1]])
     # ------------------------------------
+ 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # lets do the manual contrast after examining Harrell's contract.rms
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  fit =f
+   a =  list(IV= dput(strsplit(i, "")[[1]])   )
+   b =  list(IV= dput(strsplit(j, "")[[1]])   )
+   conf.int = 0.95
+  
+    
+    # choosing critical value eithr t or z 
+    zcrit <- if (length(idf <- fit$df.residual)) 
+      qt((1 + conf.int)/2, idf) else qnorm((1 + conf.int)/2)
+  
+    betas <- coef(fit)  # all model coefficients
+     
+    nrp <- num.intercepts(fit, "var")  # should be 1 for this simple case
     
     
-    # Compare each treatment with average of all others
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # design matrix
+    pred <- function(d) {
+          predict(fit, d, type = "x")
+    }
     
-    # lt <- levels(df$IV)
-    # 
-    # for(i in 1 : length(lt)) {
-    #   cat('Comparing with', lt[i], '\n\n')
-    #   print(contrast(f, list(IV=lt[-i]),
-    #                     list(IV=lt[ i]), type='average'))
-    # }
-    # options(datadist=NULL)
+    # left side
+    da <- do.call("gendata", list(fit, factors = a, expand = TRUE)) # creates a df of levels of intrest
+    xa <- pred(da)    # will give a design matrix
+ 
+        # right side
+    db <- do.call("gendata", list(fit, factors = b, expand = TRUE))
+    xb <- pred(db)     # will give a design matrix
+      
+    ma <- nrow(xa)
+    mb <- nrow(xb)
     
-   return(list(res=est , L=L, H=H,i=i, j=j))   
+    mm <- max(ma, mb)
+
+    # design matrix, removes labels
+    xa <- matrix(xa, nrow = mm, ncol = ncol(xa), byrow = TRUE)
+    xb <- matrix(xb, nrow = mm, ncol = ncol(xb), byrow = TRUE)
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # design matrix difference
+    X <- xa - xb  # subtract 
+    
+    m <- nrow(X)
+    
+    # binding column of zeros
+    if (nrp > 0)  X <- cbind(matrix(0, nrow = m, ncol = nrp), X)
+    
+     
+    weights <- rep(1, m)  ## 1 1
+    weights <- as.vector(weights)  # 1 1
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+       
+      X <- matrix(
+        apply(weights * X, 2, sum)/sum(weights), 
+                  nrow = 1, dimnames = list(NULL, dimnames(X)[[2]]))
+     
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~contrast
+    
+      X   # [1x4]  this is the weights!   #  0  0.5   -1  0.5
+      
+      # weight the betas and sum
+      est <- matxv(X, betas)   # contrast!!!!!!!!!!!!!!!!!!!!!!!!  #  X %*% betas
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~variance
+
+      var.cov <- vcov(fit, regcoef.only = TRUE)   # 4X4
+
+      v <- X %*% var.cov %*% t(X)  # variance!!!!!!!!!!!!!!!!!!!!!!!!  [1x4] x [4X4] x [4X1]
+      
+      ndf <- if (is.matrix(v))  nrow(v) else 1   #TRUE  #1
+      
+      se <- as.vector(if (ndf == 1) sqrt(v) else sqrt(diag(v))  )  
+      
+      Z <- est/se    # standard normal
+      
+      P <- if (length(idf)) 2 * pt(-abs(Z), idf)  else 2 * pnorm(-abs(Z))
+      
+      lower <- est - zcrit * se
+      upper <- est + zcrit * se
+  
+    resx <- list(Contrast = est, SE = se, Lower = lower, Upper = upper, 
+                Z = Z, Pvalue = P,  
+                var = v, 
+                df.residual = idf, 
+                X = X, 
+               conf.int = conf.int
+                 )
+    
+    
+    
+    
+  return(list(res=est , L=L, H=H,i=i, j=j, f=f, x=x, des.mat=des.mat, resx=resx))   
         
 })
 
 
+
+
+
+ 
 
 # v0. <- isolate(as.numeric(    eval(parse(text= (input$adj.smoking)) ) ))
 
