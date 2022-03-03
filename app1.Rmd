@@ -1311,13 +1311,13 @@ Column {data-width=400, height=75}
   
 ```{r top}
 
- h5(htmlOutput("text5"))  
+ h5(htmlOutput("text5"))
 
 renderPrint({
-  
+
   model <- inference()$f
   print(model)
-  
+
 })
 
 renderPrint({
@@ -1327,14 +1327,14 @@ renderPrint({
 
 })
 
-
 ```
 
-try this
-
-```{r topr}
-
  
+-------------------------------------
+  
+### tabx
+  
+```{r left1test, eval=TRUE}  
 
 
 random.sample3 <- reactive({
