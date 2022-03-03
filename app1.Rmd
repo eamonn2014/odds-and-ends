@@ -1332,9 +1332,18 @@ renderPrint({
  
 -------------------------------------
   
-### tabx
+### manual contrast
   
 ```{r left1test, eval=TRUE}  
+
+renderPrint({
+
+  model <- inference()$resx
+  print(model)
+
+})
+
+
 
 
 random.sample3 <- reactive({
