@@ -423,6 +423,7 @@ output$text5 <- renderText({  # create interactive text t1
   ))
 })
 
+ 
 
 ``` 
 
@@ -1301,6 +1302,65 @@ Column {.sidebar}
     
     )
 
+   
+   
+   output$text99 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "This the design matrix for ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
+    
+               
+  
+  ))
+})
+   
+   
+   
+   output$text100 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "This the design matrix for ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
+    
+               
+  
+  ))
+})
+   
+output$text101 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "This the design matrix for the subtraction ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i ) ,
+
+                tags$span(style="color:black;font-weight:bold;font-size: 20px;", " - ") 
+  
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )           
+    
+    
+  ))
+     
+})
+   
+   
+
+    
+   
+   
+   
 
 ```
 
@@ -1336,6 +1396,8 @@ renderPrint({
   
 ```{r left1test, eval=TRUE}  
 
+# h5(htmlOutput("text99"))
+
 renderPrint({
 
   model <- inference()$resx
@@ -1343,6 +1405,7 @@ renderPrint({
 
 })
 
+ h5(htmlOutput("text99"))
 
 
 renderPrint({
@@ -1353,6 +1416,8 @@ renderPrint({
 })
 
 
+ h5(htmlOutput("text100"))
+
 renderPrint({
 
   model <- inference()$Xb
@@ -1360,6 +1425,7 @@ renderPrint({
 
 })
 
+ h5(htmlOutput("text101"))
 
 renderPrint({
 
