@@ -1345,6 +1345,57 @@ renderPrint({
 
 
 
+renderPrint({
+
+  model <- inference()$Xa
+  print(model)
+
+})
+
+
+renderPrint({
+
+  model <- inference()$Xb
+  print(model)
+
+})
+
+
+renderPrint({
+
+  model <- inference()$X1
+  print(model)
+
+})
+
+
+
+renderPrint({
+
+  model <- inference()$X2
+  print(model)
+
+})
+
+renderPrint({
+
+  model <- inference()$betas
+  print(model)
+
+})
+
+
+renderPrint({
+
+  model <- inference()$var.cov
+  print(model)
+
+})
+
+
+
+
+
 
 random.sample3 <- reactive({
         
@@ -1532,34 +1583,34 @@ inference <- reactive({
    
    
   
-    est <- exp(res$Contrast[1][[1]])
-    L <- exp(res$Lower[1][[1]])
-    H <- exp( res$Upper[1][[1]])
+    estx <- exp(res$Contrast[1][[1]])
+    L <-   exp(res$Lower[1][[1]])
+    H <-   exp(res$Upper[1][[1]])
     # ------------------------------------
  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # lets do the manual contrast after examining Harrell's contract.rms
+    # let's do the manual contrast after examining Harrell's contract.rms
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  fit =f
+   fit =f
+    
    a =  list(IV= dput(strsplit(i, "")[[1]])   )
    b =  list(IV= dput(strsplit(j, "")[[1]])   )
+   
    conf.int = 0.95
-  
-    
-    # choosing critical value eithr t or z 
+
+    # choosing critical value either t or z 
     zcrit <- if (length(idf <- fit$df.residual)) 
       qt((1 + conf.int)/2, idf) else qnorm((1 + conf.int)/2)
   
     betas <- coef(fit)  # all model coefficients
      
     nrp <- num.intercepts(fit, "var")  # should be 1 for this simple case
-    
-    
+
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # design matrix
     pred <- function(d) {
@@ -1570,7 +1621,7 @@ inference <- reactive({
     da <- do.call("gendata", list(fit, factors = a, expand = TRUE)) # creates a df of levels of intrest
     xa <- pred(da)    # will give a design matrix
  
-        # right side
+    # right side
     db <- do.call("gendata", list(fit, factors = b, expand = TRUE))
     xb <- pred(db)     # will give a design matrix
       
@@ -1585,42 +1636,40 @@ inference <- reactive({
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # design matrix difference
-    X <- xa - xb  # subtract 
+    X1 <-  X <- xa - xb  # subtract   X1 will be outputted for presentation
     
     m <- nrow(X)
     
     # binding column of zeros
     if (nrp > 0)  X <- cbind(matrix(0, nrow = m, ncol = nrp), X)
-    
-     
-    weights <- rep(1, m)  ## 1 1
+
+    weights <- rep(1, m)          ## 1 1
     weights <- as.vector(weights)  # 1 1
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-       
-      X <- matrix(
+    X2 <- X <- matrix(    # X2 will be outputted for presentation
         apply(weights * X, 2, sum)/sum(weights), 
                   nrow = 1, dimnames = list(NULL, dimnames(X)[[2]]))
      
-    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~contrast
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~contrast
     
       X   # [1x4]  this is the weights!   #  0  0.5   -1  0.5
       
-      # weight the betas and sum
+      # weight the betas and sum to get contrast
       est <- matxv(X, betas)   # contrast!!!!!!!!!!!!!!!!!!!!!!!!  #  X %*% betas
       
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~variance
 
       var.cov <- vcov(fit, regcoef.only = TRUE)   # 4X4
 
-      v <- X %*% var.cov %*% t(X)  # variance!!!!!!!!!!!!!!!!!!!!!!!!  [1x4] x [4X4] x [4X1]
+      v <- X %*% var.cov %*% t(X)  # variance!!   [1x4] x [4X4] x [4X1]
       
-      ndf <- if (is.matrix(v))  nrow(v) else 1   #TRUE  #1
+      ndf <- if (is.matrix(v))  nrow(v) else 1    # TRUE  #1
       
       se <- as.vector(if (ndf == 1) sqrt(v) else sqrt(diag(v))  )  
       
-      Z <- est/se    # standard normal
+      Z <- est/se                                  # standard normal
       
       P <- if (length(idf)) 2 * pt(-abs(Z), idf)  else 2 * pnorm(-abs(Z))
       
@@ -1634,29 +1683,31 @@ inference <- reactive({
                 X = X, 
                conf.int = conf.int
                  )
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # end manual contrast
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     
     
+  return(list(
     
-    
-  return(list(res=est , L=L, H=H,i=i, j=j, f=f, x=x, des.mat=des.mat, resx=resx))   
+         res=estx , L=L, H=H, i=i, j=j, f=f, x=x, des.mat=des.mat,
+         
+         resx=resx,
+         
+         Xa=xa, Xb=xb, weights=weights, X1=X1, X2=X2, betas=betas, var.cov=var.cov
+              
+              ))   
         
 })
 
 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
  
-
-# v0. <- isolate(as.numeric(    eval(parse(text= (input$adj.smoking)) ) ))
-
-# If i enter A B   [remove not A  remove not B]
-# 
-# if I enter AB C  [remove not AB remove not C]
-# 
-# if I enter A ABC [remove not AB remove not ABC]
-
-
 
 
 
