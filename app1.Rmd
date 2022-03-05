@@ -1302,7 +1302,7 @@ Column {.sidebar}
     
     )
 
-   
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
    output$text99 <- renderText({  # create interactive text t1
 
@@ -1310,7 +1310,7 @@ Column {.sidebar}
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "This the design matrix for ") 
+               "The design matrix for ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
     
@@ -1319,7 +1319,7 @@ Column {.sidebar}
   ))
 })
    
-   
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
    output$text100 <- renderText({  # create interactive text t1
 
@@ -1327,7 +1327,7 @@ Column {.sidebar}
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "This the design matrix for ") 
+               "The design matrix for ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
     
@@ -1336,26 +1336,58 @@ Column {.sidebar}
   ))
 })
    
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   
 output$text101 <- renderText({  # create interactive text t1
 
     print(paste0(   
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "This the design matrix for the subtraction ") 
+               "The design matrix for the subtraction ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i ) ,
 
                 tags$span(style="color:black;font-weight:bold;font-size: 20px;", " - ") 
   
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )           
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )     
+    
+    ,   tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with intercept added ") 
     
     
   ))
      
 })
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+   output$text102 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "The betas ") 
+      
+  ))
+})
+    
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+      output$text103 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "The variance covariance matrix ") 
+    
+  ))
+})
    
-   
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
     
    
@@ -1384,6 +1416,13 @@ renderPrint({
 
   model <- inference()$x
   print(model)
+
+})
+
+renderPrint({
+
+  model <- inference()$res1
+  print(model,X =TRUE) #  print(res1, X=TRUE)
 
 })
 
@@ -1427,14 +1466,6 @@ renderPrint({
 
  h5(htmlOutput("text101"))
 
-renderPrint({
-
-  model <- inference()$X1
-  print(model)
-
-})
-
-
 
 renderPrint({
 
@@ -1443,6 +1474,8 @@ renderPrint({
 
 })
 
+ h5(htmlOutput("text102"))
+
 renderPrint({
 
   model <- inference()$betas
@@ -1450,13 +1483,54 @@ renderPrint({
 
 })
 
-
+ h5(htmlOutput("text103"))
+ 
 renderPrint({
 
   model <- inference()$var.cov
   print(model)
 
 })
+
+renderPrint({
+
+  model <- inference()$est
+  print(model)
+
+})
+
+
+renderPrint({
+
+  model <- inference()$se
+  print(model)
+
+})
+
+
+renderPrint({
+
+  model <- inference()$lower
+  print(model)
+
+})
+
+
+renderPrint({
+
+  model <- inference()$upper
+  print(model)
+
+})
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1615,10 +1689,11 @@ inference <- reactive({
     df <-  random.sample3()$dd
    
     ddz <<- datadist(df) ;    options(datadist='ddz')
-    f <- ols(log(DV) ~ IV, df)
+    
+    fit <- ols(log(DV) ~ IV, df)
 
-    x0 <- summary(f)
-    x <-  exp(x0[,4])
+    x0 <- summary(fit)
+    x <-  exp(x0[,4]) # plain 
     # cc <- contrast(f, list(IV='B', IV='D'),
     #                   list(IV='A', IV='C'), 
     #          type='average',
@@ -1635,23 +1710,29 @@ inference <- reactive({
    i <- gsub("^(.*?),.*", "\\1", qq)  # pull out before comma
    j <- sub('.*,\\s*', '', qq)        # pull out after comma
     
-  
+    a =  list(IV= dput(strsplit(i, "")[[1]])   )
+    b =  list(IV= dput(strsplit(j, "")[[1]])   )
+   
    #-------------------------------------------------
    
-   res <- contrast(f, 
+   res1 <- contrast(fit, 
                   
-       list(IV= dput(strsplit(i, "")[[1]])   ), 
-       list(IV= dput(strsplit(j, "")[[1]])   ),   conf.int=0.95,  #weights=table(df$IV),
+       # list(IV= dput(strsplit(i, "")[[1]])   ), 
+       # list(IV= dput(strsplit(j, "")[[1]])   ),   
+    a,
+    b,
+       
+       conf.int=0.95,  #weights=table(df$IV),
                   type='average') 
   
-   des.mat <-  print(res, X=TRUE)
+   des.mat <-  print(res1, X=TRUE)
    
    
    
   
-    estx <- exp(res$Contrast[1][[1]])
-    L <-   exp(res$Lower[1][[1]])
-    H <-   exp(res$Upper[1][[1]])
+    estx <- exp(res1$Contrast[1][[1]])
+    L <-   exp(res1$Lower[1][[1]])
+    H <-   exp(res1$Upper[1][[1]])
     # ------------------------------------
  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1662,10 +1743,10 @@ inference <- reactive({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   fit =f
+   #fit =f
     
-   a =  list(IV= dput(strsplit(i, "")[[1]])   )
-   b =  list(IV= dput(strsplit(j, "")[[1]])   )
+   #a =  list(IV= dput(strsplit(i, "")[[1]])   )
+   #b =  list(IV= dput(strsplit(j, "")[[1]])   )
    
    conf.int = 0.95
 
@@ -1696,10 +1777,11 @@ inference <- reactive({
     
     mm <- max(ma, mb)
 
+    #xa;xb
     # design matrix, removes labels
     xa <- matrix(xa, nrow = mm, ncol = ncol(xa), byrow = TRUE)
     xb <- matrix(xb, nrow = mm, ncol = ncol(xb), byrow = TRUE)
-    
+    #xa;xb
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # design matrix difference
     X1 <-  X <- xa - xb  # subtract   X1 will be outputted for presentation
@@ -1742,6 +1824,7 @@ inference <- reactive({
       lower <- est - zcrit * se
       upper <- est + zcrit * se
   
+    # printed on right tab  
     resx <- list(Contrast = est, SE = se, Lower = lower, Upper = upper, 
                 Z = Z, Pvalue = P,  
                 var = v, 
@@ -1757,11 +1840,15 @@ inference <- reactive({
     
   return(list(
     
-         res=estx , L=L, H=H, i=i, j=j, f=f, x=x, des.mat=des.mat,
+         res=estx , L=L, H=H, i=i, j=j, res1=res1,
          
-         resx=resx,
+         f=fit, x=x, des.mat=des.mat,
          
-         Xa=xa, Xb=xb, weights=weights, X1=X1, X2=X2, betas=betas, var.cov=var.cov
+         resx=resx,  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         
+         Xa=xa, Xb=xb, weights=weights, X1=X1, X2=X2, betas=betas, var.cov=var.cov, est=est, se=se, lower=lower,
+         
+         upper=upper
               
               ))   
         
