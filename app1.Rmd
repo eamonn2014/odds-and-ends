@@ -1390,7 +1390,44 @@ output$text101 <- renderText({  # create interactive text t1
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
     
-   
+  
+      output$text104 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Matrix multiplication [X] [VARCOV] [X'] and take the square root to get SE") 
+    
+  ))
+}) 
+      
+      
+           output$text105 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Multiply betas by weights and sum to get the contrast estimate!") 
+    
+  ))
+}) 
+      
+       
+            
+           output$text106 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Lower and upper limits (est +/- zcrit * se)") 
+    
+  ))
+}) 
+      
+      
    
    
 
@@ -1437,12 +1474,12 @@ renderPrint({
 
 # h5(htmlOutput("text99"))
 
-renderPrint({
-
-  model <- inference()$resx
-  print(model)
-
-})
+# renderPrint({
+# 
+#   model <- inference()$resx
+#   print(model)
+# 
+# })
 
  h5(htmlOutput("text99"))
 
@@ -1492,12 +1529,16 @@ renderPrint({
 
 })
 
+ h5(htmlOutput("text105"))
+
 renderPrint({
 
   model <- inference()$est
   print(model)
 
 })
+
+ h5(htmlOutput("text104"))
 
 
 renderPrint({
@@ -1507,6 +1548,8 @@ renderPrint({
 
 })
 
+
+ h5(htmlOutput("text106"))
 
 renderPrint({
 
@@ -1702,7 +1745,7 @@ inference <- reactive({
     # 
     # exp(cc$Contrast)
         
-   # ------------------------------------
+   # ------------------------------------contrast
     
     # lt <- levels(df$IV)
    qq <-    input$qq
@@ -1775,13 +1818,21 @@ inference <- reactive({
     ma <- nrow(xa)
     mb <- nrow(xb)
     
-    mm <- max(ma, mb)
+   # mm <- max(ma, mb)
 
-    #xa;xb
-    # design matrix, removes labels
-    xa <- matrix(xa, nrow = mm, ncol = ncol(xa), byrow = TRUE)
-    xb <- matrix(xb, nrow = mm, ncol = ncol(xb), byrow = TRUE)
-    #xa;xb
+     mall <- c(ma, mb)
+    
+    # if you dont do this design matrices could be wrong
+      mm <- max(mall)
+    if (mm > 1 && any(mall == 1)) {
+        if (ma == 1) 
+            xa <- matrix(xa, nrow = mm, ncol = ncol(xa), byrow = TRUE)
+        if (mb == 1) 
+            xb <- matrix(xb, nrow = mm, ncol = ncol(xb), byrow = TRUE)
+      
+    }
+ 
+     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # design matrix difference
     X1 <-  X <- xa - xb  # subtract   X1 will be outputted for presentation
@@ -1825,7 +1876,7 @@ inference <- reactive({
       upper <- est + zcrit * se
   
     # printed on right tab  
-    resx <- list(Contrast = est, SE = se, Lower = lower, Upper = upper, 
+    resxx <- list(Contrast = est, SE = se, Lower = lower, Upper = upper, 
                 Z = Z, Pvalue = P,  
                 var = v, 
                 df.residual = idf, 
@@ -1844,9 +1895,10 @@ inference <- reactive({
          
          f=fit, x=x, des.mat=des.mat,
          
-         resx=resx,  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         resx=resxx,  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          
-         Xa=xa, Xb=xb, weights=weights, X1=X1, X2=X2, betas=betas, var.cov=var.cov, est=est, se=se, lower=lower,
+         Xa=xa, Xb=xb, weights=weights, X1=X1, X2=X2, betas=betas,
+         var.cov=var.cov, est=est, se=se, lower=lower,
          
          upper=upper
               
