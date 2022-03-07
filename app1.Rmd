@@ -107,7 +107,7 @@ mvrnorm <- function(n = 1, mu = 0, Sigma) {
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**xxxxxxxxxxxxxxxx**
+**Design your method comparison, a simple setting, no replication **
 
 ```{r tab1}
 
@@ -120,7 +120,7 @@ Column {.sidebar}
                 min = -100, max = 100, step=5, ticks=F)
   
  
-  sliderInput('eff.p', 'Effect of treatment', value = c(0),
+  sliderInput('eff.p', 'Constant bias', value = c(0),
                 min = -25, max = 25 ,step=1, ticks=F)
   
    sliderInput('r', 'Correlation', value = c(.8),
@@ -133,7 +133,7 @@ Column {.sidebar}
   
   selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
   
-  selectInput("Pl.type", "Select difference type", choices = c("BA", "conv"), selected="BA")
+  selectInput("Pl.type", "Select plot", choices = c("BA", "conv"), selected="BA")
  
   
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -148,18 +148,11 @@ Column {.sidebar}
 
 ```
 
-$\alpha$ xxxxxxxxxxxxxxxxxxxx
-
-xxxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxx
-
-xxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxxxxxx
-
-$\alpha$ xxxxxxxxxxxxxxxxxx 
- 
+The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
 
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
-### Chart 1
+### Introduction
 
 ```{r tab1 plot1}
  
@@ -292,7 +285,7 @@ output$text2a <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "The following is the covariance between the two variables. We add 2 x this if we are interested in the variance of the sum, for the variance of the difference we subtract 2 x this component. ")))
+               "The following is the covariance between the two variables. Add 2 x this if we are interested in the variance of the sum, for the variance of the difference subtract 2 x this component. ")))
   
 })
    # --------------------------------------------------------------------------
@@ -344,7 +337,7 @@ output$text4 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Based on the true parameters, the variance of the difference is ") 
+               "Based on the true parameters, the variance of the difference, calculated using the above equation, is ") 
     
          , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz3( r1()$true )),
                      
@@ -366,13 +359,16 @@ output$text4 <- renderText({  # create interactive text t1
     
      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
     
-        ".") ))
+                 ##add some more text
+                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+        ", this matches the methComp estimate with the default settings, see the estimate in brackets in the Bland Altman plot below right"),".") ))
 
  })
   # --------------------------------------------------------------------------
 
 # see line 1412
-output$text5 <- renderText({  # create interactive text t1
+ output$text5 <- renderText({  # create interactive text t1
 
     print(paste0(   
     
@@ -424,7 +420,7 @@ output$text5 <- renderText({  # create interactive text t1
 Column {data-width=400}
 -------------------------------------
 
-### Chart 3
+### Paired boxplots and scatter plot
 
 ```{r, tab1 plot3}
 
@@ -482,7 +478,7 @@ renderPlot({
 
 ```
 
-### Chart 4
+### Bland Altman plot with 95% limits of agreement, within which we expect 95% of the differences to lie.
 
 ```{r, tab1 plot4}
 
@@ -897,10 +893,10 @@ Here we define the parameters of a lognormal distribution and a proportional cha
  
     
       div(h5(tags$span(style="color:blue", "Enter True Population values:")))
-                                  
+
+      textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))),     value= "60")
       textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))),     value= "100")
       textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD)"))),      value= "50")
-      textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))),     value= "60")
       textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))),    value= "0.90")
       textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))),            value= "0.85")
       textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
@@ -911,8 +907,47 @@ Here we define the parameters of a lognormal distribution and a proportional cha
 # 0.42 0.32
 # 0.96 0.1
 # 0.9  0.09
+       
+      
+ output$text55 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;",  "To meet the QC level of ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", random.sample2()$qc )
+    
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;",  " means the entire ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$conf )
+     
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " % interval of the contrast must lie within ") 
+                   
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  (random.sample2()$qc *100)/100 )
+    
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " and ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  formatz3(100/(random.sample2()$qc *100) )) 
+   
+   #  , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with 95%CI ( ") 
+      
+    # , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$L)) 
+     
+    # , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   ",  ")
+    
+    # , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$H) )
+    
+    # , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " ) ") 
+    
+  ))
+   
+})
+
+    h5(htmlOutput("text55"))   
 
 ```
+
+The xxxxxxxxxxxx
 
 
 ```{r text power, eval=TRUE}
@@ -993,22 +1028,21 @@ Column {data-width=400, height=75}
 ```{r power typical barplot}
 
 renderPlot({
-  
-  
-  N <-  random.sample2()$N
-  mu <-  random.sample2()$mu
-  mux <-  random.sample2()$mux
+
+  N <-        random.sample2()$N
+  mu <-       random.sample2()$mu
+  mux <-      random.sample2()$mux
   logN.mu <-  random.sample2()$logN.mu
-  logN.SD<-  random.sample2()$logN.SD
-  zx<-  random.sample2()$zx
-  sd<-  random.sample2()$sd
+  logN.SD<-   random.sample2()$logN.SD
+  zx<-        random.sample2()$zx
+  sd<-        random.sample2()$sd
  
-  A<-  random.sample2()$A
-  B<-  random.sample2()$B#
-  A.GM<-  random.sample2()$A.GM
-  B.GM<-  random.sample2()$B.GM
+  A<-         random.sample2()$A
+  B<-         random.sample2()$B#
+  A.GM<-      random.sample2()$A.GM
+  B.GM<-      random.sample2()$B.GM
  
-  delta <-  random.sample2()$delta
+  delta <-   random.sample2()$delta
  
   
   
@@ -1024,24 +1058,30 @@ renderPlot({
     MASS::truehist(A, 
                   yaxt='n' ,
                   nbins=br,  axes=FALSE,
-                   main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=",p3(logN.SD),", Geometric Mean=",p3(A.GM)), col = "blue", 
+    main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=", p3(logN.SD),
+                ", Geometric Mean=",p3(A.GM)), col = "blue", 
                   border = "white", xlab="Original scale")
-    
-    curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)   #adding log normal curve, here the mean and sd of the transformed dist are entered
+    #adding log normal curve, here the mean and sd of the transformed dist are entered
+    curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)   
     Axis(side=1, labels=TRUE)
     Axis(side=2, labels=FALSE)
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MASS::truehist(log(A), yaxt='n' , nbins=br,  axes=FALSE,
-                   main=paste0("A. N=",N," log transformed of left data, theoretical mu=",p3(mu),", SD=", p3(sd),""), col = "blue", border = "white",  xlab="log scale")
-    curve(dnorm(x,mu,sd), add=TRUE)           #adding normal curve, here the mean and sd of the transformed dist are entered, as above, just dist differs
+    MASS::truehist(log(A),
+                   yaxt='n' , 
+                   nbins=br,  axes=FALSE,
+    main=paste0("A. N=",N," log transformed of left data, theoretical mu=", p3(mu),", SD=", p3(sd),
+                ""), col = "blue", border = "white",  xlab="log scale")
+    #adding normal curve, here the mean and sd of the transformed dist are entered, as above, just dist differs
+    curve(dnorm(x,mu,sd), add=TRUE)           
     Axis(side=1, labels=TRUE)
     Axis(side=2, labels=FALSE)
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     MASS::truehist(B, 
                     yaxt='n' ,
                     nbins=br,  axes=FALSE,
-                   main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=", p3(logN.SD),", Geometric Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
+    main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=",p3(logN.SD),
+                ", Geometric Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
                    col = "orange", border = "white", xlab="Original scale")
      
     curve(dlnorm(x, meanlog = mu+delta, sdlog =sd, log = FALSE), add=TRUE)  
@@ -1049,9 +1089,13 @@ renderPlot({
     Axis(side=2, labels=FALSE)
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MASS::truehist(log(B), yaxt='n' , nbins=br, axes=FALSE, 
-                   main=paste0("B. N=",N," log transformed of left data, theoretical mu=",p3(mu+delta),", SD=",p3(sd),"\nTreatment effect ", p3(mu+delta)," - ",p3(mu),"=",
+    MASS::truehist(log(B), 
+                   yaxt='n' ,
+                   nbins=br, axes=FALSE, 
+      main=paste0("B. N=",N," log transformed of left data, theoretical mu=", p3(mu+delta),", SD=",p3(sd),
+                  "\nTreatment effect ", p3(mu+delta)," - ",p3(mu),"=",
                                p3(log(zx))), col = "orange", border = "white", xlab="log scale" )
+    
     curve(dnorm(x,mu+delta,sd), add=TRUE)
     Axis(side=1, labels=TRUE)
     Axis(side=2, labels=FALSE)
