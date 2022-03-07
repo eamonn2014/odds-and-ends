@@ -378,25 +378,25 @@ output$text5 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "The contrast of ") 
+               "After anti-logging, the contrast of ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
     
      , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " versus ") 
+               " vrs. ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
     
        , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " is estimated as ") 
+               " estimate is ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$res)) ,
    
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " with confidence interval ( ") 
+               " with 95%CI ( ") 
       
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$L)) ,
      
@@ -410,17 +410,10 @@ output$text5 <- renderText({  # create interactive text t1
     
        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-    " ) ")#,
+    " ) ") 
     
-     # , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd. ),
-    
-    # tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-               
-  #  ". xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ", #),
-    
-    
-  #      ".")
   ))
+  
 })
 
  
@@ -1274,7 +1267,7 @@ Column {.sidebar}
 
       sliderInput("range1", 
                    "Select group sizes: randomly select using range or uniquely select:", 
-                    min = 2, max = 5000, value = c(100, 100), ticks=FALSE) 
+                    min = 2, max = 5000, value = c(1000, 1000), ticks=FALSE) 
                             
       sliderInput("range2", 
                   "Select lognormal baseline group mean",  
@@ -1284,9 +1277,9 @@ Column {.sidebar}
     "Select true group standard deviations: randomly select using range or uniquely select", 
                   min = 20, max = 10000, value = c(1000, 1000), ticks=FALSE) 
       
-      textInput("pr1", div(h5(tags$span(style="color:blue", "Prop Chg Grp B v Grp A"))), value= "0.90")
-      textInput("pr2", div(h5(tags$span(style="color:blue", "Prop Chg Grp C v Grp A"))), value= "0.90")
-      textInput("pr3", div(h5(tags$span(style="color:blue", "Prop Chg Grp D v Grp A"))), value= "1.00")
+      textInput("pr1", div(h5(tags$span(style="color:blue", "Prop Chg Grp B v Grp A"))), value= "2")
+      textInput("pr2", div(h5(tags$span(style="color:blue", "Prop Chg Grp C v Grp A"))), value= "4")
+      textInput("pr3", div(h5(tags$span(style="color:blue", "Prop Chg Grp D v Grp A"))), value= "8")
  
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
@@ -1353,7 +1346,7 @@ output$text101 <- renderText({  # create interactive text t1
   
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )     
     
-    ,   tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with intercept added ") 
+    ,   tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with intercept added (aka weights) ") 
     
     
   ))
@@ -1429,6 +1422,32 @@ output$text101 <- renderText({  # create interactive text t1
       
       
    
+           
+           
+            
+           output$text107 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Contrasts of levels with intercept") 
+    
+  ))
+}) 
+                 
+      
+           
+           output$text108 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "The contrast function as specified by user inputs") 
+    
+  ))
+})                 
    
 
 ```
@@ -1449,6 +1468,7 @@ renderPrint({
 
 })
 
+ h5(htmlOutput("text107"))
 renderPrint({
 
   model <- inference()$x
@@ -1456,6 +1476,7 @@ renderPrint({
 
 })
 
+ h5(htmlOutput("text108"))
 renderPrint({
 
   model <- inference()$res1
@@ -1925,7 +1946,7 @@ inference <- reactive({
 Column {data-width=400}
 -------------------------------------
   
-### tabx
+### original scale
   
 ```{r left1, eval=TRUE}  
 
@@ -1959,7 +1980,7 @@ renderPlot({
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
   
-### tabz
+### Logged data with anti-log y axis labels
 
 ```{r right2}
 
