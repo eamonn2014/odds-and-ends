@@ -921,11 +921,29 @@ Here we define the parameters of a lognormal distribution and a proportional cha
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$conf )
      
-     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " % interval of the contrast must lie within ") 
-                   
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  (random.sample2()$qc *100)/100 )
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " % confidence interval of the contrast must lie within ") 
+     
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc*100 )
+                 
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "/100" )
+     
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   " = " )
+                 
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc )  
+                  
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   " and " )
+     
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "100/" ) 
+     
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc )  
+                    
+   #  , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "/100" )      
+ 
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   " = " )
+                  
+    # , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  (random.sample2()$qc *100)/100 )
     
-     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " and ") 
+    # , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " and ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  formatz3(100/(random.sample2()$qc *100) )) 
    
