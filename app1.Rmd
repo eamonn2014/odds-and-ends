@@ -2068,7 +2068,7 @@ inference <- reactive({
 
 ```  
 
-tab 6 
+tab 6  
 ====
 
 Column {.sidebar}
