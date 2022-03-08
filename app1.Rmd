@@ -1063,7 +1063,11 @@ renderPlot({
   delta <-   random.sample2()$delta
  
   
+  lx <- floor(min(A, B))
+  ux <- ceiling(max(A,B))
   
+  llx <- floor(  min(log(A), log(B)))
+  lux <- ceiling(max(log(A), log(B)))
   
   
     par(mfrow=c(2,2))
@@ -1075,7 +1079,7 @@ renderPlot({
     #~~~~~~~~~~~~~~~~~~~
     MASS::truehist(A, 
                   yaxt='n' ,
-                  nbins=br,  axes=FALSE,
+                  nbins=br,  axes=FALSE,  xlim=c(lx,ux),
     main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=", p3(logN.SD),
                 ", Geometric Mean=",p3(A.GM)), col = "blue", 
                   border = "white", xlab="Original scale")
@@ -1087,7 +1091,7 @@ renderPlot({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     MASS::truehist(log(A),
                    yaxt='n' , 
-                   nbins=br,  axes=FALSE,
+                   nbins=br,  axes=FALSE,  xlim=c(llx,lux),
     main=paste0("A. N=",N," log transformed of left data, theoretical mu=", p3(mu),", SD=", p3(sd),
                 ""), col = "blue", border = "white",  xlab="log scale")
     #adding normal curve, here the mean and sd of the transformed dist are entered, as above, just dist differs
@@ -1097,8 +1101,8 @@ renderPlot({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     MASS::truehist(B, 
                     yaxt='n' ,
-                    nbins=br,  axes=FALSE,
-    main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=",p3(logN.SD),
+                    nbins=br,  axes=FALSE, xlim=c(lx,ux),
+    main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=",p3(logN.SD), 
                 ", Geometric Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
                    col = "orange", border = "white", xlab="Original scale")
      
@@ -1109,8 +1113,8 @@ renderPlot({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     MASS::truehist(log(B), 
                    yaxt='n' ,
-                   nbins=br, axes=FALSE, 
-      main=paste0("B. N=",N," log transformed of left data, theoretical mu=", p3(mu+delta),", SD=",p3(sd),
+                   nbins=br, axes=FALSE, xlim=c(llx,lux),
+      main=paste0("B. N=",N," log transformed of left data, theoretical mu=", p3(mu+delta),", SD=",p3(sd), 
                   "\nTreatment effect ", p3(mu+delta)," - ",p3(mu),"=",
                                p3(log(zx))), col = "orange", border = "white", xlab="log scale" )
     
