@@ -1353,7 +1353,7 @@ Anova (linear model) contrasts
 Column {.sidebar}
 -----------------------------------------------------------------------
   
-**xxxxxxxxxxxxxxxx**
+**User inputs for 4 independent groups**
 
  
 ```{r}
