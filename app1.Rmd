@@ -887,7 +887,7 @@ T-test
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-Here we define the parameters of a lognormal distribution and a proportional change
+Here we define the parameters of a lognormal distribution and a proportional change (independent groups)
 
 ```{r, main power tab2}
  
@@ -1041,7 +1041,7 @@ Column {data-width=400, height=75}
 -----------------------------------------------------------------------
  
    
-### xxxxxxxxxxxxxxxxxx
+### The top left panel are histograms on the original scale, the right, natural log transformed versions
 
 ```{r power typical barplot}
 
@@ -1062,12 +1062,12 @@ renderPlot({
  
   delta <-   random.sample2()$delta
  
-  
-  lx <- floor(min(A, B))
-  ux <- ceiling(max(A,B))
-  
-  llx <- floor(  min(log(A), log(B)))
-  lux <- ceiling(max(log(A), log(B)))
+    # common limits for plotting
+    lx <- floor(min(A, B))
+    ux <- ceiling(max(A,B))
+    
+    llx <- floor(  min(log(A), log(B)))
+    lux <- ceiling(max(log(A), log(B)))
   
   
     par(mfrow=c(2,2))
@@ -1080,7 +1080,7 @@ renderPlot({
     MASS::truehist(A, 
                   yaxt='n' ,
                   nbins=br,  axes=FALSE,  xlim=c(lx,ux),
-    main=paste0("A. N=",N," realisations from log-normal mu=",p3(logN.mu),", SD=", p3(logN.SD),
+    main=paste0("A. N=",N," realisations from log-normal mu=", formatz00(logN.mu),", SD=", formatz00(logN.SD),
                 ", Geometric Mean=",p3(A.GM)), col = "blue", 
                   border = "white", xlab="Original scale")
     #adding log normal curve, here the mean and sd of the transformed dist are entered
@@ -1102,7 +1102,7 @@ renderPlot({
     MASS::truehist(B, 
                     yaxt='n' ,
                     nbins=br,  axes=FALSE, xlim=c(lx,ux),
-    main=paste0("B. N=",N," realisations true log-normal mu=",mux*zx,", SD=",p3(logN.SD), 
+    main=paste0("B. N=",N," realisations true log-normal mu=",formatz00(mux*zx),", SD=", formatz00(logN.SD), 
                 ", Geometric Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
                    col = "orange", border = "white", xlab="Original scale")
      
@@ -1133,7 +1133,7 @@ renderPlot({
 Column {data-width=400}
 -------------------------------------
 
-### tabz
+### Boxplots on the original scale
   
 ```{r}  
   
@@ -1221,7 +1221,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
 
 ```
 
-### Plot of original data (true lognormal)
+### Boxplots of log transformed data, labelled with antilogs 
 
 ```{r BApylot}
 
