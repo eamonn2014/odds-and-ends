@@ -1347,9 +1347,97 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   
 ``` 
 
+
 Anova (linear model) contrasts
 ====
+ 
+
+Column {data-width=400}
+-------------------------------------
   
+### original scale
+  
+```{r left1, eval=TRUE}  
+
+
+renderPlot({
+  
+   df <-  random.sample3()$dd
+   
+  yy <- ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
+
+    stat_boxplot(geom ='errorbar',width = 0.4) +
+    geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
+    labs(title="Boxplot, dotplot and Standard error of mean for groups", 
+         x = "Groups (sorted)",
+         y = "Response",
+         subtitle ="Blue dots=sample data points, Yellow dot=mean, Red=1 x standard error ",
+         caption = "") +
+    guides(fill="none") +
+    
+    geom_jitter(shape=21, fill="blue", color="darkred", size=3, width= 0.1) +
+     
+    stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
+    stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
+    theme_bw() 
+    print(yy)
+  
+})
+
+
+```
+Column {data-width=400, height=75}
+-----------------------------------------------------------------------
+  
+### Logged data with anti-log y axis labels
+
+```{r right2}
+
+renderPlot({
+  
+   d <-  random.sample3()$dd
+   
+   df <-  random.sample3()$dd
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  scalez <- c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6)
+  top <-    min(which( max(d$DV) < scalez))
+  bottom <- max(which( min(d$DV) > scalez))
+  scalez <- scalez[bottom:top]
+  ticks= log(scalez)
+  labs <- exp(ticks)  # exponentiate the labels
+  
+  df$DV <- log(df$DV)
+  
+xx<-  ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
+    
+    stat_boxplot(geom ='errorbar',width = 0.4) +
+    geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
+    labs(title="Boxplot, dotplot and Standard error of mean for groups", 
+         x = "Groups (sorted)",
+         y = "Response",
+         subtitle ="Blue dots=sample data points, Yellow dot=mean, Red=1 x standard error ",
+         caption = "") +
+    guides(fill="none") +
+    
+    scale_y_continuous(
+      
+      limits=c(   ticks[1],  ticks[length(ticks)]  ), 
+      breaks= ticks,    # this is where the values go
+      labels= labs) +   # these are labels
+    
+    geom_jitter(shape=21, fill="blue", color="darkred", size=3, width= 0.1) +
+    
+    stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
+    stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
+    theme_bw() 
+ 
+print(xx)
+
+})
+
+```
+
 Column {.sidebar}
 -----------------------------------------------------------------------
   
@@ -2024,101 +2112,6 @@ inference <- reactive({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
- 
-
-
-
-
-
-
- 
-```
-
-Column {data-width=400}
--------------------------------------
-  
-### original scale
-  
-```{r left1, eval=TRUE}  
-
-
-renderPlot({
-  
-   df <-  random.sample3()$dd
-   
-  yy <- ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
-
-    stat_boxplot(geom ='errorbar',width = 0.4) +
-    geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
-    labs(title="Boxplot, dotplot and Standard error of mean for groups", 
-         x = "Groups (sorted)",
-         y = "Response",
-         subtitle ="Blue dots=sample data points, Yellow dot=mean, Red=1 x standard error ",
-         caption = "") +
-    guides(fill="none") +
-    
-    geom_jitter(shape=21, fill="blue", color="darkred", size=3, width= 0.1) +
-     
-    stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
-    stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
-    theme_bw() 
-    print(yy)
-  
-})
-
-
-```
-Column {data-width=400, height=75}
------------------------------------------------------------------------
-  
-### Logged data with anti-log y axis labels
-
-```{r right2}
-
-renderPlot({
-  
-   d <-  random.sample3()$dd
-   
-   df <-  random.sample3()$dd
-
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  scalez <- c(0.001, 0.01, .1 ,1, 10, 100, 1000, 10000, 1e5 , 1e6)
-  top <-    min(which( max(d$DV) < scalez))
-  bottom <- max(which( min(d$DV) > scalez))
-  scalez <- scalez[bottom:top]
-  ticks= log(scalez)
-  labs <- exp(ticks)  # exponentiate the labels
-  
-  df$DV <- log(df$DV)
-  
-xx<-  ggplot(df, aes(reorder(IV,DV),DV,fill=IV))+
-    
-    stat_boxplot(geom ='errorbar',width = 0.4) +
-    geom_boxplot(outlier.shape = NA) + #avoid duplication of outliers
-    labs(title="Boxplot, dotplot and Standard error of mean for groups", 
-         x = "Groups (sorted)",
-         y = "Response",
-         subtitle ="Blue dots=sample data points, Yellow dot=mean, Red=1 x standard error ",
-         caption = "") +
-    guides(fill="none") +
-    
-    scale_y_continuous(
-      
-      limits=c(   ticks[1],  ticks[length(ticks)]  ), 
-      breaks= ticks,    # this is where the values go
-      labels= labs) +   # these are labels
-    
-    geom_jitter(shape=21, fill="blue", color="darkred", size=3, width= 0.1) +
-    
-    stat_summary(fun.data = mean_se, geom = "errorbar", colour = "red", size = 1, width= 0.1)+
-    stat_summary(geom="point", fun=base::mean, color="yellow",  size = 2) +
-    theme_bw() 
- 
-print(xx)
-
-})
 
 ```  
 
