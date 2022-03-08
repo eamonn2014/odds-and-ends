@@ -34,10 +34,10 @@ Method Comparison
   library(rms)
   lwd.=3             # used when plotting
   
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # function to format decimals
   # https://stackoverflow.com/questions/3245862/format-numbers-to-significant-figures-nicely-in-r
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   p3 <- function(x) {formatC(x, format="f", digits=3)}
   
   formatz <- function(x){
@@ -87,7 +87,7 @@ mvrnorm <- function(n = 1, mu = 0, Sigma) {
   t(samples)
 }
    
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  # https://stackoverflow.com/questions/6461209/how-to-round-up-to-the-nearest-10-or-100-or-x/6468532#6468532
  # nice function from link to round to selected value
@@ -96,6 +96,26 @@ mvrnorm <- function(n = 1, mu = 0, Sigma) {
   {
     to*(x%/%to + as.logical(x%%to))
   }
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# try these functions https://github.com/davidski/collector/blob/main/R/fit_distributions.R
+
+# Given a set of parameters describing a lognormal distribution, return
+# the parameters of the underlying normal distribution.
+
+lognormal_to_normal <- function(meanlog, sdlog) {
+  norm_mean <- exp(meanlog + sdlog^2 / 2)
+  norm_sd <- sqrt( (exp(sdlog^2) - 1) * exp(2*meanlog + sdlog^2))
+  list(mean = norm_mean, sd = norm_sd)
+}
+
+#' normal_to_lognormal(normmean = 20, normsd = 3)
+normal_to_lognormal <- function(normmean=10, normsd=2) {
+  phi <- sqrt(normsd ^ 2 + normmean ^ 2)
+  lognorm_meanlog <- log(normmean ^ 2 / phi)
+  lognorm_sdlog <- sqrt(log(phi ^ 2 / normmean ^ 2))
+  list(meanlog = lognorm_meanlog, sdlog = lognorm_sdlog)
+}
 
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,7 +207,7 @@ Column {data-width=400, height=75}
     return(list(pp1=pp1, pp2=pp2, sd.=sd.))
      })
    
-    # --------------------------------------------------------------------------
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
   r1 <- reactive({
@@ -226,18 +246,18 @@ Column {data-width=400, height=75}
      
   })
   
-  # --------------------------------------------------------------------------
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   h5(htmlOutput("text3"))      ## print 
   
 ```
 
 
 ```{r, test}
-   # --------------------------------------------------------------------------
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
    # help on font size
    h5(htmlOutput("text2"))      
-   # --------------------------------------------------------------------------
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                               withMathJax(
                                 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                              helpText('
@@ -248,7 +268,7 @@ Column {data-width=400, height=75}
                              }\\!$$'
                              ))   
                              )
-    # --------------------------------------------------------------------------
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    h5(htmlOutput("text2a"))   
      
                             withMathJax(
@@ -585,7 +605,7 @@ Column {data-width=400, height=300}
 
 ```{r, gp barplots, eval=TRUE}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  
   r2 <- reactive({
@@ -611,7 +631,7 @@ Column {data-width=400, height=300}
     
     m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
      
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # code from my useful code, adjusted slightly
 
   BA <- DA.reg(m, DA.slope = TRUE)
@@ -630,7 +650,7 @@ Column {data-width=400, height=300}
   colnames(res) <- c("Bland Altman Analysis")
  # print(res)
 
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ## **Assess Bland Altman assumptions P-values for two hypotheses:**
   w <- to.wide(m)
   ## assumptions do it yourself
@@ -647,28 +667,11 @@ Column {data-width=400, height=300}
   
   # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
   w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
- # w$r <- (residuals(f) )
-  #plot(r~x,w)
+  # w$r <- (residuals(f) )
+  # plot(r~x,w)
   f1 <- summary(lm(r~x, w))
   con.sd <- f1$coefficients["x","Pr(>|t|)"]
   
-  ##
-  # . A formal test of increasing or
-  # decreasing variance by the level of measurement can be obtained by
-  # first regressing the differences on the averages and then regressing the
-  # absolute residuals from this on the averages 
-  # 
-  # library(ggplot2)
-  # library(ggpubr)
-  # ggplot(w, aes(x=x, y=r))+
-  #   geom_point() +  
-  #   geom_smooth(method="lm", col="black")  +
-  #   stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
-  #   theme_bw() +
-  #   labs(title = paste0("Regression of absolute residuals on averages, p=", assump2),
-  #        x = "Averages",
-  #        y = "Absolute residuals")
-   
   return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
   
 
@@ -692,7 +695,7 @@ con.sd <- r2()$con.sd
 
  
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``` 
 
@@ -700,7 +703,8 @@ con.sd <- r2()$con.sd
 
 ```{r nb barplots, eval=TRUE}
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 renderPlot({
   
 w <- r2()$w
@@ -718,7 +722,7 @@ con.diff <- r2()$con.diff
 
 })
  
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ```
@@ -761,12 +765,15 @@ renderPlot({
 
 })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ```
 
 ###  Constant variance assumption
  
 ```{r diagnostics2}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # x averages
 # y differences
@@ -813,6 +820,8 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 
 ```{r diagnostics3, eval=TRUE}
  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
 # calculate mean and sd by group
 # stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
@@ -852,11 +861,12 @@ w <- r2()$w
 
 })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  
 ```
 
-### xxxxxxxxxxxxxxx 
+### not used yet 
  
  
 ```{r diagnostics4}
@@ -864,7 +874,7 @@ w <- r2()$w
   
 ```
 
-### xxxxxxxxxxxxxxx
+### not used yet
  
  
 ```{r diagnostics5}
@@ -873,7 +883,7 @@ w <- r2()$w
 
 ```
 
-### xxxxxxxxxxxxx
+### not used yet
 
 ```{r diagnostics6, eval=TRUE}
 
@@ -901,8 +911,7 @@ Here we define the parameters of a lognormal distribution and a proportional cha
       textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))),            value= "0.85")
       textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
       
-      
-        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
    actionButton("resampley",   "Hit to simulate a new sample")
       
@@ -948,39 +957,24 @@ Here we define the parameters of a lognormal distribution and a proportional cha
      
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc*100 )  
                     
-   #  , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "/100" )      
- 
      , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   " = " )
                   
-    # , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  (random.sample2()$qc *100)/100 )
-    
-    # , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " and ") 
-    
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  formatz2(100/(random.sample2()$qc *100) )) 
    
-   #  , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with 95%CI ( ") 
-      
-    # , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$L)) 
-     
-    # , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   ",  ")
-    
-    # , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$H) )
-    
-    # , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " ) ") 
-    
   ))
    
 })
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     h5(htmlOutput("text55"))   
+
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ```
 
 
 ```{r text power, eval=TRUE}
 
-  
-  
     random.sampley <- reactive({
       
      # Dummy line to trigger off button-press
@@ -992,14 +986,10 @@ Here we define the parameters of a lognormal distribution and a proportional cha
      
      })
 
-
-
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   random.sample2 <- reactive({
 
-    #foo <- input$resampley
-    
-     sampley <- random.sampley()
+    sampley <- random.sampley()
     
     # writing like this I can write log and fraction into input boxes!
     mux  <- as.numeric(    eval(parse(text= (input$v1)) ) )
@@ -1058,12 +1048,9 @@ Here we define the parameters of a lognormal distribution and a proportional cha
       })
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-  
 
 ```
  
-
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
  
@@ -1103,7 +1090,7 @@ renderPlot({
     
     br <- ifelse(N<100, N, 100) # bins in histograms
     
-    #~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     MASS::truehist(A, 
                   yaxt='n' ,
                   nbins=br,  axes=FALSE,  xlim=c(lx,ux),
@@ -1150,6 +1137,7 @@ renderPlot({
     Axis(side=2, labels=FALSE)
     
     par(mfrow=c(1,1))
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 })
@@ -1237,20 +1225,16 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   print(gx)
 
   })
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
  
 ```
   
-
-```{r pairyed boxplot, eval=TRUE}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-```
-
 ### Boxplots of log transformed data, labelled with antilogs plus inferential calculations
 
 ```{r BApylot}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   renderPlot({
   
@@ -1355,7 +1339,7 @@ Anova (linear model) contrasts
 Column {data-width=400}
 -------------------------------------
   
-### original scale
+### Plot on original scale
   
 ```{r left1, eval=TRUE}  
 
@@ -1389,7 +1373,7 @@ renderPlot({
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
   
-### Logged data with anti-log y axis labels
+### Plots of natural log data with anti-log y-axis labels
 
 ```{r right2}
 
@@ -1470,6 +1454,7 @@ Column {.sidebar}
    tags$style(HTML('#resamplex{background-color:orange}'))
    # )
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
    div(h5(tags$span(style="color:blue", "Enter a level followed by a comma and the level(s) to contrast, eg A,BCD. For example, let's evaluate this contrast,\nthe proportional change\n of B compared to A")))
    splitLayout(
     textInput("qq", div(h5(tags$span(style="color:blue", ""))), value= "B,A"),
@@ -1488,13 +1473,11 @@ Column {.sidebar}
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
     
-               
-  
   ))
 })
    
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+       
    output$text100 <- renderText({  # create interactive text t1
 
     print(paste0(   
@@ -1504,13 +1487,11 @@ Column {.sidebar}
                "The design matrix for ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
-    
-               
-  
+
   ))
 })
    
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    
 output$text101 <- renderText({  # create interactive text t1
@@ -1533,7 +1514,7 @@ output$text101 <- renderText({  # create interactive text t1
   ))
      
 })
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
    output$text102 <- renderText({  # create interactive text t1
@@ -1547,7 +1528,7 @@ output$text101 <- renderText({  # create interactive text t1
   ))
 })
     
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
       output$text103 <- renderText({  # create interactive text t1
@@ -1561,9 +1542,7 @@ output$text101 <- renderText({  # create interactive text t1
   ))
 })
    
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-    
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
       output$text104 <- renderText({  # create interactive text t1
 
@@ -1576,6 +1555,7 @@ output$text101 <- renderText({  # create interactive text t1
   ))
 }) 
       
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       
            output$text105 <- renderText({  # create interactive text t1
 
@@ -1588,7 +1568,7 @@ output$text101 <- renderText({  # create interactive text t1
   ))
 }) 
       
-       
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             
            output$text106 <- renderText({  # create interactive text t1
 
@@ -1601,12 +1581,9 @@ output$text101 <- renderText({  # create interactive text t1
   ))
 }) 
       
-      
-   
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
            
-           
-            
-           output$text107 <- renderText({  # create interactive text t1
+          output$text107 <- renderText({  # create interactive text t1
 
     print(paste0(   
     
@@ -1617,7 +1594,7 @@ output$text101 <- renderText({  # create interactive text t1
   ))
 }) 
                  
-      
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
            
            output$text108 <- renderText({  # create interactive text t1
 
@@ -1629,62 +1606,74 @@ output$text101 <- renderText({  # create interactive text t1
     
   ))
 })                 
-   
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 ```
 
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
   
-### xxxxxxxxxxxxxxxxxx split this in two
+### rms package analysis and contrast function
   
 ```{r top}
 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
  h5(htmlOutput("text5"))
 
-renderPrint({
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  model <- inference()$f
-  print(model)
+  renderPrint({
+  
+    model <- inference()$f
+    print(model)
+  
+  })
 
-})
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- h5(htmlOutput("text107"))
-renderPrint({
-
-  model <- inference()$x
-  print(model)
-
-})
+  h5(htmlOutput("text107"))
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+  renderPrint({
+  
+    model <- inference()$x
+    print(model)
+  
+  })
+  
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text108"))
-renderPrint({
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  model <- inference()$res1
-  print(model,X =TRUE) #  print(res1, X=TRUE)
+  renderPrint({
+  
+    model <- inference()$res1
+    print(model,X =TRUE) #  print(res1, X=TRUE)
+  
+  })
+  
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-})
 
 ```
 
  
 -------------------------------------
   
-### manual contrast
+### Walking through the calculation steps for a contrast
   
 ```{r left1test, eval=TRUE}  
-
-# h5(htmlOutput("text99"))
-
-# renderPrint({
-# 
-#   model <- inference()$resx
-#   print(model)
-# 
-# })
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text99"))
 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 renderPrint({
 
@@ -1693,8 +1682,11 @@ renderPrint({
 
 })
 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text100"))
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 renderPrint({
 
@@ -1703,8 +1695,11 @@ renderPrint({
 
 })
 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
  h5(htmlOutput("text101"))
 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 renderPrint({
 
@@ -1713,74 +1708,82 @@ renderPrint({
 
 })
 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
  h5(htmlOutput("text102"))
 
-renderPrint({
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  model <- inference()$betas
-  print(model)
+  renderPrint({
+  
+    model <- inference()$betas
+    print(model)
+  
+  })
 
-})
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text103"))
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
-renderPrint({
+  renderPrint({
+  
+    model <- inference()$var.cov
+    print(model)
+  
+  })
 
-  model <- inference()$var.cov
-  print(model)
-
-})
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text105"))
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-renderPrint({
 
-  model <- inference()$est
-  print(model)
+  renderPrint({
+  
+    model <- inference()$est
+    print(model)
+  
+  })
 
-})
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text104"))
 
 
-renderPrint({
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  model <- inference()$se
-  print(model)
+   renderPrint({
+  
+    model <- inference()$se
+    print(model)
+  
+  })
 
-})
-
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text106"))
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-renderPrint({
+  renderPrint({
+  
+    model <- inference()$lower
+    print(model)
+  
+  })
 
-  model <- inference()$lower
-  print(model)
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-})
+  renderPrint({
+  
+    model <- inference()$upper
+    print(model)
+  
+  })
 
-
-renderPrint({
-
-  model <- inference()$upper
-  print(model)
-
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 random.sample3 <- reactive({
         
@@ -1800,30 +1803,7 @@ random.sample3 <- reactive({
         delta1 <- log(zx1)
         delta2 <- log(zx2)
         delta3 <- log(zx3)
-         
-        
-        # 
-        # x1 <- 40  # size
-        # x2 <- 40
-        # x3 <- 100     # mean
-        # x5 <- 23  # sd
-        # x6 <- 26
-        # 
-        # zx1 <- .9
-        # zx2 <- .8
-        # zx3 <- 1.2
-        #  
-        # delta1 <- log(zx1)
-        # delta2 <- log(zx2)
-        # delta3 <- log(zx3)
-        #  
-        # 
-        # 
-        
-        
-        
-        
-        
+       
         top <-  4  # number of groups
 
     #----------------------------------------------------
@@ -1853,25 +1833,7 @@ random.sample3 <- reactive({
     }
     #----------------------------------------------------
 
-# i dont like the naming of these functions!!
-# try these functions https://github.com/davidski/collector/blob/main/R/fit_distributions.R
 
-#' Given a set of parameters describing a lognormal distribution, return
-#'   the parameters of the underlying normal distribution.
-
-lognormal_to_normal <- function(meanlog, sdlog) {
-  norm_mean <- exp(meanlog + sdlog^2 / 2)
-  norm_sd <- sqrt( (exp(sdlog^2) - 1) * exp(2*meanlog + sdlog^2))
-  list(mean = norm_mean, sd = norm_sd)
-}
-
-#' normal_to_lognormal(normmean = 20, normsd = 3)
-normal_to_lognormal <- function(normmean=10, normsd=2) {
-  phi <- sqrt(normsd ^ 2 + normmean ^ 2)
-  lognorm_meanlog <- log(normmean ^ 2 / phi)
-  lognorm_sdlog <- sqrt(log(phi ^ 2 / normmean ^ 2))
-  list(meanlog = lognorm_meanlog, sdlog = lognorm_sdlog)
-}
 
 
 temp <- rep(lower, top)
@@ -1939,6 +1901,8 @@ inference <- reactive({
 
     x0 <- summary(fit)
     x <-  exp(x0[,4]) # plain 
+    
+    
     # cc <- contrast(f, list(IV='B', IV='D'),
     #                   list(IV='A', IV='C'), 
     #          type='average',
@@ -1961,23 +1925,18 @@ inference <- reactive({
    #-------------------------------------------------
    
    res1 <- contrast(fit, 
-                  
-       # list(IV= dput(strsplit(i, "")[[1]])   ), 
-       # list(IV= dput(strsplit(j, "")[[1]])   ),   
-    a,
-    b,
-       
+      
+        a,
+        b,
+           
        conf.int=0.95,  #weights=table(df$IV),
                   type='average') 
   
    des.mat <-  print(res1, X=TRUE)
    
-   
-   
-  
     estx <- exp(res1$Contrast[1][[1]])
-    L <-   exp(res1$Lower[1][[1]])
-    H <-   exp(res1$Upper[1][[1]])
+    L <-    exp(res1$Lower[1][[1]])
+    H <-    exp(res1$Upper[1][[1]])
     # ------------------------------------
  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1987,11 +1946,7 @@ inference <- reactive({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-   #fit =f
-    
-   #a =  list(IV= dput(strsplit(i, "")[[1]])   )
-   #b =  list(IV= dput(strsplit(j, "")[[1]])   )
+ 
    
    conf.int = 0.95
 
@@ -2020,8 +1975,6 @@ inference <- reactive({
     ma <- nrow(xa)
     mb <- nrow(xb)
     
-   # mm <- max(ma, mb)
-
      mall <- c(ma, mb)
     
     # if you dont do this design matrices could be wrong
@@ -2058,7 +2011,7 @@ inference <- reactive({
       X   # [1x4]  this is the weights!   #  0  0.5   -1  0.5
       
       # weight the betas and sum to get contrast
-      est <- matxv(X, betas)   # contrast!!!!!!!!!!!!!!!!!!!!!!!!  #  X %*% betas
+      est <- matxv(X, betas)   # contrast X %*% betas
       
       #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~variance
 
