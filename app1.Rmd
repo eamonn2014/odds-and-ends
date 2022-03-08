@@ -542,7 +542,7 @@ tab2 $\alpha$
 
 ```
  
-Diagnostics
+Method Comparison Diagnostics
 ====
 
 <!-- Column {.sidebar} -->
@@ -575,7 +575,7 @@ Diagnostics
 
 ```
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+Method Comparison Diagnostics
  
 
 Column {data-width=400, height=300}
@@ -881,7 +881,7 @@ w <- r2()$w
 ``` 
  
 
-T-test 
+T-test example
 ====
 
 Column {.sidebar}
@@ -894,9 +894,9 @@ Here we define the parameters of a lognormal distribution and a proportional cha
     
       div(h5(tags$span(style="color:blue", "Enter True Population values:")))
 
-      textInput("v3", div(h5(tags$span(style="color:blue", "Sample in 1 arm"))),     value= "60")
+      textInput("v3", div(h5(tags$span(style="color:blue", "Sample size per arm"))),     value= "60")
       textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))),     value= "100")
-      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD)"))),      value= "50")
+      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD"))),      value= "50")
       textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))),    value= "0.90")
       textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))),            value= "0.85")
       textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
@@ -930,7 +930,7 @@ Here we define the parameters of a lognormal distribution and a proportional cha
     
      , tags$span(style="color:black;font-weight:bold;font-size: 20px;",  " means the entire ") 
     
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$conf )
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$conf*100 )
      
      , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " % confidence interval of the contrast must lie within ") 
      
@@ -946,7 +946,7 @@ Here we define the parameters of a lognormal distribution and a proportional cha
      
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "100/" ) 
      
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc )  
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc*100 )  
                     
    #  , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "/100" )      
  
@@ -956,7 +956,7 @@ Here we define the parameters of a lognormal distribution and a proportional cha
     
     # , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " and ") 
     
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  formatz3(100/(random.sample2()$qc *100) )) 
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  formatz2(100/(random.sample2()$qc *100) )) 
    
    #  , tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with 95%CI ( ") 
       
@@ -975,8 +975,6 @@ Here we define the parameters of a lognormal distribution and a proportional cha
     h5(htmlOutput("text55"))   
 
 ```
-
-The xxxxxxxxxxxx
 
 
 ```{r text power, eval=TRUE}
@@ -1110,7 +1108,7 @@ renderPlot({
                   yaxt='n' ,
                   nbins=br,  axes=FALSE,  xlim=c(lx,ux),
     main=paste0("A. N=",N," realisations from log-normal mu=", formatz00(logN.mu),", SD=", formatz00(logN.SD),
-                ", Geometric Mean=",p3(A.GM)), col = "blue", 
+                ", Sample Geometric Mean=",p3(A.GM)), col = "blue", 
                   border = "white", xlab="Original scale")
     #adding log normal curve, here the mean and sd of the transformed dist are entered
     curve(dlnorm(x, meanlog = mu, sdlog =sd, log = FALSE), add=TRUE)   
@@ -1132,7 +1130,7 @@ renderPlot({
                     yaxt='n' ,
                     nbins=br,  axes=FALSE, xlim=c(lx,ux),
     main=paste0("B. N=",N," realisations true log-normal mu=",formatz00(mux*zx),", SD=", formatz00(logN.SD), 
-                ", Geometric Mean=",p3(B.GM) ,"\nTreatment effect ",mux*zx," / ",mux,"=",zx), 
+                ", sample Geometric Mean=",p3(B.GM) ,"\nTrue treatment effect ",mux*zx," / ",mux,"=",zx), 
                    col = "orange", border = "white", xlab="Original scale")
      
     curve(dlnorm(x, meanlog = mu+delta, sdlog =sd, log = FALSE), add=TRUE)  
@@ -1144,7 +1142,7 @@ renderPlot({
                    yaxt='n' ,
                    nbins=br, axes=FALSE, xlim=c(llx,lux),
       main=paste0("B. N=",N," log transformed of left data, theoretical mu=", p3(mu+delta),", SD=",p3(sd), 
-                  "\nTreatment effect ", p3(mu+delta)," - ",p3(mu),"=",
+                  "\nTrue treatment effect ", p3(mu+delta)," - ",p3(mu),"=",
                                p3(log(zx))), col = "orange", border = "white", xlab="log scale" )
     
     curve(dnorm(x,mu+delta,sd), add=TRUE)
@@ -1162,7 +1160,7 @@ renderPlot({
 Column {data-width=400}
 -------------------------------------
 
-### Boxplots on the original scale
+### Boxplots on the original scale plus inferential calculations
   
 ```{r}  
   
@@ -1250,7 +1248,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
 
 ```
 
-### Boxplots of log transformed data, labelled with antilogs 
+### Boxplots of log transformed data, labelled with antilogs plus inferential calculations
 
 ```{r BApylot}
 
@@ -1349,7 +1347,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   
 ``` 
 
-Anova (linear model)
+Anova (linear model) contrasts
 ====
   
 Column {.sidebar}
@@ -1485,7 +1483,7 @@ output$text101 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Matrix multiplication [X] [VARCOV] [X'] and take the square root to get SE") 
+               "Matrix multiplication [X] [VARCOV] [X'] and take the square root to get se") 
     
   ))
 }) 
@@ -1510,7 +1508,7 @@ output$text101 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Lower and upper limits (est +/- zcrit * se)") 
+               "Lower and upper limits (estimate +/- zcrit * se)") 
     
   ))
 }) 
