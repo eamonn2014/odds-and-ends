@@ -900,6 +900,17 @@ Here we define the parameters of a lognormal distribution and a proportional cha
       textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))),    value= "0.90")
       textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))),            value= "0.85")
       textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
+      
+      
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # orange button
+   actionButton("resampley",   "Hit to simulate a new sample")
+      
+   #  tags$head(
+   tags$style(HTML('#resampley{background-color:orange}'))
+   # )
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
        
 # try these means and sds
 # 0.3  0.08
@@ -970,20 +981,38 @@ The xxxxxxxxxxxx
 
 ```{r text power, eval=TRUE}
 
+  
+  
+    random.sampley <- reactive({
+      
+     # Dummy line to trigger off button-press
+     foo <- input$resampley
+         
+     a    <- as.numeric(eval(parse(text= (input$v2)) ) )  # the random component , only need this for button  
+  
+     return(list(a=a))
+     
+     })
+
+
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   random.sample2 <- reactive({
 
-    foo <- input$resample
+    #foo <- input$resampley
+    
+     sampley <- random.sampley()
     
     # writing like this I can write log and fraction into input boxes!
     mux  <- as.numeric(    eval(parse(text= (input$v1)) ) )
-    a    <- as.numeric(    eval(parse(text= (input$v2)) ) )
+    #a    <- as.numeric(    eval(parse(text= (input$v2)) ) )  # sd 
     n    <- as.numeric(    eval(parse(text= (input$v3)) ) )
     conf <- as.numeric(    eval(parse(text= (input$v4)) ) )
     qc   <- as.numeric(    eval(parse(text= (input$v5)) ) )
     zx   <- as.numeric(    eval(parse(text= (input$v6)) ) )
     #normal_to_lognormal(normmean = mux, normsd = a)
+    
+    a <-    sampley$a # change with push of button
     
     v <- a^2
     m <- mux
