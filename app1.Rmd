@@ -546,21 +546,13 @@ renderPlot({
 ```
 
 
-tab2 $\alpha$
-====
+<!-- tab2 $\alpha$ -->
+<!-- ==== -->
 
-```{r, k or A}
-  
+<!-- ```{r, not used} -->
 
-```
 
-```{r syntax, eval=TRUE, echo=TRUE}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# End
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-```
+<!-- ``` -->
  
 Method Comparison Diagnostics
 ====
@@ -891,7 +883,7 @@ w <- r2()$w
 ``` 
  
 
-T-test example
+T-test 
 ====
 
 Column {.sidebar}
@@ -2068,108 +2060,172 @@ inference <- reactive({
 
 ```  
 
-tab 6  
-====
+<!-- tab 6   -->
+<!-- ==== -->
 
-Column {.sidebar}
------------------------------------------------------------------------
+<!-- Column {.sidebar} -->
+<!-- ----------------------------------------------------------------------- -->
+
+<!-- xxxxxxxxxxxx -->
+
+<!-- ```{r A, eval=TRUE} -->
 
 
-Use the inputs below to generate correlated count data !
+<!-- ``` -->
 
-```{r paired}
+<!-- Row {data-height=275} -->
+<!-- ----------------------------------------------------------------------- -->
 
-  sliderInput('N.p', 'Patients per arm', value=28,
-                min = 10, max = 200, step=5, ticks=F)
-  
-  sliderInput('mu0.p', 'Placebo mean rate \u03BC', value=8,
-                min = 0.1, max = 25, step=.05, ticks=F)
-  
-  sliderInput('eff.p', 'Hypothesised treatment effect ', value=.75,   
-                min = 0.5, max = 2, step=.05, ticks=F)
-  
-  sliderInput('r', 'Correlation', value = c(.20),
-                min = -1, max = 1 ,step=0.05, ticks=F)
-   
-  sliderInput('sims.p', 'Power simulations', value= 10,
-                min = 10, max = 1000, step= 100, ticks=F)
-
-```
-
-Row {data-height=275}
------------------------------------------------------------------------
-
-### xxxxxxxxxxxxxxxx
+<!-- ### xxxxxxxxxxxxxxxx -->
   
 
-```{r paired txt, eval=TRUE}
-
-reactive({
-  
-cat(paste0("xxxxxxxxxxx ",input$N.p,"xxxxxxxxxxxxxxx.\n"))
-
-cat(paste0("xxxxxxxxxxxxxxxxxxxx ",input$mu0.p, " xxxxxxxxxxxxxxxx ",input$eff.p,", xxxxxxxxxx " ,input$r,".\n")) 
-
-cat(paste0("\nxxxxxxxxxxxxxxxx"))
-
-cat(paste0("\nxxxxxxxxxxxxxxxxxx"))
-cat(paste0("\n1) xxxxxxxxxxxx"))
-cat(paste0("\n2) xxxxxxxxxxxx"))
-cat(paste0("\n3) xxxxxxxxxxxx"))
- 
-})
-
-``` 
-
-Row {data-height=250}
------------------------------------------------------------------------
-
-### tab4
+<!-- ```{r B, eval=TRUE} -->
 
 
-```{r paired results, eval=TRUE}
+<!-- ``` -->
 
- 
-```
+<!-- Row {data-height=250} -->
+<!-- ----------------------------------------------------------------------- -->
+
+<!-- ### xxxx -->
+
+
+<!-- ```{r C, eval=TRUE} -->
+
+
+<!-- ``` -->
 
    
-Row {.tabset .tabset-fade}
------------------------------------------------------------------------
+<!-- Row {.tabset .tabset-fade} -->
+<!-- ----------------------------------------------------------------------- -->
 
-### tab5
+<!-- ### xxxx -->
   
 
-```{r paired boxplot, eval=TRUE}
+<!-- ```{r D, eval=TRUE} -->
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-     
+<!-- ``` -->
 
-```
+<!-- ### xxxx -->
 
-### tab6
+<!-- ```{r E} -->
 
-```{r BAplot}
 
-  
+<!-- ``` -->
 
-```
 
 Wiki
 ====
  
-xxxxxxxxxxxxxxxxxxxxxxxxx $\alpha$ xxxxxxxxxxxxxxxxxxxxxxxxxx
-lines from residials, pi/2 explanation
-vickers code
+<!-- x $\alpha$ x  -->
+ 
+
+```{r}
+
+  # --------------------------------------------------------------------------
+
+output$text.wiki <- renderText({  # create interactive text t1
+
+    print(paste0(   
+ 
+           tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    " Method comparison is presented on the first tab. A simple experiment in which any difference is constant across the range and the standard deviation is also constant and common to both methods. Correlation between samples analysed using both methods can be introduced. If methods agree we expect there to be positive correlation. That is, if one method measures a sample to have a high value we would expect the second method to have a similar high value. We present a plot of the data using boxplots and join the same sample with a thin line, beside it a simple scattterplot. Bottom right the default plot is the familiar Bland Altman plot with 95% limits of agreement and conversion equation. There is an option to show instead the inference on a scatter plot. There are user options too for the analysis, bottom left. Here, the difference can be analysed depending on the averages assuming it is constant (default) or linear. The standard deviation can be analysed depending on the averages assuming it is constant (default) or linear
+    ", #),
+    
+        ".") ))
+ })
+ 
+
+  # --------------------------------------------------------------------------
+
+output$text.wiki2 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    " Method comparison diagnostics are presented on the next tab. The diagnostics include a check of the assmptions of constant variance across the range and constant difference across the range. Below there are more tabs, the first two plots are repeated but with some small modifications (just for programming practice). There is also a tab including histogram of the differences
+    ", #),
+    
+    
+        ".") ))
+ })
+ 
+  # --------------------------------------------------------------------------
+
+  # --------------------------------------------------------------------------
+
+output$text.wiki3 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    " The T test example tab allows the user to define a lognormal distributed variable (mean, sd and sample size) and another lognormal distributed variable of the same sample size and sd but proportionally different as defined by the user input. There are also user inputs for the confidence level and QC level. At the top we plot in blue the A group on the original scale (left) and log transformed scale. The B group is plotted similarly. At the bottom we plot boxplots (remember this is unpaired data). Also there are inferential statistics above the boxplots
+    ", #),
+    
+    
+        ".") ))
+ })
+
+output$text.wiki4 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    " The Anova tab allows the user to define 4 lognormal distributed variables of user defined sample sizes, sds and proportional differences.  The idea behind this tab is to perform and understand contrasts. On the left is Frank Harrell's contrast function and on the right we step through how a contrast is calculated
+    ", #),
+    
+    
+        ".") ))
+ })
+
+output$text.wiki2do <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    "  
+      vickers code
+      diagnostis for ANOVA
+      reference
+       pi/2 explanation
+ 
 gelmans book residuals
 replicates
 drop some reps
-bioequivalence 4 group pool and ratio?
-**xxxxxxxxxxxxxxxxxxxxxxx**
+    ", #),
+    
+    
+        ".") ))
+ })
+ 
+ 
+  # --------------------------------------------------------------------------
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  
+  h5(htmlOutput("text.wiki"))
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+  h5(htmlOutput("text.wiki2"))
+  
+  h5(htmlOutput("text.wiki3"))
+  
+  h5(htmlOutput("text.wiki4"))
+
+  h5(htmlOutput("text.wiki2do"))
+  # --------------------------------------------------------------------------
+
+    
+```
+
+
 
 References
 ====
