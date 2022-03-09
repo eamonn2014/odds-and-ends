@@ -140,13 +140,13 @@ Column {.sidebar}
                 min = -100, max = 100, step=5, ticks=F)
   
  
-  sliderInput('eff.p', 'Constant bias', value = c(0),
+  sliderInput('eff.p', 'Constant difference', value = c(0),
                 min = -25, max = 25 ,step=1, ticks=F)
   
    sliderInput('r', 'Correlation', value = c(.8),
                 min = -.9, max = .9, step=0.05, ticks=F)
      
-  sliderInput('sd.', 'Common SD', 1,
+  sliderInput('sd.', 'Common constant SD', 1,
                 min = 1, max = 100, step=1,ticks=F)
   
   selectInput("SD.type", "Select SD type", choices = c("cons", "lin"), selected="cons")
@@ -281,6 +281,7 @@ renderPlot({
 
 Column {data-width=400, height=75}
 -----------------------------------------------------------------------
+
 ### Introduction
 
 ```{r tab1 plot1}
@@ -391,6 +392,8 @@ Column {data-width=400, height=75}
     # --------------------------------------------------------------------------
     h5(htmlOutput("text4"))   
     # --------------------------------------------------------------------------
+    h5(htmlOutput("text4a"))   
+    # --------------------------------------------------------------------------
 ```
 
  
@@ -432,7 +435,7 @@ output$text3 <- renderText({  # create interactive text t1
    
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " samples assayed on each of two methods. There is a true bias of ") 
+               " samples assayed on each of two methods. There is a true difference (after - before) of ") 
       
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
      
@@ -452,7 +455,7 @@ output$text3 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    ". By design the SD is constant across the range of values. There are no technical replicates ", #),
+    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. There are no technical replicates ", #),
     
     
         ".") ))
@@ -468,7 +471,7 @@ output$text4 <- renderText({  # create interactive text t1
                
                "Based on the true parameters, the variance of the difference, calculated using the above equation, is ") 
     
-         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz3( r1()$true )),
+         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz1( r1()$true )),
                      
                      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
@@ -491,7 +494,18 @@ output$text4 <- renderText({  # create interactive text t1
                  ##add some more text
                   tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-        ", this matches the methComp estimate with the default settings, see the estimate in brackets in the Bland Altman plot below right"),".") ))
+        ", this matches the methComp estimate with the default settings, see the estimate in brackets in the Bland Altman plot top right"),".") ))
+
+ })
+
+
+output$text4a <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "Notice there are no replicates per sample on each method. Therefore the repeatability of each method cannot be estimated, this is a deficiency in the experimental design.")) )
 
  })
   # --------------------------------------------------------------------------
