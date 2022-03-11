@@ -139,21 +139,20 @@ Column {.sidebar}
   sliderInput('mu0', 'Initial mean  \u03BC', value=0,
                 min = -100, max = 100, step=5, ticks=F)
   
- 
   sliderInput('eff.p', 'Constant difference', value = c(0),
                 min = -25, max = 25 ,step=1, ticks=F)
   
-   sliderInput('r', 'Correlation', value = c(.8),
-                min = -.9, max = .9, step=0.05, ticks=F)
-     
-  sliderInput('sd.', 'Common constant SD', 1,
+  sliderInput('sd.', 'Common constant \u03C3', 1,
                 min = 1, max = 100, step=1,ticks=F)
+
+  sliderInput('r', 'Correlation \u03C1', value = c(.8),
+                min = -.9, max = .9, step=0.05, ticks=F)
   
-  selectInput("SD.type", "Select SD type", choices = c("cons", "lin"), selected="cons")
+  selectInput("SD.type", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
   
   selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
   
-  selectInput("Pl.type", "Select plot", choices = c("BA", "conv"), selected="BA")
+  selectInput("Pl.type", "Select plot",             choices = c("BA", "conv"), selected="BA")
  
   
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -449,13 +448,13 @@ output$text3 <- renderText({  # create interactive text t1
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-    " and between sample sd commmon to both methods of ")
+    " and between sample SD commmon to both methods of ")
     
       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. There are no technical replicates ", #),
+    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. We are not particularly interested in the between sample SD, this depends on the samples we choose and it is advisable to select samples that span range of the devices if possible. There are no technical replicates ", #),
     
     
         ".") ))
@@ -505,7 +504,7 @@ output$text4a <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "Notice there are no replicates per sample on each method. Therefore the repeatability of each method cannot be estimated, this is a deficiency in the experimental design.")) )
+     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design.")) )
 
  })
   # --------------------------------------------------------------------------
@@ -894,6 +893,398 @@ w <- r2()$w
 ```{r diagnostics6, eval=TRUE}
 
   
+```
+
+Method Comparison 2
+===
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**Design your method comparison, a simple setting, no replication **
+
+```{r mc2}
+
+ 
+ 
+  sliderInput('n_2', 'n pairs of data', value=100,
+                min = 5, max = 1000, step=5, ticks=F)
+
+  sliderInput('mu0_2', 'Initial mean  \u03BC', value=0,
+                min = -100, max = 100, step=5, ticks=F)
+  
+  sliderInput('eff.p_2', 'Constant difference', value = c(0),
+                min = -25, max = 25 ,step=1, ticks=F)
+  
+  sliderInput('sd._2', 'Common constant \u03C3', 1,
+                min = 1, max = 100, step=1,ticks=F)
+
+  sliderInput('r_2', 'Correlation \u03C1', value = c(.8),
+                min = -.9, max = .9, step=0.05, ticks=F)
+  
+  selectInput("SD.type_2", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Dif.type_2", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Pl.type_2", "Select plot",             choices = c("BA", "conv"), selected="BA")
+ 
+  
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # orange button
+   actionButton("resample_2",   "Hit to simulate a new sample")
+      
+   #  tags$head(
+   tags$style(HTML('#resample_2{background-color:orange}'))
+   # )
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+```
+
+The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
+
+Column {data-width=400}
+-------------------------------------
+
+### Paired boxplots and scatter plot
+
+```{r, mc2 B}
+
+   # --------------------------------------------------------------------------
+ 
+
+renderPlot({
+  
+  A <- r1_2()$pp1
+  B <- r1_2()$pp2
+  
+  m <- ceiling(max(A,B))
+  mL <- floor(min(A,B))
+  before <- A  
+  after <-  B  
+  n <- length(before)
+  d <- data.frame(y = c(before, after), 
+                  x = rep(c(1,2), each=n),
+                  id = factor(rep(1:n,2)))
+  
+  d$xj <- jitter(d$x, amount=.13)
+  # code from count app
+  AA <- ggplot(data=d, aes(y=y) ) +
+    geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
+    geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
+    geom_point(aes(x=xj), size=2) +
+    xlab("Phase") + ylab("Count") +  
+    scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
+   # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
+    theme_bw() + theme(legend.position = "none") 
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ scatter plot
+  
+
+  d <- data.frame(y = B , x = A)
+  
+  BB <- ggplot(d, aes(x, y)) +
+    geom_jitter(width = 0.1, height = 0.1, size=2) +
+   # scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
+   # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
+    scale_x_continuous( limits=c(mL,m)) +
+    scale_y_continuous(  limits=c(mL,m)) +
+    xlab("Before count") +ylab("After count") +
+    theme_bw() + theme(legend.position = "none") +
+    geom_abline(intercept=0, slope=1)
+  
+  plot1 <- AA
+  plot2 <- BB
+  grid.arrange(plot1, plot2, ncol=2)
+
+
+})
+  # --------------------------------------------------------------------------
+
+
+```
+
+### Bland Altman plot with 95% limits of agreement, within which we expect 95% of the differences to lie.
+
+```{r, mc2 C}
+
+    
+  # --------------------------------------------------------------------------
+
+
+renderPlot({
+  
+    A <- r1_2()$pp1
+    B <- r1_2()$pp2
+    n <- input$n_2
+    
+    d <- data.frame(y = A , x = B)
+  
+    my_data <- data.frame( 
+      group = rep(c("before", "after"), each = n),
+      counts = c(d[,1],  d[,2]),
+      ID=rep(1:n,2)
+    )
+  
+   m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+   
+   L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
+   
+   L <- roundUp(L)
+    
+    # we set up const dif and const sd so that will matches true data genrting mechanism
+    par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
+   
+    BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+             # axlim=c(0,20), 
+             diflim=c(-L,L), 
+             xaxs="i", yaxs="i",
+             las=1, eqn=TRUE,  
+             pl.type=input$Pl.type_2, 
+             sd.type=input$SD.type_2, 
+             dif.type = input$Dif.type_2, # cons is simulatied
+             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
+
+})
+
+  # --------------------------------------------------------------------------
+ 
+
+```
+
+Column {data-width=400, height=75}
+-----------------------------------------------------------------------
+
+### Introduction
+
+```{r mc2 D}
+ 
+   # --------------------------------------------------------------------------
+    # I looked back to two period cross over trial to get this button working to resimulate
+    # This is where a new sample is instigated only random noise is required to be generated
+
+ random.sample_2 <- reactive({
+      
+    # Dummy line to trigger off button-press
+    foo <- input$resample_2
+         
+    L1 <-     input$mu0_2
+    L2 <-     input$mu0_2+input$eff.p_2
+    r  <-     input$r_2
+    n <-      input$n_2
+    sd. <-    input$sd._2
+    
+# generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
+# Sample correlated N(0, 1) distributions from a multivariate normal distribution.
+# Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
+# Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
+
+    Sigma <- matrix(c(1, r, r, 1), 2, 2)
+
+    px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
+
+    U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
+    
+    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
+    pp2 <- qnorm(U[, 2], L2, sd.) 
+        
+    return(list(pp1=pp1, pp2=pp2, sd.=sd.))
+     })
+   
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  r1_2 <- reactive({
+ 
+    sample <- random.sample_2()
+     
+     r  <-     input$r_2
+     n <-      input$n_2
+     sd. <-    sample$sd. 
+ 
+     pp1 <- sample$pp1     # correlated normal  
+     pp2 <- sample$pp2 
+    
+    cor. <- cor(pp1, pp2)              # capture correlation
+ 
+    # create a data frame
+    my_data <- data.frame( 
+      group = rep(c("A.before", "B.after"), each = n),
+      counts = c(pp1,  pp2),
+      ID=rep(1:n,2)
+    )
+
+    ## variance of a difference from a simulation
+    est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
+    
+    ## true variance of difference
+    true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
+    
+    ## variance of a sum
+    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
+    # 
+    # 
+    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
+
+ return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
+     
+  })
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  h5(htmlOutput("text3z"))      ## print 
+  
+```
+
+
+```{r, mc2 E}
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
+   # help on font size
+   h5(htmlOutput("text2z"))      
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              withMathJax(
+                                tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+                             helpText('
+                             $${  
+                             {\\sigma^2}{_{x \\pm y}} =  
+                             {\\sigma^2}{_{x}}  +   {\\sigma^2}{_{y}} 
+                             \\pm 2\\rho{\\sigma}{_{x}} {\\sigma}{_{y}}           
+                             }\\!$$'
+                             ))   
+                             )
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   h5(htmlOutput("text2az"))   
+     
+                            withMathJax(
+                               tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+                             helpText('
+                              $${ 
+                              \\rho {\\sigma}{_{x}}  {\\sigma}{_{y}}           
+                              }\\!$$'))        
+  
+                            )
+    # --------------------------------------------------------------------------
+    h5(htmlOutput("text4z"))   
+    # --------------------------------------------------------------------------
+    h5(htmlOutput("text4az"))   
+    # --------------------------------------------------------------------------
+```
+
+ 
+```{r } 
+
+  # --------------------------------------------------------------------------
+output$text2z <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")))
+  
+})
+  # --------------------------------------------------------------------------
+
+output$text2az <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "The following is the covariance between the two variables. Add 2 x this if we are interested in the variance of the sum, for the variance of the difference subtract 2 x this component. ")))
+  
+})
+   # --------------------------------------------------------------------------
+   
+
+output$text3z <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "A method comparison with ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n_2) ,
+   
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " samples assayed on each of two methods. There is a true difference (after - before) of ") 
+      
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p_2) ,
+     
+     
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     
+    ", also there is a true correlation between the paired results of ")
+    
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r_2) ,
+    
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    " and between sample SD commmon to both methods of ")
+    
+      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd._2) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. We are not particularly interested in the between sample SD, this depends on the samples we choose and it is advisable to select samples that span range of the devices if possible. There are no technical replicates ", #),
+    
+    
+        ".") ))
+  # --------------------------------------------------------------------------
+ })
+ 
+
+output$text4z <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Based on the true parameters, the variance of the difference, calculated using the above equation, is ") 
+    
+         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz1( r1_2()$true )),
+                     
+                     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+     ", this equates to an SD of the differences of ") 
+    
+       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1_2()$true))) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               ". The estimate from a simulated experiment is ") 
+    
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1_2()$est )),
+                 
+                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+        ", this equates to an SD of the differences of ")
+    
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1_2()$est)),
+    
+                 ##add some more text
+                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+        ", this matches the methComp estimate with the default settings, see the estimate in brackets in the Bland Altman plot top right"),".") ))
+
+ })
+
+
+output$text4az <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design.")) )
+
+ })
+  # --------------------------------------------------------------------------
+ 
+
 ``` 
  
 
