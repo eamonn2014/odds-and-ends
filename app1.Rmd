@@ -908,7 +908,7 @@ Column {.sidebar}
  
  
   sliderInput('n_2', 'n pairs of data', value=100,
-                min = 5, max = 1000, step=5, ticks=F)
+                min = 5, max = 1000, step=5, ticks=F) 
 
   sliderInput('mu0_2', 'Initial mean  \u03BC', value=0,
                 min = -100, max = 100, step=5, ticks=F)
