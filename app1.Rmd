@@ -898,7 +898,7 @@ w <- r2()$w
 Method Comparison 2
 ===
 
-Column {.sidebar}
+Column {.sidebar data-width=400}
 -----------------------------------------------------------------------
 
 **Design your method comparison, a simple setting, no replication **
@@ -907,27 +907,118 @@ Column {.sidebar}
 
  
  
-  sliderInput('n_2', 'n pairs of data', value=100,
-                min = 5, max = 1000, step=5, ticks=F) 
+  # sliderInput('n_2', 'n pairs of data', value=100,
+  #               min = 5, max = 1000, step=5, ticks=F) 
+  # 
+  # sliderInput('mu0_2', 'Initial mean  \u03BC', value=0,
+  #               min = -100, max = 100, step=5, ticks=F)
+  # 
+  # sliderInput('eff.p_2', 'Constant difference', value = c(0),
+  #               min = -25, max = 25 ,step=1, ticks=F)
+  # 
+  # sliderInput('sd._2', 'Common constant \u03C3', 1,
+  #               min = 1, max = 100, step=1,ticks=F)
+  # 
+  # sliderInput('r_2', 'Correlation \u03C1', value = c(.8),
+  #               min = -.9, max = .9, step=0.05, ticks=F)
+  # 
+  # selectInput("SD.type_2", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+  # 
+  # selectInput("Dif.type_2", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  # 
+  # selectInput("Pl.type_2", "Select plot",             choices = c("BA", "conv"), selected="BA")
+  # 
+  
+  
+#   methods
+# a1 a2 [intercept no of methods]
+# slope1 slope2 [equal no of methods]
+# reps
+# repsmin
+# missing data 
+#    sigma.mi=c(0.062,0.062), [equal no of methods]
+#                 sigma.ir=c(0.02,.03), [equal no of methods]
+#                 sigma.mir=c( s1 , s2) , [equal no of methods]
+#                 mu.range=c( -0.5 ,1)[equal no of methods]
+#   
+  
+# sites<-2
+# samples<-80
+# replicates<-2
+# b1<-1
+# b2<-1 
+# s1<-0.128  #residual sd method1
+# s2<-0.143  #residual sd method2
 
-  sliderInput('mu0_2', 'Initial mean  \u03BC', value=0,
-                min = -100, max = 100, step=5, ticks=F)
-  
-  sliderInput('eff.p_2', 'Constant difference', value = c(0),
-                min = -25, max = 25 ,step=1, ticks=F)
-  
-  sliderInput('sd._2', 'Common constant \u03C3', 1,
-                min = 1, max = 100, step=1,ticks=F)
-
-  sliderInput('r_2', 'Correlation \u03C1', value = c(.8),
-                min = -.9, max = .9, step=0.05, ticks=F)
-  
-  selectInput("SD.type_2", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
-  
-  selectInput("Dif.type_2", "Select difference type", choices = c("cons", "lin"), selected="cons")
-  
-  selectInput("Pl.type_2", "Select plot",             choices = c("BA", "conv"), selected="BA")
+#set.seed(0)
  
+# foo <- Meth.sim(Ni=samples , 
+#                 Nm=sites,
+#                 Nr=replicates, 
+#                 nr=replicates,
+#                 alpha=c(0 ,.04), 
+#                 beta=c(b1,b2),
+#                 m.thin=1, i.thin=1,
+#                 sigma.mi=c(0.062,0.062), 
+#                 sigma.ir=c(0.02,.03), 
+#                 sigma.mir=c( s1 , s2) , 
+#                 mu.range=c( -0.5 ,1)
+#                 )  
+#   
+  
+textInput('methodz', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "No of methods")))), "2")
+
+textInput('samplez', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "No of items")))), "20")
+
+textInput('alphaz', 
+          strong(div(h5(tags$span(style="color:blue", 
+        "A vector of method-specific intercepts for the linear equation relating the 'true' underlying item mean measurement to the mean measurement on each method.")))), "0,0.4")
+
+textInput('betaz', 
+          strong(div(h5(tags$span(style="color:blue", 
+          "A vector of method-specific slopes for the linear equation relating the 'true' underlying item mean measurement to the mean measurement on each method.")))), "1,1")
+
+textInput('repz', 
+          strong(div(h5(tags$span(style="color:blue", 
+           "Replicates and reps min")))), "2,1")
+
+textInput('sigma.miz', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "Method-specific standard deviations for a method by item random effect. Some or all components can be zero.")))), "0.062,0.062")
+
+textInput('sigma.irz', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "Method-specific standard deviations for the item by replicate random effect.")))), ".02,.03")
+
+textInput('sigma.mirz', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "A vector of method-specific residual standard deviations for a method by item by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143")
+ 
+textInput('mu.rangez', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "The range across items of the 'true' mean measurement. Item means are uniformly spaced across the range. ")))), "-0.5 ,1")
+ 
+textInput('mizz', 
+          strong(div(h5(tags$span(style="color:blue", 
+           "Fraction of the observations from each method to keep, fraction of the observations from each item to keep")))), "1 ,1")
+ 
+ 
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
@@ -1014,36 +1105,18 @@ renderPlot({
 
 renderPlot({
   
-    A <- r1_2()$pp1
-    B <- r1_2()$pp2
-    n <- input$n_2
-    
-    d <- data.frame(y = A , x = B)
-  
-    my_data <- data.frame( 
-      group = rep(c("before", "after"), each = n),
-      counts = c(d[,1],  d[,2]),
-      ID=rep(1:n,2)
-    )
-  
-   m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+    foo <- r1_2()$foo
    
-   L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
-   
-   L <- roundUp(L)
-    
-    # we set up const dif and const sd so that will matches true data genrting mechanism
-    par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
-   
-    BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
-             # axlim=c(0,20), 
-             diflim=c(-L,L), 
-             xaxs="i", yaxs="i",
-             las=1, eqn=TRUE,  
-             pl.type=input$Pl.type_2, 
-             sd.type=input$SD.type_2, 
-             dif.type = input$Dif.type_2, # cons is simulatied
-             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
+    plot(foo)
+    # BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+    #          # axlim=c(0,20), 
+    #          diflim=c(-L,L), 
+    #          xaxs="i", yaxs="i",
+    #          las=1, eqn=TRUE,  
+    #          pl.type=input$Pl.type_2, 
+    #          sd.type=input$SD.type_2, 
+    #          dif.type = input$Dif.type_2, # cons is simulatied
+    #          grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
 
 })
 
@@ -1067,28 +1140,35 @@ Column {data-width=400, height=75}
       
     # Dummy line to trigger off button-press
     foo <- input$resample_2
-         
-    L1 <-     input$mu0_2
-    L2 <-     input$mu0_2+input$eff.p_2
-    r  <-     input$r_2
-    n <-      input$n_2
-    sd. <-    input$sd._2
     
-# generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
-# Sample correlated N(0, 1) distributions from a multivariate normal distribution.
-# Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
-# Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
+   nz <-     as.numeric(unlist(strsplit(input$samplez,   ",")))
+   mz <-     as.numeric(unlist(strsplit(input$methodz,   ",")))
+   az <-     as.numeric(unlist(strsplit(input$alphaz,    ",")))
+   bz <-     as.numeric(unlist(strsplit(input$betaz,     ",")))
+   rz <-     as.numeric(unlist(strsplit(input$repz,      ",")))
+   miz <-    as.numeric(unlist(strsplit(input$sigma.miz, ",")))
+   irz <-    as.numeric(unlist(strsplit(input$sigma.irz, ",")))
+   mirz <-   as.numeric(unlist(strsplit(input$sigma.mirz,",")))
+   rangez <- as.numeric(unlist(strsplit(input$mu.rangez,",")))
+   mizz <-   as.numeric(unlist(strsplit(input$mizz,      ",")))
 
-    Sigma <- matrix(c(1, r, r, 1), 2, 2)
-
-    px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
-
-    U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
     
-    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
-    pp2 <- qnorm(U[, 2], L2, sd.) 
+   foo <- Meth.sim(Ni=nz , 
+                Nm=mz,
+                Nr=rz[1], 
+                nr=rz[2],
+                alpha=az, 
+                beta= bz,
+                m.thin=mizz[1], i.thin=mizz[2],
+                
+                sigma.mi=miz, 
+                sigma.ir=irz, 
+                sigma.mir=mirz , 
+                
+                mu.range=rangez
+                )
         
-    return(list(pp1=pp1, pp2=pp2, sd.=sd.))
+    return(list(foo=foo, miz=miz, irz=irz, mirz=mirz))
      })
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1096,37 +1176,39 @@ Column {data-width=400, height=75}
 
   r1_2 <- reactive({
  
-    sample <- random.sample_2()
+   sample <- random.sample_2()
+    
+   nz <-     as.numeric(unlist(strsplit(input$samplez,   ",")))
+   mz <-     as.numeric(unlist(strsplit(input$methodz,   ",")))
+   az <-     as.numeric(unlist(strsplit(input$alphaz,    ",")))
+   bz <-     as.numeric(unlist(strsplit(input$betaz,     ",")))
+   rz <-     as.numeric(unlist(strsplit(input$repz,      ",")))
+   
+   miz <-    sample$miz  # the sds
+   irz <-    sample$irz
+   mirz <-   sample$mirz
+   
+   rangez <- as.numeric(unlist(strsplit(input$mu.rangez,",")))
+   mizz <-   as.numeric(unlist(strsplit(input$mizz,      ",")))
+    
+    
+   foo <- Meth.sim(Ni=nz , 
+                Nm=mz,
+                Nr=rz[1], 
+                nr=rz[2],
+                alpha=az, 
+                beta= bz,
+                m.thin=mizz[1], i.thin=mizz[2],
+                
+                sigma.mi=miz, 
+                sigma.ir=irz, 
+                sigma.mir=mirz , 
+                
+                mu.range=rangez
+                )
      
-     r  <-     input$r_2
-     n <-      input$n_2
-     sd. <-    sample$sd. 
- 
-     pp1 <- sample$pp1     # correlated normal  
-     pp2 <- sample$pp2 
-    
-    cor. <- cor(pp1, pp2)              # capture correlation
- 
-    # create a data frame
-    my_data <- data.frame( 
-      group = rep(c("A.before", "B.after"), each = n),
-      counts = c(pp1,  pp2),
-      ID=rep(1:n,2)
-    )
 
-    ## variance of a difference from a simulation
-    est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
-    
-    ## true variance of difference
-    true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
-    
-    ## variance of a sum
-    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
-    # 
-    # 
-    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
-
- return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
+ return(list( foo=foo ))
      
   })
   
