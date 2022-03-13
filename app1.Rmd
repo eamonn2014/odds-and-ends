@@ -1195,20 +1195,75 @@ Column {.tabset .tabset-fade}
   
 ```
 
-### not used yet 1
+### Data Listing
 
 ```{r mcomp2.1}
 
 # not used yet
- 
+
+    Listing <- reactive({
+  
+      foo <- r1_2()$foo
+      
+           w <- to.wide(foo)
+        
+          #separate by replicate and merge together
+          r1<-w[w$repl==1,]
+          r2<-w[w$repl==2,]
+          
+          w2<-merge(r1,r2, by.x="item", by.y="item")
+        
+    return(list(w=w))
+          
+     })
+
+
+
+  renderPrint({
+  
+    w <- Listing()$w
+    rownames(w) <- NULL  # refressh rownames
+    print(w)
+  
+  })
+        
+     
 ```
 
-### not used yet 2
+### Analysis
  
 
 ```{r mcomp2.2}
 
 # not used yet
+ 
+  lmm <-  reactive({
+  
+      foo <- r1_2()$foo
+
+
+    f <- BA.est( foo, linked=FALSE, IxR =TRUE, MxI = TRUE )
+    fL <- BA.est( foo, linked=TRUE )
+
+   return(list(f=f, fL=fL))
+    
+    
+    
+          
+     })
+
+
+  renderPrint({
+  
+    m1 <- lmm()$f
+     print(m1)
+     
+    m2 <- lmm()$fL
+     print(m2)
+  
+  })
+
+
 
 ```
 
