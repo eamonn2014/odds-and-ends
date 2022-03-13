@@ -1355,35 +1355,28 @@ standard deviation is not related to the method comparison, but only to the stud
  renderPlot({
  
     d <- r1_2()$foo
-    xx <- random.sample_2()  # bring in methods to plot
-      
-    wh.comp=c(xx$mz[2], xx$mz[3])
+    
+    xx <- random.sample_2()       # bring in methods to plot
+    wh.comp=c(xx$mz[2], xx$mz[3]) # bring in 2 methods
  
+    d$meth <- as.numeric(as.character(d$meth)) # make numeric to add some jitter
     
-    d$meth <- as.numeric(as.character(d$meth))
-    
-    d <- d[d$meth %in% wh.comp,]
+    d <- d[d$meth %in% wh.comp,]   # subset so there are two methods using usede inputs
 
-    d$xj <- jitter( d$meth, amount=.13)
-    d$grp <- paste(d$item, d$repl, sep=".")
+    d$xj <- jitter( d$meth, amount=.13)  # jitter
     
-    
+    d$grp <- paste(d$item, d$repl, sep=".") # this is need for plot
+
     # code based on count app
     AA <- ggplot(data=d, aes(y=y) ) +
       geom_boxplot(aes(x=meth, group=meth), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
       geom_line(aes(x=xj, group=grp),  colour=d$grp, alpha=.5) +
       geom_point(aes(x=xj), size=2,  colour=d$repl) +
       xlab("Method") + ylab("y") +  
-      scale_x_continuous(breaks=wh.comp #, 
-                       #  labels=c("Before", "After"), 
-                         #limits=c(0.5, 2.5)
-                       
-                       ) +
+      scale_x_continuous(breaks=wh.comp ) +
       theme_bw() + theme(legend.position = "none") 
-    
-    
-
-     print(AA)
+  
+    print(AA)
     
 })
 
@@ -1392,12 +1385,15 @@ standard deviation is not related to the method comparison, but only to the stud
   
 ```
 
-### not used yet 5
+### Permute the replicates
  
  
 ```{r mcomp2.5}
 
-# not used yet
+ renderPlot({
+    d <- r1_2()$foo
+    plot(perm.repl(d))
+  })
 
 ```
 
