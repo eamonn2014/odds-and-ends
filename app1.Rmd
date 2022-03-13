@@ -32,6 +32,7 @@ Method Comparison
   library(tidyverse)
   library(plyr)
   library(rms)
+  library(nlme)
   lwd.=3             # used when plotting
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -972,23 +973,24 @@ output$text.reg.notes <- renderText({  # create text
               "betas")))), "1,1,1")
 )
  
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('sigma.irz', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "'IxR' Method-specific standard deviations for the sample by replicate random effect.")))), "0.02,0.03, 0.05")
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   textInput('sigma.miz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
+              "'MxI' Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  textInput('sigma.irz', 
-            strong(div(h5(tags$span(style="color:blue", 
-              "Method-specific standard deviations for the sample by replicate random effect.")))), "0.02,0.03, 0.05")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
+              "'res' A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1036,9 +1038,9 @@ Column {data-width=400}
 
 renderPlot({
   
-  foo <- r1_2()$foo
+  foo <- r1_2()$foo  # bring in data
    
-  xx <- random.sample_2()
+  xx <- random.sample_2()  # bring in methods to plot
   
 f<- Meth( data=foo  ,meth="meth",
           item="item", repl="repl", y="y",  
@@ -1231,7 +1233,7 @@ Column {.tabset .tabset-fade}
           
           w2<-merge(r1,r2, by.x="item", by.y="item")
         
-    return(list(w=w))
+    return(list(w=w ))
           
      })
 
@@ -1248,49 +1250,88 @@ Column {.tabset .tabset-fade}
      
 ```
 
-### Analysis
+### Analysis, exchangable replicates
  
 
 ```{r mcomp2.2}
 
 # not used yet
  
-  lmm <-  reactive({
+lmm <-  reactive({
   
-      foo <- r1_2()$foo
-
+    foo <- r1_2()$foo
 
     f <- BA.est( foo, linked=FALSE, IxR =TRUE, MxI = TRUE )
-    fL <- BA.est( foo, linked=TRUE )
+    
+   return(list(f=f, foo=foo))
+       
+   })
 
-   return(list(f=f, fL=fL))
+
+  renderPrint({
+  
+    m1 <-  lmm()$f
+    foo <- lmm()$foo
     
+    cat("\nTo calcualte the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
+standard deviation is not related to the method comparison, but only to the study design.\n")
+    print(m1)
+    cat("\nCheck within a method, residual * sqrt(2) gives the standard deviation of the differences below,  multiply this by 2 to give 95% Limit of Agreement\n")
+    print(m1$RepCoef)
+    cat("\nLet's run the lme model:\n")
     
-    
-          
+     mz <-     as.numeric(unlist(strsplit(input$methodz,   ",")))
+
+        # Bendix book page 144 re pdIdent v pdIdiag
+    if (mz[1] < 3) {
+    print(lme( y ~ meth + item,
+          random=list( item = pdIdent( ~ meth-1 )  ),
+          weights = varIdent( form = ~1 | meth ),
+          data = foo ))
+      
+  } else {
+      print(lme( y ~ meth + item,
+          random=list( item = pdDiag( ~ meth-1 )  ),
+          weights = varIdent( form = ~1 | meth ),
+          data = foo ))
+  }
+  })
+  
+ 
+```
+
+### Analysis, linked replicates
+  
+
+```{r mcomp2.3}
+
+ 
+  lmm1 <-  reactive({
+  
+    foo <- r1_2()$foo
+
+    fL <- BA.est( foo, linked=TRUE, IxR =TRUE, MxI = TRUE  )
+
+    return(list( fL=fL))
+           
      })
 
 
   renderPrint({
   
-    m1 <- lmm()$f
-     print(m1)
-     
-    m2 <- lmm()$fL
+     m2 <- lmm1()$fL
+     cat("\nTo calcualte the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
+standard deviation is not related to the method comparison, but only to the study design.\n")
      print(m2)
+     cat("\nCheck within a method, residual * sqrt(2) gives the standard deviation of the differences below,  multiply this by 2 to give 95% Limit of Agreement\n")
+     print(m2$RepCoef)
+     
+     
   
-  })
+   })
 
-
-
-```
-
-### not used yet 3
-  
-
-```{r mcomp2.3}
-
-# not used yet 
+ 
+ # IXR
 
 ```
 
