@@ -899,7 +899,7 @@ w <- r2()$w
   
 ```
 
-Method Comparison with replicates!
+Method Comparison with replicates!  
 ===
 
 Column {.sidebar data-width=380}
@@ -917,6 +917,20 @@ Column {.sidebar data-width=380}
 #            strong(div(h5(tags$span(style="color:blue", 
 #              "No of items")))), "20")
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+output$text.reg.notes2 <- renderText({  # create text
+
+    print(paste0(   
+
+        tags$span(style="color:blue;font-size: 15px;", 
+          
+     "In the methods box the first entry is the no. of methods. The following are those that are presented in the BA plot top left.")) )
+
+ })
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  h5(htmlOutput("text.reg.notes2"))    
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  splitLayout(
        textInput('methodz', 
@@ -934,6 +948,7 @@ textInput('repz',
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 output$text.reg.notes <- renderText({  # create text
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     print(paste0(   
 
