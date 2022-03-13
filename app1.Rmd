@@ -937,75 +937,72 @@ output$text.reg.notes <- renderText({  # create text
 
     print(paste0(   
 
-        tags$span(style="color:blue;font-weight:bold;font-size: 15px;", 
+        tags$span(style="color:blue;font-size: 15px;", 
           
-     "vectors of method-specific intercepts and slopes for the linear equation relating the 'true' underlying sample mean measurement to the mean measurement on each method")) )
+     "Vectors of method-specific intercepts and slopes for the linear equation relating the 'true' underlying sample mean measurement to the mean measurement on each method")) )
 
  })
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-h5(htmlOutput("text.reg.notes"))    
+  h5(htmlOutput("text.reg.notes"))    
 
  splitLayout(
-textInput('alphaz', 
-          strong(div(h5(tags$span(style="color:blue", 
-        "alphas")))), "0,0.4"),
-
-textInput('betaz', 
-          strong(div(h5(tags$span(style="color:blue", 
-          "betas")))), "1,1")
+    textInput('alphaz', 
+              strong(div(h5(tags$span(style="color:blue", 
+            "alphas")))), "0,0.4"),
+    
+    textInput('betaz', 
+              strong(div(h5(tags$span(style="color:blue", 
+              "betas")))), "1,1")
 )
+ 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#  
-# 
-# textInput('repz', 
-#           strong(div(h5(tags$span(style="color:blue", 
-#            "Replicates and rep minimum")))), "2,1")
+ 
+  textInput('sigma.miz', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062")
 
-textInput('sigma.miz', 
-          strong(div(h5(tags$span(style="color:blue", 
-            "Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-textInput('sigma.irz', 
-          strong(div(h5(tags$span(style="color:blue", 
-            "Method-specific standard deviations for the sample by replicate random effect.")))), ".02,.03")
+  textInput('sigma.irz', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "Method-specific standard deviations for the sample by replicate random effect.")))), ".02,.03")
 
-textInput('sigma.mirz', 
-          strong(div(h5(tags$span(style="color:blue", 
-            "A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('sigma.mirz', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143")
  
-textInput('mu.rangez', 
-          strong(div(h5(tags$span(style="color:blue", 
-            "The range across items of the 'true' mean measurement. Sample means are uniformly spaced across the range. ")))), "-0.5 ,1")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('mu.rangez', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "The range across items of the 'true' mean measurement. Sample means are uniformly spaced across the range. ")))), "-0.5 ,1")
  
-textInput('mizz', 
-          strong(div(h5(tags$span(style="color:blue", 
-           "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('mizz', 
+            strong(div(h5(tags$span(style="color:blue", 
+             "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
  
- 
- #  selectInput("SD.typez", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  selectInput("Pl.typez", "Select plot",  choices = c("BA", "conv"), selected="BA")
+    
+  selectInput("modelz", "Model: replicates exchangable or linked?",  
+              choices = c("exch", "linked"), selected="exch")
   
-#  selectInput("Dif.typez", "Select difference type", choices = c("cons", "lin"), selected="cons")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-  
-  
-  
-    selectInput("Pl.typez", "Select plot",             choices = c("BA", "conv"), selected="BA")
- selectInput("modelz", "Model: reps exch or linked?",             choices = c("exch", "linked"), selected="exch")
-  
-  
-   
-  
-  
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # orange button
-   actionButton("resample_2",   "Hit to simulate a new sample")
-      
-   #  tags$head(
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# orange button
+
+  actionButton("resample_2",   "Hit to simulate a new sample")
+       
    tags$style(HTML('#resample_2{background-color:orange}'))
-   # )
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
 
 ```
@@ -1102,7 +1099,7 @@ renderPlot({
 
 ```
 
-Column {data-width=400, height=75}
+Column {.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
 ### Introduction
@@ -1194,47 +1191,65 @@ Column {data-width=400, height=75}
   })
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  h5(htmlOutput("text3z"))      ## print 
+ # h5(htmlOutput("text3z"))      ## print 
   
 ```
 
+### not used yet 1
 
-```{r, mc2 E}
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
-   # help on font size
-   h5(htmlOutput("text2z"))      
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                              withMathJax(
-                                tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-                             helpText('
-                             $${  
-                             {\\sigma^2}{_{x \\pm y}} =  
-                             {\\sigma^2}{_{x}}  +   {\\sigma^2}{_{y}} 
-                             \\pm 2\\rho{\\sigma}{_{x}} {\\sigma}{_{y}}           
-                             }\\!$$'
-                             ))   
-                             )
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   h5(htmlOutput("text2az"))   
-     
-                            withMathJax(
-                               tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-                             helpText('
-                              $${ 
-                              \\rho {\\sigma}{_{x}}  {\\sigma}{_{y}}           
-                              }\\!$$'))        
-  
-                            )
-    # --------------------------------------------------------------------------
-    h5(htmlOutput("text4z"))   
-    # --------------------------------------------------------------------------
-    h5(htmlOutput("text4az"))   
-    # --------------------------------------------------------------------------
+```{r mcomp2.1}
+
+# not used yet
+ 
 ```
+
+### not used yet 2
+ 
+
+```{r mcomp2.2}
+
+# not used yet
+
+```
+
+### not used yet 3
+  
+
+```{r mcomp2.3}
+
+# not used yet 
+
+```
+
+### not used yet 4
+ 
+ 
+```{r mcomp2.4}
+
+# not used yet
+  
+```
+
+### not used yet 5
+ 
+ 
+```{r mcomp2.5}
+
+# not used yet
+
+```
+
+### not used yet 6
+
+```{r mcomp2.6}
+
+# not used yet
+
+```
+
 
  
-```{r } 
+```{r texts} 
 
   # --------------------------------------------------------------------------
 output$text2z <- renderText({  # create interactive text t1
