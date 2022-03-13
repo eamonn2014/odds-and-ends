@@ -988,7 +988,8 @@ textInput('mizz',
   
   
   
-  
+    selectInput("Pl.typez", "Select plot",             choices = c("BA", "conv"), selected="BA")
+
   
   
   
@@ -1040,11 +1041,13 @@ BA.plot(f,
         font.eqn = 3,
        # axlim=c(-1.5,.75), 
       
-        diflim=c(-20,20), xaxs="i", yaxs="i",col.points='blue',
+       # diflim=c(-20,20), 
+      xaxs="i", yaxs="i",col.points='blue',
         #cex.points = 0.5,
         las=1, eqn=TRUE, eqax=TRUE, 
         dif.type="cons", 
-        pl.type="conv", 
+        #pl.type="conv", 
+          pl.type=input$Pl.typez, 
         sd.type="cons",
         #grid=seq(-1.6,.8,.1), 
         grid=TRUE,
@@ -1052,7 +1055,7 @@ BA.plot(f,
         
         col.grid=gray(0.9))
 
-abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
+if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 
 
 })
