@@ -921,7 +921,7 @@ Column {.sidebar data-width=380}
  splitLayout(
        textInput('methodz', 
           strong(div(h5(tags$span(style="color:blue", 
-            "No of methods")))), "2"),
+            "No of methods")))), "3,1,2"),
  textInput('samplez', 
            strong(div(h5(tags$span(style="color:blue", 
              "No of samples")))), "20"),
@@ -950,30 +950,30 @@ output$text.reg.notes <- renderText({  # create text
  splitLayout(
     textInput('alphaz', 
               strong(div(h5(tags$span(style="color:blue", 
-            "alphas")))), "0,0.4"),
+            "alphas")))), "0,0.4,0"),
     
     textInput('betaz', 
               strong(div(h5(tags$span(style="color:blue", 
-              "betas")))), "1,1")
+              "betas")))), "1,1,1")
 )
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   textInput('sigma.miz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062")
+              "Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.irz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "Method-specific standard deviations for the sample by replicate random effect.")))), ".02,.03")
+              "Method-specific standard deviations for the sample by replicate random effect.")))), "0.02,0.03, 0.05")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143")
+              "A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1023,7 +1023,8 @@ renderPlot({
   
   foo <- r1_2()$foo
    
-
+  xx <- random.sample_2()
+  
 f<- Meth( data=foo  ,meth="meth",
           item="item", repl="repl", y="y",  
           keep.vars=!is.null(data) , print=F) 
@@ -1031,7 +1032,9 @@ f<- Meth( data=foo  ,meth="meth",
 #par(mar=c(5.1,4.1,4.1,4))
 
 BA.plot(f, 
-      #  wh.comp=c(method2, method1), 
+      
+        
+        wh.comp=c(xx$mz[2], xx$mz[3]), 
       
         model=input$modelz,
       
@@ -1145,7 +1148,7 @@ Column {.tabset .tabset-fade}
                 mu.range=rangez
                 )
         
-    return(list(foo=foo, miz=miz, irz=irz, mirz=mirz))
+    return(list(foo=foo, miz=miz, irz=irz, mirz=mirz, mz=mz))
      })
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
