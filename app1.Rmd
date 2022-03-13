@@ -925,7 +925,7 @@ output$text.reg.notes2 <- renderText({  # create text
 
         tags$span(style="color:blue;font-size: 15px;", 
           
-     "In the methods box the first entry is the no. of methods. The following are those that are presented in the BA plot top left.")) )
+     "In the methods box the first entry is the no. of methods (try changing the 3 to 2!). The following are those that are presented in the BA plot top left.")) )
 
  })
 
@@ -1006,9 +1006,13 @@ output$text.reg.notes <- renderText({  # create text
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  selectInput("Pl.typez", "Select plot",  choices = c("BA", "conv"), selected="BA")
+  selectInput("Pl.typez", 
+              strong(div(h5(tags$span(style="color:blue",
+              "Select plot type (main top left)")))),  choices = c("BA", "conv"), selected="BA")
     
-  selectInput("modelz", "Model: replicates exchangable or linked?",  
+  selectInput("modelz", 
+                strong(div(h5(tags$span(style="color:blue",
+              "Model: replicates exchangable or linked?")))),  
               choices = c("exch", "linked"), selected="exch")
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1029,7 +1033,7 @@ The top two drop down menus allow different modelling approaches. Note, the defa
 Column {data-width=400}
 -------------------------------------
 
-### Paired boxplots and scatter plot
+### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates)
 
 ```{r, mc2 B}
 
@@ -1089,7 +1093,7 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 
 ```
 
-### Bland Altman plot with 95% limits of agreement, within which we expect 95% of the differences to lie.
+### Plots showing relationships between all methods
 
 ```{r, mc2 C}
 
@@ -1102,16 +1106,7 @@ renderPlot({
     foo <- r1_2()$foo
    
     plot(foo)
-    # BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
-    #          # axlim=c(0,20), 
-    #          diflim=c(-L,L), 
-    #          xaxs="i", yaxs="i",
-    #          las=1, eqn=TRUE,  
-    #          pl.type=input$Pl.type_2, 
-    #          sd.type=input$SD.type_2, 
-    #          dif.type = input$Dif.type_2, # cons is simulatied
-    #          grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
-
+    
 })
 
   # --------------------------------------------------------------------------
@@ -1273,8 +1268,8 @@ lmm <-  reactive({
     m1 <-  lmm()$f
      foo <- r1_2()$foo
     
-    cat("\nTo calcualte the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
-standard deviation is not related to the method comparison, but only to the study design.\n")
+   cat("\nTo calculate the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
+standard deviation is not related to the method comparison, but only to the study design it is not an effect of any predictive relevance.\n")
     print(m1)
     cat("\nCheck within a method, residual * sqrt(2) gives the standard deviation of the differences below,  multiply this by 2 to give 95% Limit of Agreement\n")
     print(m1$RepCoef)
@@ -1321,8 +1316,8 @@ standard deviation is not related to the method comparison, but only to the stud
   
      m2 <- lmm1()$fL
       foo <- r1_2()$foo
-     cat("\nTo calcualte the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
-standard deviation is not related to the method comparison, but only to the study design.\n")
+     cat("\nTo calculate the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
+standard deviation is not related to the method comparison, but only to the study design it is not an effect of any predictive relevance.\n")
      print(m2)
      cat("\nCheck within a method, residual * sqrt(2) gives the standard deviation of the differences below,  multiply this by 2 to give 95% Limit of Agreement\n")
      print(m2$RepCoef)
@@ -1352,12 +1347,48 @@ standard deviation is not related to the method comparison, but only to the stud
 
 ```
 
-### not used yet 4
+### Boxplots, dots indicate reps, items by coloured lines
  
  
 ```{r mcomp2.4}
 
-# not used yet
+ renderPlot({
+ 
+    d <- r1_2()$foo
+    xx <- random.sample_2()  # bring in methods to plot
+      
+    wh.comp=c(xx$mz[2], xx$mz[3])
+ 
+    
+    d$meth <- as.numeric(as.character(d$meth))
+    
+    d <- d[d$meth %in% wh.comp,]
+
+    d$xj <- jitter( d$meth, amount=.13)
+    d$grp <- paste(d$item, d$repl, sep=".")
+    
+    
+    # code based on count app
+    AA <- ggplot(data=d, aes(y=y) ) +
+      geom_boxplot(aes(x=meth, group=meth), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
+      geom_line(aes(x=xj, group=grp),  colour=d$grp, alpha=.5) +
+      geom_point(aes(x=xj), size=2,  colour=d$repl) +
+      xlab("Method") + ylab("y") +  
+      scale_x_continuous(breaks=wh.comp #, 
+                       #  labels=c("Before", "After"), 
+                         #limits=c(0.5, 2.5)
+                       
+                       ) +
+      theme_bw() + theme(legend.position = "none") 
+    
+    
+
+     print(AA)
+    
+})
+
+
+
   
 ```
 
