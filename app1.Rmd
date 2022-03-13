@@ -899,7 +899,7 @@ w <- r2()$w
   
 ```
 
-Method Comparison with replicates!  
+Method Comparison with replicates!    
 ===
 
 Column {.sidebar data-width=380}
