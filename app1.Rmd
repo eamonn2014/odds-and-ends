@@ -1271,7 +1271,7 @@ lmm <-  reactive({
   renderPrint({
   
     m1 <-  lmm()$f
-    foo <- lmm()$foo
+     foo <- r1_2()$foo
     
     cat("\nTo calcualte the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
 standard deviation is not related to the method comparison, but only to the study design.\n")
@@ -1320,12 +1320,29 @@ standard deviation is not related to the method comparison, but only to the stud
   renderPrint({
   
      m2 <- lmm1()$fL
+      foo <- r1_2()$foo
      cat("\nTo calcualte the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
 standard deviation is not related to the method comparison, but only to the study design.\n")
      print(m2)
      cat("\nCheck within a method, residual * sqrt(2) gives the standard deviation of the differences below,  multiply this by 2 to give 95% Limit of Agreement\n")
      print(m2$RepCoef)
-     
+     cat("\nLet's run the lme model:\n")
+    
+     mz <-     as.numeric(unlist(strsplit(input$methodz,   ",")))
+
+        # Bendix book page 144 re pdIdent v pdIdiag
+    if (mz[1] < 3) {
+    print(lme( y ~ meth + item,
+          random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
+          weights = varIdent( form = ~1 | meth ),
+          data = foo ))
+      
+  } else {
+      print(lme( y ~ meth + item,
+          random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
+          weights = varIdent( form = ~1 | meth ),
+          data = foo ))
+  }
      
   
    })
