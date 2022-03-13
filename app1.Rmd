@@ -984,18 +984,18 @@ textInput('mizz',
            "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
  
  
- 
+ #  selectInput("SD.typez", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+  
+#  selectInput("Dif.typez", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  
   
   
   
     selectInput("Pl.typez", "Select plot",             choices = c("BA", "conv"), selected="BA")
-
+ selectInput("modelz", "Model: reps exch or linked?",             choices = c("exch", "linked"), selected="exch")
   
   
-  
-  
-  
-  
+   
   
   
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1035,20 +1035,28 @@ f<- Meth( data=foo  ,meth="meth",
 
 BA.plot(f, 
       #  wh.comp=c(method2, method1), 
-        model="exch", 
-        repl.conn=TRUE, col.lines="gray60",  col.conn = "brown",
+      
+        model=input$modelz,
+      
+        repl.conn=TRUE, 
+      col.lines="gray60", 
+      col.conn = "brown",
         col.eqn = "black" ,
         font.eqn = 3,
        # axlim=c(-1.5,.75), 
       
        # diflim=c(-20,20), 
-      xaxs="i", yaxs="i",col.points='blue',
+      xaxs="i", yaxs="i",
+      col.points='blue',
         #cex.points = 0.5,
         las=1, eqn=TRUE, eqax=TRUE, 
-        dif.type="cons", 
-        #pl.type="conv", 
-          pl.type=input$Pl.typez, 
-        sd.type="cons",
+        # dif.type="cons",
+        # sd.type="cons",
+      
+ #       dif.type=input$Dif.typez,
+  #      sd.type=input$SD.typez,
+        pl.type=input$Pl.typez, 
+      
         #grid=seq(-1.6,.8,.1), 
         grid=TRUE,
         digits=3,Transform=F, 
