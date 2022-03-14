@@ -1391,8 +1391,7 @@ standard deviation is not related to the method comparison, but only to the stud
 ```{r mcomp2.5}
 
  renderPlot({
-    d <- r1_2()$foo
-    plot(perm.repl(d))
+     plot(perm.repl(r1_2()$foo))
   })
 
 ```
