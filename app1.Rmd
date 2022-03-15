@@ -1262,7 +1262,16 @@ truth <- reactive({
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Set variance components of MXI to zeros to allow exchangable replicate design.")))
+               "Set variance components of MXI to zeros to allow exchangable replicate design.\n"),
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Set variance components of MXI to zeros to allow exchangable replicate design."))
+    
+    
+    )
+    
+    
   
 })
   
@@ -1278,40 +1287,7 @@ truth <- reactive({
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  # h5(htmlOutput("text3z"))      ## print 
   
-```
 
-### Data Listing
-
-```{r mcomp2.1}
-
-# not used yet
-
-    Listing <- reactive({
-  
-      foo <- r1_2()$foo
-      
-           w <- to.wide(foo)
-        
-          #separate by replicate and merge together
-         # r1<-w[w$repl==1,]
-       #   r2<-w[w$repl==2,]
-          
-     #     w2<-merge(r1,r2, by.x="item", by.y="item")
-        
-    return(list(w=w ))
-          
-     })
-
-
-
-  renderPrint({
-  
-    w <- Listing()$w
-    rownames(w) <- NULL  # refressh rownames
-    print(w)
-    
- 
-  })
         
      
 ```
@@ -1463,7 +1439,7 @@ standard deviation is not related to the method comparison, but only to the stud
 
 ```
 
-### Boxplots, dots indicate reps, items by coloured lines
+### Boxplots (not too useful)
  
  
 ```{r mcomp2.4}
@@ -1488,7 +1464,7 @@ standard deviation is not related to the method comparison, but only to the stud
       geom_boxplot(aes(x=meth, group=meth), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
       geom_line(aes(x=xj, group=grp),  colour=d$grp, alpha=.5) +
       geom_point(aes(x=xj), size=2,  colour=d$repl) +
-      xlab("Method") + ylab("y") +  
+      xlab("Method [dots indicate reps, items by coloured lines]") + ylab("y") +  
       scale_x_continuous(breaks=wh.comp ) +
       theme_bw() + theme(legend.position = "none") 
   
@@ -1701,14 +1677,65 @@ con.diff <- mixed.assump()$con.diff
 
 
 
+
+
+
+
+
+
+```
+
+### Data Listing
+
+```{r mcomp2.1}
+
+# not used yet
+
+    Listing <- reactive({
+  
+      foo <- r1_2()$foo
+      
+           w <- to.wide(foo)
+        
+          #separate by replicate and merge together
+         # r1<-w[w$repl==1,]
+       #   r2<-w[w$repl==2,]
+          
+     #     w2<-merge(r1,r2, by.x="item", by.y="item")
+        
+    return(list(w=w ))
+          
+     })
+
+
+
+  renderPrint({
+  
+    w <- Listing()$w
+    rownames(w) <- NULL  # refressh rownames
+    print(w)
+    
+ 
+  })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 
 ```
  
-
- 
-
-
  
 ```{r texts} 
 
