@@ -1065,7 +1065,7 @@ par(mar=c(5.1,4.1,4.1,4))
 
 BA.plot(f, 
         
-        main=paste0("By design the reps are " , des, ". The limits below are based on ",input$modelz," reps,\n change this if necessary using input on bottom left"),
+        main=paste0("By design the reps are " , des, ". The limits below are based on ",input$modelz," reps,\n change this if necessary using input on bottom left.\nTrue sd for predictions : ", truth()$true.sd.pred,""),
       
         
         wh.comp=c(xx$mz[2], xx$mz[3]), 
@@ -1093,7 +1093,8 @@ BA.plot(f,
       
         #grid=seq(-1.6,.8,.1), 
         grid=TRUE,
-        digits=4 ,Transform=F, 
+        digits=3 ,
+        Transform=F, 
         
         col.grid=gray(0.9))
 
@@ -1198,8 +1199,22 @@ Column {.tabset .tabset-fade}
      })
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+truth <- reactive({
+
+   sample <- random.sample_2() 
+   wh.comp=c(sample$mz[2], sample $mz[3])
+
+   miz <-    sample$miz  # method x item
+   mirz <-   sample$mirz # residual/repeatability
+
+   true.sd.pred <- sqrt(sum(sample$miz[wh.comp]^2)+sum(sample$mirz[wh.comp]^2))
+
+ return(list( true.sd.pred = true.sd.pred))
+     
+  })
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   r1_2 <- reactive({
  
    sample <- random.sample_2()
