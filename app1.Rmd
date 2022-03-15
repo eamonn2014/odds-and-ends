@@ -1026,16 +1026,14 @@ output$text.reg.notes <- renderText({  # create text
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
 
- 
-
 ```
 
-The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
+The top two drop down menus allow different modelling approaches.  
 
 Column {data-width=400}
 -------------------------------------
 
-### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates)
+### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates). Note: I am not sure why equation does not match mixed model exactly!?
 
 ```{r, mc2 B}
 
@@ -1352,16 +1350,37 @@ standard deviation is not needed as the replicates are not linked and should be 
 
         # Bendix book page 144 re pdIdent v pdIdiag
     if (mz[1] < 3) {
-    print(lme( y ~ meth + item,
+      
+    a <-  lme( y ~ meth + item,
           random=list( item = pdIdent( ~ meth-1 )  ),
           weights = varIdent( form = ~1 | meth ),
-          data = foo ))
+          data = foo )
+      
+    b <-  lme( y ~ meth + item,
+          random=list( item = pdIdent( ~ meth-1 )  ),
+          #weights = varIdent( form = ~1 | meth ),
+          data = foo )
+      
+      print(a)
+      cat("\nEvidence against null of similar repeatabilities?\n")
+      print(anova(a,b)) #evidence of different residual errors?
       
   } else {
-      print(lme( y ~ meth + item,
+    
+      a <- lme( y ~ meth + item,
           random=list( item = pdDiag( ~ meth-1 )  ),
           weights = varIdent( form = ~1 | meth ),
-          data = foo ))
+          data = foo )
+    
+      b <- lme( y ~ meth + item,
+          random=list( item = pdDiag( ~ meth-1 )  ),
+          #weights = varIdent( form = ~1 | meth ),
+          data = foo )
+      print(a)
+      cat("\nEvidence against null of similar repeatabilities?\n")
+      print(anova(a,b)) #evidence of different residual errors?
+    
+    
   }
   })
   
@@ -1400,16 +1419,40 @@ standard deviation is not related to the method comparison, but only to the stud
 
         # Bendix book page 144 re pdIdent v pdIdiag
     if (mz[1] < 3) {
-    print(lme( y ~ meth + item,
+      
+      
+    a <-lme( y ~ meth + item,
           random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
           weights = varIdent( form = ~1 | meth ),
-          data = foo ))
+          data = foo )
+    
+    b <-lme( y ~ meth + item,
+          random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
+          #weights = varIdent( form = ~1 | meth ),
+          data = foo )
+      
+     print(a)
+      cat("\nEvidence against null of similar repeatabilities?\n")
+      print(anova(a,b)) #evidence of different residual errors?
+      
       
   } else {
-      print(lme( y ~ meth + item,
+    
+      a <- lme( y ~ meth + item,
           random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
           weights = varIdent( form = ~1 | meth ),
-          data = foo ))
+          data = foo )
+      
+      b <- lme( y ~ meth + item,
+          random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
+         # weights = varIdent( form = ~1 | meth ),
+          data = foo )
+      
+       print(a)
+      cat("\nEvidence against null of similar repeatabilities?\n")
+      print(anova(a,b)) #evidence of different residual errors?
+      
+      
   }
      
   
