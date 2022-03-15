@@ -933,7 +933,7 @@ output$text.reg.notes2 <- renderText({  # create text
 
         tags$span(style="color:blue;font-size: 15px;", 
           
-     "In the methods box the first entry is the no. of methods (try changing the 3 to 2!). The following are those that are presented in the BA plot top left.")) )
+     "In the methods box the first entry is the no. of methods (try changing the 3 to 2!). The following are those that are presented in the the figures!")) )
 
  })
 
@@ -985,8 +985,8 @@ output$text.reg.notes <- renderText({  # create text
 
   textInput('sigma.irz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'IxR' Method-specific standard deviations for the sample by replicate random effect.")))), "0.02,0.03, 0.05")
-
+              "'IxR' Method-specific standard deviations for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
+# 0.02,0.03, 0.05
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   textInput('sigma.miz', 
@@ -1048,13 +1048,24 @@ renderPlot({
    
   xx <- random.sample_2()  # bring in methods to plot
   
-f<- Meth( data=foo  ,meth="meth",
-          item="item", repl="repl", y="y",  
-          keep.vars=!is.null(data) , print=F) 
+# f<- Meth( data=foo  ,meth="meth",
+#           item="item", repl="repl", y="y",  
+#           keep.vars=!is.null(data) , print=F) 
+
+
+f <- foo
 
 par(mar=c(5.1,4.1,4.1,4))
 
+   # exlplain how the limits are calculated
+   sample <- random.sample_2()
+   irz <-    sample$irz 
+   if(irz >0) {des ="linked"} else {des="exchangeable"}
+
+
 BA.plot(f, 
+        
+        main=paste0("By design the reps are " , des, ". The limits below are based on ",input$modelz," reps,\n change this if necessary using input on bottom left"),
       
         
         wh.comp=c(xx$mz[2], xx$mz[3]), 
@@ -1082,7 +1093,7 @@ BA.plot(f,
       
         #grid=seq(-1.6,.8,.1), 
         grid=TRUE,
-        digits=3,Transform=F, 
+        digits=4 ,Transform=F, 
         
         col.grid=gray(0.9))
 
@@ -1138,13 +1149,28 @@ Column {.tabset .tabset-fade}
    bz <-     as.numeric(unlist(strsplit(input$betaz,     ",")))
    rz <-     as.numeric(unlist(strsplit(input$repz,      ",")))
    miz <-    as.numeric(unlist(strsplit(input$sigma.miz, ",")))
-   irz <-    as.numeric(unlist(strsplit(input$sigma.irz, ",")))
+   irz <-    as.numeric(unlist(strsplit(input$sigma.irz, ","))) # item x replicate
    mirz <-   as.numeric(unlist(strsplit(input$sigma.mirz,",")))
    rangez <- as.numeric(unlist(strsplit(input$mu.rangez,",")))
    mizz <-   as.numeric(unlist(strsplit(input$mizz,      ",")))
-
-    
-   foo <- Meth.sim(Ni=nz[1] , 
+   irz=irz[1]
+   
+   
+  #test data
+  # mz=methodz=c(3,1,2)
+  # nz=samplez=20
+  # rz=repz =c(2,1)
+  # az=alphaz=c(0,0.4,0)
+  # bz=betas=c(1,1,1)
+  # irz=sigma.irz=c(0.0)
+  # miz=sigma.miz=c(0.062,0.062, 0.05)
+  # mirz=sigma.mirz=c(0.128,0.143, 0.222)
+  # rangez =mu.rangez=c(-0.5 ,1)
+  # mizz=c(1 ,1)
+  # modelz="exch"
+  # #   
+   
+  foo <- Meth.sim(Ni=nz[1] , 
                    Nm=mz[1],
                 
                 Nr=rz[1], 
@@ -1161,6 +1187,12 @@ Column {.tabset .tabset-fade}
                 
                 mu.range=rangez
                 )
+   
+   #BA.est(foo, linked=TRUE)
+  
+  
+  
+  
         
     return(list(foo=foo, miz=miz, irz=irz, mirz=mirz, mz=mz))
      })
@@ -1196,7 +1228,7 @@ Column {.tabset .tabset-fade}
                 i.thin=mizz[2],
                 
                 sigma.mi=miz, 
-                sigma.ir=irz, 
+                sigma.ir=irz[1], 
                 sigma.mir=mirz , 
                 
                 mu.range=rangez
@@ -1206,6 +1238,29 @@ Column {.tabset .tabset-fade}
  return(list( foo=foo ))
      
   })
+  
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  h5(htmlOutput("textmcr1"))    
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+  output$textmcr1 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Set variance components of MXI to zeros to allow exchangable replicate design.")))
+  
+})
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  # h5(htmlOutput("text3z"))      ## print 
@@ -1225,10 +1280,10 @@ Column {.tabset .tabset-fade}
            w <- to.wide(foo)
         
           #separate by replicate and merge together
-          r1<-w[w$repl==1,]
-          r2<-w[w$repl==2,]
+         # r1<-w[w$repl==1,]
+       #   r2<-w[w$repl==2,]
           
-          w2<-merge(r1,r2, by.x="item", by.y="item")
+     #     w2<-merge(r1,r2, by.x="item", by.y="item")
         
     return(list(w=w ))
           
@@ -1241,13 +1296,14 @@ Column {.tabset .tabset-fade}
     w <- Listing()$w
     rownames(w) <- NULL  # refressh rownames
     print(w)
-  
+    
+ 
   })
         
      
 ```
 
-### Analysis, exchangable replicates
+### Analysis, exchangable reps
  
 
 ```{r mcomp2.2}
@@ -1271,7 +1327,7 @@ lmm <-  reactive({
      foo <- r1_2()$foo
     
    cat("\nTo calculate the sd.pred for 2 methods sum each method's component's (MxI^2, res^2) and take the square root. The item×replicate (IxR)
-standard deviation is not related to the method comparison, but only to the study design it is not an effect of any predictive relevance.\n")
+standard deviation is not needed as the replicates are not linked and should be zeros.\n")
     print(m1)
     cat("\nCheck within a method, residual * sqrt(2) gives the standard deviation of the differences below,  multiply this by 2 to give 95% Limit of Agreement\n")
     print(m1$RepCoef)
@@ -1297,7 +1353,7 @@ standard deviation is not related to the method comparison, but only to the stud
  
 ```
 
-### Analysis, linked replicates
+### Analysis, linked reps
   
 
 ```{r mcomp2.3}
@@ -1387,7 +1443,7 @@ standard deviation is not related to the method comparison, but only to the stud
   
 ```
 
-### Permute the replicates
+### Permute the reps
  
  
 ```{r mcomp2.5}
@@ -1402,9 +1458,6 @@ standard deviation is not related to the method comparison, but only to the stud
 
 ```{r mcomp2.6}
 
- 
-
-
 
 renderPlot({
   
@@ -1415,9 +1468,6 @@ renderPlot({
     xx <- random.sample_2()       # bring in methods to plot
     wh.comp=c(xx$mz[2], xx$mz[3]) # bring in 2 methods
  
-     
-     
-    
     
      library(dplyr)
      A <-  w %>% pull(as.character(wh.comp[1]))
