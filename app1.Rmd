@@ -1512,7 +1512,7 @@ standard deviation is not related to the method comparison, but only to the stud
 
 ```
 
-### Analyse as if there were no replication?
+### Analyse as if no replication?
 
 ```{r mcomp2.6}
 
@@ -1575,18 +1575,138 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 
 
 
+  
+```
+
+### Const. sd assumption
+ 
+ 
+```{r mcomp2.7}
+
+ 
+ 
+  mixed.assump <- reactive({
+ 
+   
+  foo <- r1_2()$foo
+     
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # code from my useful code, adjusted slightly
+
+  BA <- DA.reg(foo, DA.slope = TRUE)
+
+  a1<-as.data.frame(unlist(BA))
+  #DA.slope.p<-a1[14,]
+  #cons.sd.p.value<-a1[38,]
+  
+  res<-rbind(a1[14,], a1[38,])
+  res<-as.matrix(res)
+  
+  rownames(res)<-c( 
+                   "DA Slope P-value",
+                   "P-value for Changing SD")
+  
+  colnames(res) <- c("Bland Altman Analysis")
+ # print(res)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ## **Assess Bland Altman assumptions P-values for two hypotheses:**
+  w <- to.wide(foo)
+  ## assumptions do it yourself
+  
+  xx <- random.sample_2()       # bring in methods to plot
+  wh.comp=c(xx$mz[2], xx$mz[3]) # bring in 2 methods
+ 
+    
+  library(dplyr)
+  A <-  w %>% pull(as.character(wh.comp[1]))
+  B <-  w %>% pull(as.character(wh.comp[2]))
+ 
+  w$y <-   A-B
+  
+  w$x <-  (B + A) /2
+  
+  # Constant difference - this is the test of 0 slope in the regression of differences on averages.
+  f <- summary(lm(y~x, w))
+  con.diff <- f$coefficients["x","Pr(>|t|)"]
+  
+  
+  # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
+ # w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
+  
+  
+  sel <- which(!is.na(w$y))
+  w$r <- NA
+  w$r[sel] <- abs(residuals(f) )
+  
+  # w$r <- (residuals(f) )
+  # plot(r~x,w)
+  f1 <- summary(lm(r~x, w))
+  con.sd <- f1$coefficients["x","Pr(>|t|)"]
+  
+  return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
+  
+
+})
+
+renderPlot({
+  
+w <- mixed.assump()$w
+con.sd <- mixed.assump()$con.sd
+  
+  ggplot(w, aes(x=x, y=r))+
+    geom_point() +  
+    geom_smooth(method="lm", col="black")  +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
+         x = "Averages",
+         y = "Absolute residuals")
+   
+})
+
+
+
+  
+```
+
+### Const. diff. assumption
+ 
+ 
+```{r mcomp2.8}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+renderPlot({
+  
+w <- mixed.assump()$w
+con.diff <- mixed.assump()$con.diff
+
+  xx <- random.sample_2()       # bring in methods to plot
+  wh.comp=c(xx$mz[2], xx$mz[3]) # bring in 2 methods
  
 
+  ggplot(w, aes(x=x, y=y))+
+    geom_point() +  
+    geom_smooth(method="lm", col="black")  +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
+         x = "Averages",
+         y = paste0("(",wh.comp[1] ," - ",wh.comp[2],")")
+         )
+
+})
 
 
 
-
-
-
-
-
+ 
 
 ```
+ 
+
+ 
 
 
  
