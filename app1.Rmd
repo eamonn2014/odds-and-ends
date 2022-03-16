@@ -505,7 +505,7 @@ output$text4a <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design.")) )
+     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design. Explore the other tabs to see a better design approach using technical replication!")) )
 
  })
 
@@ -1266,7 +1266,7 @@ truth <- reactive({
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Changing differences can be a manifestation of different repeatabilities, try it and see. So replication in the design can help to draw this conclusion"))
+               "Changing differences across the range of values can be a manifestation of different repeatabilities, try it and see. So replication in the design can help to draw this conclusion"))
     
 
     )
@@ -1439,7 +1439,7 @@ standard deviation is not related to the method comparison, but only to the stud
 
 ```
 
-### Boxplots (not too useful)
+### Boxplots 
  
  
 ```{r mcomp2.4}
@@ -1464,7 +1464,7 @@ standard deviation is not related to the method comparison, but only to the stud
       geom_boxplot(aes(x=meth, group=meth), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
       geom_line(aes(x=xj, group=grp),  colour=d$grp, alpha=.5) +
       geom_point(aes(x=xj), size=2,  colour=d$repl) +
-      xlab("Method [dots indicate reps, items by coloured lines]") + ylab("y") +  
+      xlab("Method [dots indicate reps, items by coloured lines] - this presentation is not that useful") + ylab("y") +  
       scale_x_continuous(breaks=wh.comp ) +
       theme_bw() + theme(legend.position = "none") 
   
@@ -1847,7 +1847,7 @@ output$text4az <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design.")) )
+     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design. Explore the other tabs to see a better design approach using technical replication!")) )
 
  })
   # --------------------------------------------------------------------------
