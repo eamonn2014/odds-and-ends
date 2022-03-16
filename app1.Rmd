@@ -1262,11 +1262,11 @@ truth <- reactive({
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Analyse a simulated study that includes techical replication. Replicates are needed to assess repeatability. The assumptions (contant \u03C3 and constant difference are evaluated using the data as if there were no replication. boxplots are presented, but really are not very informative. The analysis itself explicitly takes into account the study design and replication. We analyse the data in two ways considering the replicates are linked and considering they are exchangable. We also perform a hypothesis test to test whether the repeatabilty methods are different to each other. We also permute the replicates and plot. The limits should be similar if exchangeable.\n"),
+               "Analyse a simulated study that includes techical replication. Replicates are needed to assess repeatability. The assumptions (contant variance and constant difference are evaluated using the data but ignoring the technical replication. Boxplots are presented, but in retrospect they are not very informative, but left as lesson on coding. The analysis itself explicitly takes into account the study design and replication. We analyse the data in two ways, considering the replicates are linked and considering they are exchangable. We also perform a hypothesis test to test whether there is evidence the repeatabilty methods are different to each other. We also permute the replicates and plot. The limits should be similar if replicates are exchangeable.\n"),
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Changing differences can be a manifestation of different repeatabilities. So replicates allow this conclusion to be drawn"))
+               "Changing differences can be a manifestation of different repeatabilities, try it and see. So replication in the design can help to draw this conclusion"))
     
 
     )
@@ -1482,8 +1482,10 @@ standard deviation is not related to the method comparison, but only to the stud
  
 ```{r mcomp2.5}
 
+cat("Replicates within samples within methods are permuted, this therefore evaluates the exchangability assumption, if the replicates are linked  this should make a difference to limits")
+
  renderPlot({
-     plot(perm.repl(r1_2()$foo))
+     plot(main="", perm.repl(r1_2()$foo))
   })
 
 ```
@@ -1635,7 +1637,7 @@ con.sd <- mixed.assump()$con.sd
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages. This ignores the technical replication.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
          x = "Averages",
          y = "Absolute residuals")
    
@@ -1668,7 +1670,7 @@ con.diff <- mixed.assump()$con.diff
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
+    labs(title = paste0("Regression of differences on averages. This ignores the technical replication.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
          x = "Averages",
          y = paste0("(",wh.comp[1] ," - ",wh.comp[2],")")
          )
