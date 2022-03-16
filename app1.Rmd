@@ -1,5 +1,5 @@
 ---
-title: "Method Comparison and beyond" 
+title: "METHOD COMPARISON & BEYOND" 
 author: 
 output: 
   flexdashboard::flex_dashboard:
@@ -985,20 +985,20 @@ output$text.reg.notes <- renderText({  # create text
 
   textInput('sigma.irz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'IxR' Method-specific standard deviations for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
+              "'IxR' Method-specific \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
 # 0.02,0.03, 0.05
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   textInput('sigma.miz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'MxI' Method-specific standard deviations for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
+              "'MxI' Method-specific \u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'res' A vector of method-specific residual standard deviations for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
+              "'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1028,7 +1028,7 @@ output$text.reg.notes <- renderText({  # create text
 
 ```
 
-The top two drop down menus allow different modelling approaches.  
+...have fun...
 
 Column {data-width=400}
 -------------------------------------
@@ -1063,7 +1063,7 @@ par(mar=c(5.1,4.1,4.1,4))
 
 BA.plot(f, 
         
-        main=paste0("By design the reps are " , des, ". The limits below are based on ",input$modelz," reps,\n change this if necessary using input on bottom left.\nTrue sd for predictions : ", truth()$true.sd.pred,""),
+        main=paste0("By design the reps are " , des, ". The limits below are based on ",input$modelz," reps,\n change this if necessary using input on bottom left.\nTrue \u03C3 for predictions : ", truth()$true.sd.pred,""),
       
         
         wh.comp=c(xx$mz[2], xx$mz[3]), 
@@ -1262,13 +1262,13 @@ truth <- reactive({
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Set variance components of MXI to zeros to allow exchangable replicate design.\n"),
+               "Analyse a simulated study that includes techical replication. Replicates are needed to assess repeatability. The assumptions (contant \u03C3 and constant difference are evaluated using the data as if there were no replication. boxplots are presented, but really are not very informative. The analysis itself explicitly takes into account the study design and replication. We analyse the data in two ways considering the replicates are linked and considering they are exchangable. We also perform a hypothesis test to test whether the repeatabilty methods are different to each other. We also permute the replicates and plot. The limits should be similar if exchangeable.\n"),
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Set variance components of MXI to zeros to allow exchangable replicate design."))
+               "Changing differences can be a manifestation of different repeatabilities. So replicates allow this conclusion to be drawn"))
     
-    
+
     )
     
     
