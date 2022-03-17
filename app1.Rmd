@@ -1196,7 +1196,7 @@ random.sampleq <- reactive({
     ## variance of a difference from a simulation
     est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
     
-  return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
+  return(list( est=est, true=true , pp1=pp1, pp2=pp2, cor.=cor.))
      
   })
   
@@ -1218,7 +1218,7 @@ random.sampleq <- reactive({
   
     h5(htmlOutput("textmc2.1"))  
        h5(htmlOutput("textmc2.2"))  
-  
+   h5(htmlOutput("textmc2.3"))  
  
    
   output$textmc2.1 <- renderText({  # create interactive text t1
@@ -1358,7 +1358,31 @@ random.sampleq <- reactive({
   
   
   
+    
+   output$textmc2.3 <- renderText({  # create interactive text t1  
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",   
+               
+               "Note the correlation estimated as  ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+                 
+                 formatz3(r1q()$cor.) ),
+   
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+
+    ". This is not useful when measuring agreement. Change the range of the data and observe the change in correlation!") 
+ 
   
+  
+ 
+    
+    
+         ))
+   # --------------------------------------------------------------------------
+ })
   
   
   
