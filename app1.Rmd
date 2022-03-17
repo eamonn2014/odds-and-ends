@@ -1313,7 +1313,7 @@ random.sampleq <- reactive({
 
     print(paste0(   
     
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",   
                
                "The true prediction variance between the methods is  ") 
     
