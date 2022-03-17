@@ -910,34 +910,26 @@ Column {.sidebar}
 **Design your method comparison, a simple setting, no replication **
 
 ```{r tab1q}
-
  
-  #  n = Ni = 400
-  # res <-   c(10,10)
-  # btw <-   c(10,3)  
-  # a <-     c(0,10)   # diff
-  # b <-     c(1,1.2 )   # is it constant
-  # range <- c(0,10)
-  
   
        sliderInput('nq', 'n pairs of data', value=100,
                 min = 5, max = 1000, step=5, ticks=F)
  
        sliderInput("res", 
                "Select repeatabilties", 
-               min = 2, max = 50, value = c(10, 10), ticks=FALSE) 
+               min = 2, max = 20, value = c(10, 10), ticks=FALSE) 
   
        sliderInput("btw", 
                "Select between?", 
-               min = 2, max = 50, value = c(10, 10), ticks=FALSE) 
+               min = 2, max = 20, value = c(10, 10), ticks=FALSE) 
   
        sliderInput("alphas", 
                "Select alpha", 
-               min = -10, max = 10, value = c(0, 0), ticks=FALSE) 
+               min = -5, max = 5, value = c(0, 0), ticks=FALSE) 
    
        sliderInput("betas", 
                "Select betas", 
-               min = -10, max = 10, value = c(1, 1), ticks=FALSE) 
+               min = -1, max = 1, value = c(1, 1), ticks=FALSE) 
       
        sliderInput("ranges", 
                "Select range", 
@@ -1071,7 +1063,9 @@ renderPlot({
              pl.type=input$Pl.typeq, 
              sd.type=input$SD.typeq, 
              dif.type = input$Dif.typeq, # cons is simulatied
-             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
+            # grid=1:9*10,
+            grid=TRUE,
+             digits=3,font.eqn=1  , eqax=T)
 
 })
 
@@ -1080,7 +1074,7 @@ renderPlot({
 
 ```
 
-Column {data-width=400, height=75}
+Column {.tabset .tabset-fade}
 -----------------------------------------------------------------------
 
 ### Introduction
@@ -1093,17 +1087,8 @@ Column {data-width=400, height=75}
 random.sampleq <- reactive({
       
     # Dummy line to trigger off button-press
-    foo <- input$resampleq
+        foo <- input$resampleq
          
-    # L1 <-     input$mu0q
-    # L2 <-     input$mu0q+input$eff.pq
-    # r  <-     input$rq
-    # n <-      input$nq
-    # sd. <-    input$sd.q
-    # 
-  
-      
-        
         n <- input$nq[1]  # size
         
         s1 <- input$res[1]
@@ -1120,61 +1105,60 @@ random.sampleq <- reactive({
     
         r1 <- input$ranges[1]  # sd
         r2 <- input$ranges[2]
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        # use the methcomp approach
     
+      Nm = 2 # methods , fix this
+      Nr = 1 # reps pre sample , fix this
+      nr = Nr
+      Ni = n
+      alpha = c(a1,a2) #rep(a, Nm)
+      beta =  c(b1,b2) #rep(b, Nm)
+      mu.range =c(r1,r2)    #  this will influence mean, the middle of this and correlation
+      sigma.mi = c(btw1, btw2) #rep(btw,Nm)
+      sigma.ir = 0
+      sigma.mir = c(s1,s2) #  rep(res, Nm)
+       
+      
+      meth <- rep(1:Nm, Ni)
+      item <- rep(1:Ni, each = Nm)
+      reps <- rep(Nr, length(meth))
+        
+      dfr <- data.frame(meth = meth, item = item)[rep(1:length(meth), reps), ]
+      dfr <- MethComp::make.repl(dfr)
+      
+      meth <- dfr$meth
+      item <- dfr$item
+      repl <- dfr$repl
     
+      mu <- runif(Ni, mu.range[1], mu.range[2])
+      mu <- mu[item]
     
-    
-  Nm = 2 # methods , fix this
-  Nr = 1 # reps pre sample , fix this
-  nr = Nr
-  Ni = n
-  alpha = c(a1,a2) #rep(a, Nm)
-  beta =  c(b1,b2) #rep(b, Nm)
-  mu.range =c(r1,r2)    #  this will influence mean, the middle of this and correlation
-  sigma.mi = c(btw1, btw2) #rep(btw,Nm)
-  sigma.ir = 0
-  sigma.mir = c(s1,s2) #  rep(res, Nm)
-   
-  
-  meth <- rep(1:Nm, Ni)
-  item <- rep(1:Ni, each = Nm)
-  reps <- rep(Nr, length(meth))
-    
-  dfr <- data.frame(meth = meth, item = item)[rep(1:length(meth), reps), ]
-  dfr <- MethComp::make.repl(dfr)
-  
-  meth <- dfr$meth
-  item <- dfr$item
-  repl <- dfr$repl
-
-  mu <- runif(Ni, mu.range[1], mu.range[2])
-  mu <- mu[item]
-
-  # this will be 0
-  e.ir <- rnorm(nlevels(IR <- interaction(item, repl)), mean = 0, sd = sigma.ir)
-  e.ir <- e.ir[as.integer(IR)]
-  
-  e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = sigma.mi)
-  e.mi <- e.mi[as.integer(MI)]
-  
-  e.mir <- rnorm(nrow(dfr), mean = 0, sd = sigma.mir[meth])
-  
-  betavec <- beta[meth]
-  
-  alphavec <- alpha[meth]
-  
-  y <- alphavec + betavec * (mu + e.mi + e.ir) + e.mir
-  
-  dfr <- data.frame(dfr, y = y)
-  
-  r1 <- dfr
+      # this will be 0
+      e.ir <- rnorm(nlevels(IR <- interaction(item, repl)), mean = 0, sd = sigma.ir)
+      e.ir <- e.ir[as.integer(IR)]
+      
+      e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = sigma.mi)
+      e.mi <- e.mi[as.integer(MI)]
+      
+      e.mir <- rnorm(nrow(dfr), mean = 0, sd = sigma.mir[meth])
+      
+      betavec <- beta[meth]
+      
+      alphavec <- alpha[meth]
+      
+      y <- alphavec + betavec * (mu + e.mi + e.ir) + e.mir
+      
+      dfr <- data.frame(dfr, y = y)
+      
+      r1 <- dfr
    
      pp1 <- r1[r1$meth %in% 1,"y"]
      pp2 <- r1[r1$meth %in% 2,"y"]
     
      true <- sum(sigma.mi^2) + sum(sigma.mir^2)
      
-  return(list(pp1=pp1, pp2=pp2, r1=r1))
+      return(list(pp1=pp1, pp2=pp2, r1=r1))
      })
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1184,12 +1168,12 @@ random.sampleq <- reactive({
  
     sample <- random.sampleq()
      
-    true <- sample$true
+     true <- sample$true
     
      n <-      input$nq
      sd. <-    sample$sd.  
  
-     pp1 <- sample$pp1     # correlated normal  
+     pp1 <- sample$pp1     
      pp2 <- sample$pp2 
     
     cor. <- cor(pp1, pp2)              # capture correlation
@@ -1204,32 +1188,27 @@ random.sampleq <- reactive({
     ## variance of a difference from a simulation
     est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
     
-    ## true variance of difference
-   # true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
-    
-    
-    
-   
-   
-    
-    
-    
-    ## variance of a sum
-    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
-    # 
-    # 
-    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
-    
-    
-    
-
- return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
+  return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
      
   })
   
  
 ```
 
+### Constant difference assumption
+  
+
+```{r xx1, eval=TRUE}
+
+
+```
+
+###  Constant variance assumption
+ 
+```{r xx2}
+
+
+```
 
 Method Comparison with replicates!      
 ===
