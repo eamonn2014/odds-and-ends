@@ -904,7 +904,7 @@ Method Comparison 2
 ===
 
 
-Column {.sidebar}
+Column {.sidebar data-width=350}
 -----------------------------------------------------------------------
 
 **Design your method comparison, a simple setting, no replication **
@@ -917,23 +917,23 @@ Column {.sidebar}
  
        sliderInput("res", 
                "Select repeatabilties", 
-               min = 2, max = 20, value = c(10, 10), ticks=FALSE) 
+               min = 0, max = 20, value = c(0, 0), ticks=FALSE) 
   
        sliderInput("btw", 
                "Select between?", 
-               min = 2, max = 20, value = c(10, 10), ticks=FALSE) 
+               min = 0, max = 20, value = c(1, 1), ticks=FALSE) 
   
-       sliderInput("alphas", 
+       sliderInput("alphas",  step=0.1,
                "Select alpha", 
                min = -5, max = 5, value = c(0, 0), ticks=FALSE) 
    
        sliderInput("betas", 
-               "Select betas", 
-               min = -1, max = 1, value = c(1, 1), ticks=FALSE) 
+               "Select betas", step=.01,
+               min = -1, max = 1, value = c(0.9, .92), ticks=FALSE) 
       
        sliderInput("ranges", 
                "Select range", 
-               min = 0, max = 100, value = c(0, 100), ticks=FALSE) 
+               min = 0, max = 100, value = c(0, 10), ticks=FALSE) 
       
         
   
@@ -941,7 +941,7 @@ Column {.sidebar}
   
   selectInput("SD.typeq", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
   
-  selectInput("Dif.typeq", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  selectInput("Dif.typeq", "Select difference type", choices = c("cons", "lin"), selected="lin")
   
   selectInput("Pl.typeq", "Select plot",             choices = c("BA", "conv"), selected="BA")
  
@@ -952,7 +952,7 @@ Column {.sidebar}
   
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
-   actionButton("resampleq",   "Hit to simulate a new sample")
+   actionButton("resampleq",   "Hit to simulate a new sample" , style = "width:100%;")
       
    #  tags$head(
    tags$style(HTML('#resampleq{background-color:orange}'))
@@ -1065,7 +1065,9 @@ renderPlot({
              dif.type = input$Dif.typeq, # cons is simulatied
             # grid=1:9*10,
             grid=TRUE,
-             digits=3,font.eqn=1  , eqax=T)
+             digits=3,
+            font.eqn=3  , 
+            eqax=T)
 
 })
 
@@ -1092,11 +1094,17 @@ random.sampleq <- reactive({
         n <- input$nq[1]  # size
         
         s1 <- input$res[1]
-        s2 <- input$res[2]     # mean
+        s2 <- input$res[2]     # 
+        
+        if (s1 %in% 0) s1=0.001 
+        if (s2 %in% 0) s2=0.001 
         
         btw1 <- input$btw[1]  # sd
         btw2 <- input$btw[2]
     
+        if (btw1 %in% 0) btw1=0.001 
+        if (btw2 %in% 0) btw2=0.001 
+        
         a1 <- input$alphas[1]  # sd
         a2 <- input$alphas[2]
     
@@ -1193,6 +1201,104 @@ random.sampleq <- reactive({
   })
   
  
+    # s1 <- input$res[1]
+    #     s2 <- input$res[2]     # mean
+    #     
+    #     btw1 <- input$btw[1]  # sd
+    #     btw2 <- input$btw[2]
+    # 
+    #     a1 <- input$alphas[1]  # sd
+    #     a2 <- input$alphas[2]
+    # 
+    #     b1 <- input$betas[1]  # sd
+    #     b2 <- input$betas[2]
+    # 
+    #     r1 <- input$ranges[1]  # sd
+    #     r2 <- input$ranges[2]
+  
+    h5(htmlOutput("textmc2.1"))  
+  
+  output$textmc2.1 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "A method comparison with ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$nq) ,
+   
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " samples assayed on each of two methods. There is a true difference (after - before) of ") 
+      
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", diff(input$alphas)) ,
+     
+     
+      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$res[1]) ,
+    
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$res[2]) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$btw[1]) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$btw[2]) ,
+    
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    # " and between sample SD commmon to both methods of ")
+    # 
+    #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    # 
+    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. We are not particularly interested in the between sample SD, this depends on the samples we choose and it is advisable to select samples that span range of the devices if possible. There are no technical replicates ", #),
+    
+    
+        ".") ))
+  # --------------------------------------------------------------------------
+ })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 ```
 
 ### Constant difference assumption
