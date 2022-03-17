@@ -897,8 +897,246 @@ w <- r2()$w
 
 ```{r diagnostics6, eval=TRUE}
 
-  
 ```
+
+ 
+Method Comparison 2
+===
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**Design your method comparison, a simple setting, no replication **
+
+```{r tab1q}
+
+ 
+ 
+  sliderInput('nq', 'n pairs of data', value=100,
+                min = 5, max = 1000, step=5, ticks=F)
+
+  sliderInput('mu0q', 'Initial mean  \u03BC', value=0,
+                min = -100, max = 100, step=5, ticks=F)
+  
+  sliderInput('eff.pq', 'Constant difference', value = c(0),
+                min = -25, max = 25 ,step=1, ticks=F)
+  
+  sliderInput('sd.q', 'Common constant \u03C3', 1,
+                min = 1, max = 100, step=1,ticks=F)
+
+  sliderInput('rq', 'Correlation \u03C1', value = c(.8),
+                min = -.9, max = .9, step=0.05, ticks=F)
+  
+  selectInput("SD.typeq", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Dif.typeq", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Pl.typeq", "Select plot",             choices = c("BA", "conv"), selected="BA")
+ 
+  
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # orange button
+   actionButton("resampleq",   "Hit to simulate a new sample")
+      
+   #  tags$head(
+   tags$style(HTML('#resampleq{background-color:orange}'))
+   # )
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+```
+
+The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
+
+Column {data-width=400}
+-------------------------------------
+
+### Paired boxplots and scatter plot
+
+```{r, tab2q}
+
+ 
+
+renderPlot({
+  
+  A <- r1q()$pp1
+  B <- r1q()$pp2
+  
+  m <- ceiling(max(A,B))
+  mL <- floor(min(A,B))
+  before <- A  
+  after <-  B  
+  n <- length(before)
+  d <- data.frame(y = c(before, after), 
+                  x = rep(c(1,2), each=n),
+                  id = factor(rep(1:n,2)))
+  
+  d$xj <- jitter(d$x, amount=.13)
+  # code from count app
+  AA <- ggplot(data=d, aes(y=y) ) +
+    geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
+    geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
+    geom_point(aes(x=xj), size=2) +
+    xlab("Phase") + ylab("Count") +  
+    scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
+   # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
+    theme_bw() + theme(legend.position = "none") 
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ scatter plot
+  
+
+  d <- data.frame(y = B , x = A)
+  
+  BB <- ggplot(d, aes(x, y)) +
+    geom_jitter(width = 0.1, height = 0.1, size=2) +
+   # scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
+   # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
+    scale_x_continuous( limits=c(mL,m)) +
+    scale_y_continuous(  limits=c(mL,m)) +
+    xlab("Before count") +ylab("After count") +
+    theme_bw() + theme(legend.position = "none") +
+    geom_abline(intercept=0, slope=1)
+  
+  plot1 <- AA
+  plot2 <- BB
+  grid.arrange(plot1, plot2, ncol=2)
+
+
+})
+  # --------------------------------------------------------------------------
+
+
+```
+
+### Bland Altman plot with 95% limits of agreement, within which we expect 95% of the differences to lie.
+
+```{r, tab3q}
+
+    
+  # --------------------------------------------------------------------------
+
+
+renderPlot({
+  
+    A <- r1q()$pp1
+    B <- r1q()$pp2
+    n <- input$nq
+    
+    d <- data.frame(y = A , x = B)
+  
+    my_data <- data.frame( 
+      group = rep(c("before", "after"), each = n),
+      counts = c(d[,1],  d[,2]),
+      ID=rep(1:n,2)
+    )
+  
+   m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+   
+   L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
+   
+   L <- roundUp(L)
+    
+    # we set up const dif and const sd so that will matches true data genrting mechanism
+    par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
+   
+    BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+             # axlim=c(0,20), 
+             diflim=c(-L,L), 
+             xaxs="i", yaxs="i",
+             las=1, eqn=TRUE,  
+             pl.type=input$Pl.typeq, 
+             sd.type=input$SD.typeq, 
+             dif.type = input$Dif.typeq, # cons is simulatied
+             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
+
+})
+
+  # --------------------------------------------------------------------------
+ 
+
+```
+
+Column {data-width=400, height=75}
+-----------------------------------------------------------------------
+
+### Introduction
+
+```{r tab4q plot1}
+ 
+   # --------------------------------------------------------------------------
+    # I looked back to two period cross over trial to get this button working to resimulate
+    # This is where a new sample is instigated only random noise is required to be generated
+    random.sampleq <- reactive({
+      
+    # Dummy line to trigger off button-press
+    foo <- input$resampleq
+         
+    L1 <-     input$mu0q
+    L2 <-     input$mu0q+input$eff.pq
+    r  <-     input$rq
+    n <-      input$nq
+    sd. <-    input$sd.q
+    
+# generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
+# Sample correlated N(0, 1) distributions from a multivariate normal distribution.
+# Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
+# Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
+
+    Sigma <- matrix(c(1, r, r, 1), 2, 2)
+
+    px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
+
+    U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
+    
+    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
+    pp2 <- qnorm(U[, 2], L2, sd.) 
+        
+    return(list(pp1=pp1, pp2=pp2, sd.=sd.))
+     })
+   
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  r1q <- reactive({
+ 
+    sample <- random.sampleq()
+     
+     r  <-     input$rq
+     n <-      input$nq
+     sd. <-    sample$sd.  
+ 
+     pp1 <- sample$pp1     # correlated normal  
+     pp2 <- sample$pp2 
+    
+    cor. <- cor(pp1, pp2)              # capture correlation
+ 
+    # create a data frame
+    my_data <- data.frame( 
+      group = rep(c("A.before", "B.after"), each = n),
+      counts = c(pp1,  pp2),
+      ID=rep(1:n,2)
+    )
+
+    ## variance of a difference from a simulation
+    est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
+    
+    ## true variance of difference
+    true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
+    
+    ## variance of a sum
+    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
+    # 
+    # 
+    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
+
+ return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
+     
+  })
+  
+ 
+```
+
 
 Method Comparison with replicates!      
 ===
@@ -1033,7 +1271,7 @@ output$text.reg.notes <- renderText({  # create text
 Column {data-width=400}
 -------------------------------------
 
-### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates). Note: I am not sure why equation does not match mixed model exactly!?
+### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates). Note: to do check why equation in figure does not match mixed model exactly!?
 
 ```{r, mc2 B}
 
