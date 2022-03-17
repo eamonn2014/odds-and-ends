@@ -912,9 +912,42 @@ Column {.sidebar}
 ```{r tab1q}
 
  
- 
-  sliderInput('nq', 'n pairs of data', value=100,
+  #  n = Ni = 400
+  # res <-   c(10,10)
+  # btw <-   c(10,3)  
+  # a <-     c(0,10)   # diff
+  # b <-     c(1,1.2 )   # is it constant
+  # range <- c(0,10)
+  
+  
+       sliderInput('nq', 'n pairs of data', value=100,
                 min = 5, max = 1000, step=5, ticks=F)
+ 
+       sliderInput("res", 
+               "Select repeatabilties", 
+               min = 2, max = 50, value = c(10, 10), ticks=FALSE) 
+  
+       sliderInput("btw", 
+               "Select between?", 
+               min = 2, max = 50, value = c(10, 10), ticks=FALSE) 
+  
+       sliderInput("alphas", 
+               "Select alpha", 
+               min = -10, max = 10, value = c(0, 0), ticks=FALSE) 
+   
+       sliderInput("betas", 
+               "Select betas", 
+               min = -10, max = 10, value = c(1, 1), ticks=FALSE) 
+      
+       sliderInput("ranges", 
+               "Select range", 
+               min = 0, max = 100, value = c(0, 100), ticks=FALSE) 
+      
+      
+      
+  
+            
+            
 
   sliderInput('mu0q', 'Initial mean  \u03BC', value=0,
                 min = -100, max = 100, step=5, ticks=F)
@@ -928,12 +961,21 @@ Column {.sidebar}
   sliderInput('rq', 'Correlation \u03C1', value = c(.8),
                 min = -.9, max = .9, step=0.05, ticks=F)
   
+  
+  
+  
+  
+  
   selectInput("SD.typeq", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
   
   selectInput("Dif.typeq", "Select difference type", choices = c("cons", "lin"), selected="cons")
   
   selectInput("Pl.typeq", "Select plot",             choices = c("BA", "conv"), selected="BA")
  
+  
+  
+  
+  
   
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
@@ -1078,6 +1120,43 @@ Column {data-width=400, height=75}
     n <-      input$nq
     sd. <-    input$sd.q
     
+  
+      
+        
+        n <- input$nq[1]  # size
+        
+        x2 <- input$res[1]
+        x3 <- input$res[2]     # mean
+        
+        x5 <- input$btw[1]  # sd
+        x6 <- input$btw[2]
+    
+        a1 <- input$alphas[1]  # sd
+        a2 <- input$alphas[2]
+    
+        b1 <- input$betas[1]  # sd
+        b2 <- input$betas[2]
+    
+        r1 <- input$ranges[1]  # sd
+        r2 <- input$ranges[2]
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
 # Sample correlated N(0, 1) distributions from a multivariate normal distribution.
 # Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
@@ -1092,6 +1171,21 @@ Column {data-width=400, height=75}
     pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
     pp2 <- qnorm(U[, 2], L2, sd.) 
         
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     return(list(pp1=pp1, pp2=pp2, sd.=sd.))
      })
    
