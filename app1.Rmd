@@ -1217,8 +1217,11 @@ random.sampleq <- reactive({
     #     r2 <- input$ranges[2]
   
     h5(htmlOutput("textmc2.1"))  
+<<<<<<< HEAD
       h5(htmlOutput("textmc2.2"))  
   
+=======
+>>>>>>> d4371da77cc1e4ef7b91c7bf7ae96e0fe74f845f
   
   output$textmc2.1 <- renderText({  # create interactive text t1
 
@@ -1228,14 +1231,19 @@ random.sampleq <- reactive({
                
                "A method comparison with ") 
     
+<<<<<<< HEAD
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                  
                  input$nq) ,
+=======
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$nq) ,
+>>>>>>> d4371da77cc1e4ef7b91c7bf7ae96e0fe74f845f
    
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                " samples assayed on each of two methods. There is a true difference (after - before) of ") 
       
+<<<<<<< HEAD
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                   
                   diff(input$alphas)) ,
@@ -1309,7 +1317,7 @@ random.sampleq <- reactive({
  })
   
   
-   output$textmc2.2 <- renderText({  # create interactive text t1
+   output$textmc2.2 <- renderText({  # create interactive text t1  
 
     print(paste0(   
     
@@ -1350,6 +1358,48 @@ random.sampleq <- reactive({
     " respectively (check this to the plot when constant SD and constant differences are assumed). ") 
   
  ))
+=======
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", diff(input$alphas)) ,
+     
+     
+      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$res[1]) ,
+    
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$res[2]) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$btw[1]) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    
+     ", also there is a true correlation between the paired results of ")
+
+       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$btw[2]) ,
+    
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    # " and between sample SD commmon to both methods of ")
+    # 
+    #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    # 
+    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. We are not particularly interested in the between sample SD, this depends on the samples we choose and it is advisable to select samples that span range of the devices if possible. There are no technical replicates ", #),
+    
+    
+        ".") ))
+>>>>>>> d4371da77cc1e4ef7b91c7bf7ae96e0fe74f845f
   # --------------------------------------------------------------------------
  })
   
