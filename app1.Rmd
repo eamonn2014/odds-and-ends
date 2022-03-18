@@ -231,7 +231,7 @@ renderPlot({
 
 ```
 
-### Bland Altman plot with 95% limits of agreement, within which we expect 95% of the differences to lie.
+### Bland Altman plot (or conversion plot) with 95% limits of agreement, within which we expect 95% of the differences to lie.
 
 ```{r, tab1 plot4}
 
@@ -1024,7 +1024,7 @@ renderPlot({
 
 ```
 
-### Bland Altman plot with 95% limits of agreement, within which we expect 95% of the differences to lie.
+### Bland Altman plot (or conversion plot) with 95% limits of agreement, within which we expect 95% of the differences to lie.
 
 ```{r, tab3q}
 
@@ -1064,11 +1064,16 @@ renderPlot({
              sd.type=input$SD.typeq, 
              dif.type = input$Dif.typeq, # cons is simulatied
             #grid=TRUE,#-L:L,#1:9*10,
-            N.grid=5*L,
-            grid=-L:L,
+            N.grid=100,
+            grid=-input$ranges[2]:input$ranges[2],
              digits=3,
             font.eqn=3  , 
             eqax=T)
+    
+    
+if ( input$Pl.typeq=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
+
+    
 
 })
 
@@ -1260,7 +1265,7 @@ random.sampleq <- reactive({
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
     
-     " amd method 2's slope of  ") 
+     " and method 2's slope of  ") 
       
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                   
@@ -1348,7 +1353,7 @@ random.sampleq <- reactive({
   
    , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
 
-    " respectively (check this to the plot when constant SD and constant differences are assumed). ") 
+    " (check this to the plot when constant SD and constant differences are assumed). ") 
   
  
     
