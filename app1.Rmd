@@ -924,7 +924,7 @@ Column {.sidebar data-width=350}
                min = 0, max = 20, value = c(1, 1), ticks=FALSE) 
   
        sliderInput("alphas",  step=0.1,
-               "Select alpha", 
+               "Select alphas", 
                min = -5, max = 5, value = c(0, 0), ticks=FALSE) 
    
        sliderInput("betas", 
@@ -975,7 +975,7 @@ Column {data-width=400}
 
 renderPlot({
   
-  A <- r1q()$pp1
+  A <- r1q()$pp1  # method 1
   B <- r1q()$pp2
   
   m <- ceiling(max(A,B))
@@ -993,8 +993,8 @@ renderPlot({
     geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
     geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
     geom_point(aes(x=xj), size=2) +
-    xlab("Phase") + ylab("Count") +  
-    scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
+    xlab("Method") + ylab("y") +  
+    scale_x_continuous(breaks=c(1,2), labels=c("1", "2"), limits=c(0.5, 2.5)) +
    # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
     theme_bw() + theme(legend.position = "none") 
   
@@ -1009,7 +1009,7 @@ renderPlot({
    # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
     scale_x_continuous( limits=c(mL,m)) +
     scale_y_continuous(  limits=c(mL,m)) +
-    xlab("Before count") +ylab("After count") +
+    xlab("1") +ylab("2") +
     theme_bw() + theme(legend.position = "none") +
     geom_abline(intercept=0, slope=1)
   
@@ -1041,7 +1041,7 @@ renderPlot({
     d <- data.frame(y = A , x = B)
   
     my_data <- data.frame( 
-      group = rep(c("before", "after"), each = n),
+      group = rep(c("1", "2"), each = n),
       counts = c(d[,1],  d[,2]),
       ID=rep(1:n,2)
     )
@@ -1063,8 +1063,9 @@ renderPlot({
              pl.type=input$Pl.typeq, 
              sd.type=input$SD.typeq, 
              dif.type = input$Dif.typeq, # cons is simulatied
-            # grid=1:9*10,
-            grid=TRUE,
+            #grid=TRUE,#-L:L,#1:9*10,
+            N.grid=5*L,
+            grid=-L:L,
              digits=3,
             font.eqn=3  , 
             eqax=T)
@@ -1235,7 +1236,7 @@ random.sampleq <- reactive({
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " samples assayed on each of two methods. There is a true difference (after - before) of ") 
+               " samples assayed on each of two methods. There is a true difference (method 1 - method 2) of ") 
       
        , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                   
@@ -1291,7 +1292,7 @@ random.sampleq <- reactive({
 
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 
- ", also there is a true between sample variability for method 2 of")
+ ", also there is a true between sample variability for method 2 of ")
 
        , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
 
@@ -1331,7 +1332,7 @@ random.sampleq <- reactive({
  
 ,  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
 
-    ", respective SDs of ") 
+    ". Respective SDs of ") 
   
   , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                  
