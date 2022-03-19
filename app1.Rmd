@@ -9,7 +9,7 @@ output:
     source_code: embed
 runtime: shiny
 ---
-Method Comparison
+Paired data
 ===
 
 
@@ -140,7 +140,7 @@ Column {.sidebar}
   sliderInput('mu0', 'Initial mean  \u03BC', value=0,
                 min = -100, max = 100, step=5, ticks=F)
   
-  sliderInput('eff.p', 'Constant difference', value = c(0),
+  sliderInput('eff.p', 'Constant intervention effect', value = c(0),
                 min = -25, max = 25 ,step=1, ticks=F)
   
   sliderInput('sd.', 'Common constant \u03C3', 1,
@@ -1609,7 +1609,7 @@ f <- Meth(f)
 
 par(mar=c(5.1,4.1,4.1,4))
 
-   # exlplain how the limits are calculated
+   # explain how the limits are calculated
    sample <- random.sample_2()
    irz <-    sample$irz 
    if(irz >0) {des ="linked"} else {des="exchangeable"}
