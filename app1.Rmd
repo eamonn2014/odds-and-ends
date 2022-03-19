@@ -2471,7 +2471,7 @@ output$text.reg.notesB <- renderText({  # create text
  splitLayout(
     textInput('alphazB', 
               strong(div(h5(tags$span(style="color:blue", 
-            "alphas")))), "0,0.4,0"),
+            "alphas")))), "0, 0.4, 0"),
     
     textInput('betazB', 
               strong(div(h5(tags$span(style="color:blue", 
@@ -2482,19 +2482,19 @@ output$text.reg.notesB <- renderText({  # create text
 
   textInput('sigma.irzB', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'IxR' Method-specific \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
+              "sigma.ir produces 'IxR' Method-specific shift \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
 # 0.02,0.03, 0.05
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   textInput('sigma.mizB', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'MxI' Method-specific \u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
+              "sigma.ir produces 'MxI' Method-specific shift\u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.04, 0.05")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirzB', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
+              "sigma.mir 'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
