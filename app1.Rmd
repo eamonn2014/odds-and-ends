@@ -2504,20 +2504,20 @@ output$text.reg.notesB <- renderText({  # create text
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  textInput('mizzB', 
-            strong(div(h5(tags$span(style="color:blue", 
-             "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
- 
+  # textInput('mizzB', 
+  #           strong(div(h5(tags$span(style="color:blue", 
+  #            "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
+  # 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  selectInput("Pl.typezB", 
-              strong(div(h5(tags$span(style="color:blue",
-              "Select plot type (main top left)")))),  choices = c("BA", "conv"), selected="BA")
-    
-  selectInput("modelzB", 
-                strong(div(h5(tags$span(style="color:blue",
-              "Model: replicates exchangable or linked?")))),  
-              choices = c("exch", "linked"), selected="exch")
+  # selectInput("Pl.typezB", 
+  #             strong(div(h5(tags$span(style="color:blue",
+  #             "Select plot type (main top left)")))),  choices = c("BA", "conv"), selected="BA")
+  #   
+  # selectInput("modelzB", 
+  #               strong(div(h5(tags$span(style="color:blue",
+  #             "Model: replicates exchangable or linked?")))),  
+  #             choices = c("exch", "linked"), selected="exch")
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
@@ -2549,7 +2549,7 @@ Column {.tabset .tabset-fade}
    irz <-    as.numeric(unlist(strsplit(input$sigma.irzB, ","))) # item x replicate
    mirz <-   as.numeric(unlist(strsplit(input$sigma.mirzB,",")))
    rangez <- as.numeric(unlist(strsplit(input$mu.rangezB,",")))
-   mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
+  # mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
    irz=irz[1]
    
    
@@ -2567,30 +2567,119 @@ Column {.tabset .tabset-fade}
   # modelz="exch"
   # #   
    
-  foo <- Meth.sim(Ni=nz[1] , 
-                   Nm=mz[1],
-                
-                Nr=rz[1], 
-                nr=rz[2],
-                alpha=az, 
-                beta= bz,
-                
-                m.thin=mizz[1], 
-                i.thin=mizz[2],
-                
-                sigma.mi=miz, 
-                sigma.ir=irz, 
-                sigma.mir=mirz , 
-                
-                mu.range=rangez
-                )
+  # foo <- Meth.sim(Ni=nz[1] , 
+  #                  Nm=mz[1],
+  #               
+  #               Nr=rz[1], 
+  #               nr=rz[2],
+  #               alpha=az, 
+  #               beta= bz,
+  #               
+  #               m.thin=mizz[1], 
+  #               i.thin=mizz[2],
+  #               
+  #               sigma.mi=miz, 
+  #               sigma.ir=irz, 
+  #               sigma.mir=mirz , 
+  #               
+  #               mu.range=rangez
+  #               )
   
   
   # break down Meth.sim for more detail on listing
   
    
   
+  Ni <- nz
   
+  Nm = mz[1] # methods , fix this
+  Nr = rz[1]# reps pre sample , fix this
+  nr = rz[2]
+  alpha = az #rep(a, Nm)
+  beta =  bz #rep(b, Nm)
+  mu.range =rangez    #  this will influence mean, the middle of this and correlation
+  sigma.mi = miz #rep(btw,Nm)
+  sigma.ir = irz
+  sigma.mir = mirz#  rep(res, Nm)
+   
+  
+  meth <- rep(1:Nm, Ni)   # methods 1:2 
+  item <- rep(1:Ni, each = Nm)  ## 1 1 2 2 # samples 
+  reps <- rep(Nr, length(meth))   # all 1s here
+    
+  dfr <- data.frame(meth = meth, item = item)[rep(1:length(meth), reps), ]
+  dfr <- MethComp::make.repl(dfr)    # all 1
+  
+  meth <- dfr$meth
+  item <- dfr$item
+  repl <- dfr$repl
+
+  # now we have the structure
+  
+  mu <- runif(Ni, mu.range[1], mu.range[2])  # true means of samples
+  mu <- mu[item]
+  
+
+  # this will be 0
+  # Item x replicate, Bendix says nothing to do with methods
+  e.ir <- rnorm(nlevels(IR <- interaction(item, repl)), mean = 0, sd = sigma.ir)
+  e.ir <- e.ir[as.integer(IR)]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = sigma.mi)
+  e.mi <- e.mi[as.integer(MI)]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  e.mir <- rnorm(nrow(dfr), mean = 0, sd = sigma.mir[meth])
+  
+  
+  betavec <- beta[meth]
+  alphavec <- alpha[meth]
+  
+  y <- alphavec + betavec * (mu + e.mi + e.ir) + e.mir
+  
+  # this is all that is needed
+  dfr1 <- dfr <- data.frame(dfr, y = y)
+  
+ # d1 <- Meth(dfr)
+  
+  # analysis
+#  if (Nr ==1) (m<-BA.plot(d1, eqn=TRUE)) 
+#  if (Nr >1 & sigma.ir >0 ) m <- BA.est(d1, linked=TRUE)
+#  if (Nr >1 & sigma.ir ==0 ) M <- BA.est(d1, linked=FALSE)
+  
+  
+  # lets get a dataset with true sds etc
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # shifts from mu and true parametrer
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  dfr$mu <- mu
+  dfr$IR <- e.ir
+  dfr$MI <- e.mi
+  dfr$MIR <- e.mir
+
+  
+  dfr$alpha <- alphavec
+  dfr$beta <- betavec
+  
+  
+  # put variance components in dfr too!
+  
+  dfr$ sigma.ir  <- sigma.ir 
+  dfr$ sigma.mi  <-  sigma.mi[meth]
+  dfr$ sigma.mir <-  sigma.mir[meth]
+
+  
+  #dfr <- data.frame(dfr, y = y)
+  
+  row.names(dfr) <- NULL
+  head(dfr)
+ 
+  foo <- dfr
+  
+ 
    
    #BA.est(foo, linked=TRUE)
   
@@ -2618,24 +2707,103 @@ Column {.tabset .tabset-fade}
    mirz <-   sample$mirz
    
    rangez <- as.numeric(unlist(strsplit(input$mu.rangezB, ",")))
-   mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
+ #  mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
     
     # repeat the data generation the sds will produce fresh data
-   foo <-  Meth.sim(Ni=nz[1] , 
-                   Nm=mz[1],
-                Nr=rz[1], 
-                nr=rz[2],
-                alpha=az, 
-                beta= bz,
-                m.thin=mizz[1], 
-                i.thin=mizz[2],
-                
-                sigma.mi=miz, 
-                sigma.ir=irz[1], 
-                sigma.mir=mirz , 
-                
-                mu.range=rangez
-                )
+ 
+  
+  
+  
+  Ni <- nz
+  
+  Nm = mz[1] # methods , fix this
+  Nr = rz[1]# reps pre sample , fix this
+  nr = rz[2]
+  alpha = az #rep(a, Nm)
+  beta =  bz #rep(b, Nm)
+  mu.range =rangez    #  this will influence mean, the middle of this and correlation
+  sigma.mi = miz #rep(btw,Nm)
+  sigma.ir = irz
+  sigma.mir = mirz#  rep(res, Nm)
+   
+  
+  meth <- rep(1:Nm, Ni)   # methods 1:2 
+  item <- rep(1:Ni, each = Nm)  ## 1 1 2 2 # samples 
+  reps <- rep(Nr, length(meth))   # all 1s here
+    
+  dfr <- data.frame(meth = meth, item = item)[rep(1:length(meth), reps), ]
+  dfr <- MethComp::make.repl(dfr)    # all 1
+  
+  meth <- dfr$meth
+  item <- dfr$item
+  repl <- dfr$repl
+
+  # now we have the structure
+  
+  mu <- runif(Ni, mu.range[1], mu.range[2])  # true means of samples
+  mu <- mu[item]
+  
+
+  # this will be 0
+  # Item x replicate, Bendix says nothing to do with methods
+  e.ir <- rnorm(nlevels(IR <- interaction(item, repl)), mean = 0, sd = sigma.ir)
+  e.ir <- e.ir[as.integer(IR)]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = sigma.mi)
+  e.mi <- e.mi[as.integer(MI)]
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  e.mir <- rnorm(nrow(dfr), mean = 0, sd = sigma.mir[meth])
+  
+  
+  betavec <- beta[meth]
+  alphavec <- alpha[meth]
+  
+  y <- alphavec + betavec * (mu + e.mi + e.ir) + e.mir
+  
+  # this is all that is needed
+  dfr1 <- dfr <- data.frame(dfr, y = y)
+  
+  #d1 <- Meth(dfr)
+  
+  # analysis
+ # if (Nr ==1) (m<-BA.plot(d1, eqn=TRUE)) 
+#  if (Nr >1 & sigma.ir >0 ) m <- BA.est(d1, linked=TRUE)
+#  if (Nr >1 & sigma.ir ==0 ) M <- BA.est(d1, linked=FALSE)
+  
+  
+  # lets get a dataset with true sds etc
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # shifts from mu and true parametrer
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  dfr$mu <- mu
+  dfr$IR <- e.ir
+  dfr$MI <- e.mi
+  dfr$MIR <- e.mir
+
+  
+  dfr$alpha <- alphavec
+  dfr$beta <- betavec
+  
+  
+  # put variance components in dfr too!
+  
+  dfr$ sigma.ir  <- sigma.ir 
+  dfr$ sigma.mi  <-  sigma.mi[meth]
+  dfr$ sigma.mir <-  sigma.mir[meth]
+
+  
+  #dfr <- data.frame(dfr, y = y)
+  
+  row.names(dfr) <- NULL
+  head(dfr)
+ 
+  foo <- dfr
+  
+ 
      
 
  return(list( foo=foo ))
