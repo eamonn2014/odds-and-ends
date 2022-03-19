@@ -300,6 +300,28 @@ Column {data-width=400, height=75}
     n <-      input$n
     sd. <-    input$sd.
     
+    
+   #  
+   # n     =    100
+   # mu0   =    0 
+   # eff.p =    0 
+   # sd.   =    1 
+   # r     =  0.8
+   #              
+   #  
+   #  
+   #  
+   #  
+  #     L1 <-     mu0
+  #   L2 <-      mu0+ eff.p
+  #   
+  #   
+  # Sigma = sd.  
+  #   
+  #   require(MASS)
+    
+    
+    
 # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
 # Sample correlated N(0, 1) distributions from a multivariate normal distribution.
 # Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
@@ -315,7 +337,8 @@ Column {data-width=400, height=75}
     pp2 <- qnorm(U[, 2], L2, sd.) 
         
     return(list(pp1=pp1, pp2=pp2, sd.=sd.))
-     })
+    
+    })
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -900,14 +923,14 @@ w <- r2()$w
 ```
 
  
-Method Comparison 2
+Method Comparison (no replication)
 ===
 
 
 Column {.sidebar data-width=350}
 -----------------------------------------------------------------------
 
-**Design your method comparison, a simple setting, no replication **
+**Design your method comparison, a simple setting, no replication, sample are chosen uniformally to span the range**
 
 ```{r tab1q}
  
@@ -916,23 +939,23 @@ Column {.sidebar data-width=350}
                 min = 5, max = 1000, step=5, ticks=F)
  
        sliderInput("res", 
-               "Select repeatabilties", 
-               min = 0, max = 20, value = c(0, 0), ticks=FALSE) 
+               "Select method variation (m1 , m2)", 
+               min = 0, max = 20, value = c(5, 4), ticks=FALSE) 
   
-       sliderInput("btw", 
-               "Select between?", 
-               min = 0, max = 20, value = c(1, 1), ticks=FALSE) 
+       # sliderInput("btw", 
+       #         "Select between?", 
+       #         min = 0, max = 20, value = c(1, 1), ticks=FALSE) 
   
        sliderInput("alphas",  step=0.1,
-               "Select alphas", 
+               "Select alphas (m1, m2)", 
                min = -5, max = 5, value = c(0, 0), ticks=FALSE) 
    
        sliderInput("betas", 
-               "Select betas", step=.01,
+               "Select betas (m1, m2)", step=.01,
                min = -1, max = 1, value = c(0.9, .92), ticks=FALSE) 
       
        sliderInput("ranges", 
-               "Select range", 
+               "Select range over which methods measure", 
                min = 0, max = 100, value = c(0, 10), ticks=FALSE) 
       
         
@@ -1105,11 +1128,11 @@ random.sampleq <- reactive({
         if (s1 %in% 0) s1=0.001 
         if (s2 %in% 0) s2=0.001 
         
-        btw1 <- input$btw[1]  # sd
-        btw2 <- input$btw[2]
-    
-        if (btw1 %in% 0) btw1=0.001 
-        if (btw2 %in% 0) btw2=0.001 
+        # btw1 <- input$btw[1]  # sd
+        # btw2 <- input$btw[2]
+        # 
+        # if (btw1 %in% 0) btw1=0.001 
+        # if (btw2 %in% 0) btw2=0.001 
         
         a1 <- input$alphas[1]  # sd
         a2 <- input$alphas[2]
@@ -1129,7 +1152,8 @@ random.sampleq <- reactive({
       alpha = c(a1,a2) #rep(a, Nm)
       beta =  c(b1,b2) #rep(b, Nm)
       mu.range =c(r1,r2)    #  this will influence mean, the middle of this and correlation
-      sigma.mi = c(btw1, btw2) #rep(btw,Nm)
+      
+    #  sigma.mi = c(btw1, btw2) #rep(btw,Nm)
       sigma.ir = 0
       sigma.mir = c(s1,s2) #  rep(res, Nm)
        
@@ -1152,7 +1176,8 @@ random.sampleq <- reactive({
       e.ir <- rnorm(nlevels(IR <- interaction(item, repl)), mean = 0, sd = sigma.ir)
       e.ir <- e.ir[as.integer(IR)]
       
-      e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = sigma.mi)
+    #  e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = sigma.mi) 
+         e.mi <- rnorm(nlevels(MI <- interaction(meth, item)), mean = 0, sd = 0) 
       e.mi <- e.mi[as.integer(MI)]
       
       e.mir <- rnorm(nrow(dfr), mean = 0, sd = sigma.mir[meth])
@@ -1170,8 +1195,9 @@ random.sampleq <- reactive({
      pp1 <- r1[r1$meth %in% 1,"y"]
      pp2 <- r1[r1$meth %in% 2,"y"]
     
-     true <- sum(sigma.mi^2) + sum(sigma.mir^2)
+   #  true <- sum(sigma.mi^2) + sum(sigma.mir^2)
      
+     true <-  sum(sigma.mir^2)
       return(list(pp1=pp1, pp2=pp2, r1=r1, true=true))
      })
    
@@ -1223,9 +1249,9 @@ random.sampleq <- reactive({
     #     r2 <- input$ranges[2]
   
     h5(htmlOutput("textmc2.1"))  
-       h5(htmlOutput("textmc2.2"))  
-   h5(htmlOutput("textmc2.3"))  
- 
+    h5(htmlOutput("textmc2.2"))  
+    h5(htmlOutput("textmc2.3"))  
+    h5(htmlOutput("textmc2.4"))  
    
   output$textmc2.1 <- renderText({  # create interactive text t1
 
@@ -1241,7 +1267,7 @@ random.sampleq <- reactive({
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " samples assayed on each of two methods. There is a true difference (method 1 - method 2) of ") 
+               " samples assayed on each of two methods. Samples are selected to span the measurement range uniformly. There is a true difference (method 1 - method 2) of ") 
       
        , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                   
@@ -1273,7 +1299,7 @@ random.sampleq <- reactive({
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
     
-     ", true method 1 repeatability ")
+     ", true method 1 standard deviation ")
 
        ,tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
 
@@ -1281,27 +1307,27 @@ random.sampleq <- reactive({
 
        tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 
-     ", true method 2 repeatability ")
+     ", true method 2 standard deviation ")
 
        , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
 
                    input$res[2]) ,
 
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+  #   tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 
-     ", also there is a true between sample variability for method 1 of ")
+   #  ", also there is a true between sample variability for method 1 of ")
 
-       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
-
-                   input$btw[1]) ,
-
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-
- ", also there is a true between sample variability for method 2 of ")
-
-       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
-
-                   input$btw[2]) ,
+ #       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
+ # 
+ #                   input$btw[1]) ,
+ # 
+ #     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+ # 
+ # ", also there is a true between sample variability for method 2 of ")
+ # 
+ #       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
+ # 
+ #                   input$btw[2]) ,
 
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
@@ -1387,25 +1413,23 @@ random.sampleq <- reactive({
     
     
          ))
+   })
    # --------------------------------------------------------------------------
- })
+ 
   
+ output$textmc2.4 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Without technical replication the repeatability and method x sample variance components are lumped together. ")))
   
+})
+     # --------------------------------------------------------------------------
+
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+   
   
   
   
@@ -1520,7 +1544,6 @@ output$text.reg.notes <- renderText({  # create text
             strong(div(h5(tags$span(style="color:blue", 
               "'MxI' Method-specific \u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirz', 
@@ -1560,7 +1583,7 @@ output$text.reg.notes <- renderText({  # create text
 Column {data-width=400}
 -------------------------------------
 
-### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates). Note: to do check why equation in figure does not match mixed model exactly!?
+### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates). Note: Here we fit a model on subsetted data only so may not match model results on the full data (more than 2 methods). Restrict overall simulated experiment to 2 methods to see!
 
 ```{r, mc2 B}
 
@@ -1579,6 +1602,8 @@ renderPlot({
 
 
 f <- foo
+
+f <- Meth(f)
 
 par(mar=c(5.1,4.1,4.1,4))
 
@@ -1713,6 +1738,13 @@ Column {.tabset .tabset-fade}
                 
                 mu.range=rangez
                 )
+  
+  
+  # break down Meth.sim for more detail on listing
+  
+   
+  
+  
    
    #BA.est(foo, linked=TRUE)
   
@@ -2246,20 +2278,6 @@ con.diff <- mixed.assump()$con.diff
     
  
   })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
  
 
