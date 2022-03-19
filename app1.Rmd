@@ -452,13 +452,15 @@ output$text3 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "A method comparison with ") 
+               "This is not a typical method comparison experiment. 
+               
+               Correlated normal data are generated based on the inputs. We assay ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
    
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " samples assayed on each of two methods. There is a true difference (after - before) of ") 
+               " samples on two methods. There is a true difference (after - before) of ") 
       
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
      
