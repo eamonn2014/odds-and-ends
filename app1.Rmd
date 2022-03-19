@@ -2441,11 +2441,11 @@ output$text.reg.notes2B <- renderText({  # create text
  splitLayout(
        textInput('methodzB', 
           strong(div(h5(tags$span(style="color:blue", 
-            "No of methods")))), "3,1,2"),
+            "No of methods")))), "2"),
        
  textInput('samplezB', 
            strong(div(h5(tags$span(style="color:blue", 
-             "No of samples")))), "20"),
+             "No of samples")))), "10"),
  
 textInput('repzB', 
           strong(div(h5(tags$span(style="color:blue", 
@@ -2526,7 +2526,7 @@ output$text.reg.notesB <- renderText({  # create text
 
 ...have fun...
 
-Column {.tabset .tabset-fade}
+Column {.tabset .tabset-fade .width=600}  
 -----------------------------------------------------------------------
 
 ### Introduction
@@ -2811,7 +2811,7 @@ Column {.tabset .tabset-fade}
   })
 
 
-
+options(width = 300)
 
 # 
 # 
@@ -2829,13 +2829,6 @@ Column {.tabset .tabset-fade}
  
 ```
  
-### xxx 
- 
-```{r testy}
-
-
-```
-
 
 
 
