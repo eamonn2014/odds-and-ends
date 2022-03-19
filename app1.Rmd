@@ -454,7 +454,7 @@ output$text3 <- renderText({  # create interactive text t1
                
                "This is not a typical method comparison experiment. 
                
-               Correlated normal data are generated based on the inputs. We assay ") 
+               Correlated normal data are generated based on the inputs. We have ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
    
@@ -925,7 +925,7 @@ w <- r2()$w
 ```
 
  
-Method Comparison (no replication)
+Method Comp. (no replication)
 ===
 
 
@@ -1453,7 +1453,7 @@ random.sampleq <- reactive({
 
 ```
 
-Method Comparison with replicates!      
+Method Comp with replicates!      
 ===
 
 Column {.sidebar data-width=380}
@@ -2400,7 +2400,279 @@ output$text4az <- renderText({  # create interactive text t1
   # --------------------------------------------------------------------------
  
 
-``` 
+
+```
+
+Method Comp. listing
+===
+
+Column {.sidebar data-width=380}
+-----------------------------------------------------------------------
+
+**Design your method comparison, replication! **
+
+```{r mc2B}
+ 
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# orange button
+
+  actionButton("resample_2B",   "Hit to simulate a new sample", style = "width:100%;")
+
+ 
+       
+   tags$style(HTML('#resample_2B{background-color:orange}'))
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+output$text.reg.notes2B <- renderText({  # create text
+
+    print(paste0(   
+
+        tags$span(style="color:blue;font-size: 15px;", 
+          
+     "In the methods box the first entry is the no. of methods (try changing the 3 to 2!). The following are those that are presented in the the figures!")) )
+
+ })
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  h5(htmlOutput("text.reg.notes2B"))    
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ splitLayout(
+       textInput('methodzB', 
+          strong(div(h5(tags$span(style="color:blue", 
+            "No of methods")))), "3,1,2"),
+       
+ textInput('samplezB', 
+           strong(div(h5(tags$span(style="color:blue", 
+             "No of samples")))), "20"),
+ 
+textInput('repzB', 
+          strong(div(h5(tags$span(style="color:blue", 
+           "Reps")))), "2,1")
+                           )
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+output$text.reg.notesB <- renderText({  # create text
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    print(paste0(   
+
+        tags$span(style="color:blue;font-size: 15px;", 
+          
+     "Vectors of method-specific intercepts and slopes for the linear equation relating the 'true' underlying sample mean measurement to the mean measurement on each method")) )
+
+ })
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  h5(htmlOutput("text.reg.notesB"))    
+
+ splitLayout(
+    textInput('alphazB', 
+              strong(div(h5(tags$span(style="color:blue", 
+            "alphas")))), "0,0.4,0"),
+    
+    textInput('betazB', 
+              strong(div(h5(tags$span(style="color:blue", 
+              "betas")))), "1,1,1")
+)
+ 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('sigma.irzB', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "'IxR' Method-specific \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
+# 0.02,0.03, 0.05
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+  textInput('sigma.mizB', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "'MxI' Method-specific \u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('sigma.mirzB', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('mu.rangezB', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "The range across items of the 'true' mean measurement. Sample means are uniformly spaced across the range. ")))), "-0.5 ,1")
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  textInput('mizzB', 
+            strong(div(h5(tags$span(style="color:blue", 
+             "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  selectInput("Pl.typezB", 
+              strong(div(h5(tags$span(style="color:blue",
+              "Select plot type (main top left)")))),  choices = c("BA", "conv"), selected="BA")
+    
+  selectInput("modelzB", 
+                strong(div(h5(tags$span(style="color:blue",
+              "Model: replicates exchangable or linked?")))),  
+              choices = c("exch", "linked"), selected="exch")
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+
+```
+
+...have fun...
+
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Introduction
+
+```{r mc2B D}
+ 
+   
+
+ random.sample_2B <- reactive({
+      
+    # Dummy line to trigger off button-press
+    foo <- input$resample_2B
+    
+   nz <-     as.numeric(unlist(strsplit(input$samplezB,   ",")))
+   mz <-     as.numeric(unlist(strsplit(input$methodzB,   ",")))
+   az <-     as.numeric(unlist(strsplit(input$alphazB,    ",")))
+   bz <-     as.numeric(unlist(strsplit(input$betazB,     ",")))
+   rz <-     as.numeric(unlist(strsplit(input$repzB,      ",")))
+   miz <-    as.numeric(unlist(strsplit(input$sigma.mizB, ",")))
+   irz <-    as.numeric(unlist(strsplit(input$sigma.irzB, ","))) # item x replicate
+   mirz <-   as.numeric(unlist(strsplit(input$sigma.mirzB,",")))
+   rangez <- as.numeric(unlist(strsplit(input$mu.rangezB,",")))
+   mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
+   irz=irz[1]
+   
+   
+  #test data
+  # mz=methodz=c(3,1,2)
+  # nz=samplez=20
+  # rz=repz =c(2,1)
+  # az=alphaz=c(0,0.4,0)
+  # bz=betas=c(1,1,1)
+  # irz=sigma.irz=c(0.0)
+  # miz=sigma.miz=c(0.062,0.062, 0.05)
+  # mirz=sigma.mirz=c(0.128,0.143, 0.222)
+  # rangez =mu.rangez=c(-0.5 ,1)
+  # mizz=c(1 ,1)
+  # modelz="exch"
+  # #   
+   
+  foo <- Meth.sim(Ni=nz[1] , 
+                   Nm=mz[1],
+                
+                Nr=rz[1], 
+                nr=rz[2],
+                alpha=az, 
+                beta= bz,
+                
+                m.thin=mizz[1], 
+                i.thin=mizz[2],
+                
+                sigma.mi=miz, 
+                sigma.ir=irz, 
+                sigma.mir=mirz , 
+                
+                mu.range=rangez
+                )
+  
+  
+  # break down Meth.sim for more detail on listing
+  
+   
+  
+  
+   
+   #BA.est(foo, linked=TRUE)
+  
+  
+  
+  
+        
+    return(list(foo=foo, miz=miz, irz=irz, mirz=mirz, mz=mz))
+     })
+
+
+
+  r1_2B <- reactive({
+ 
+   sample <- random.sample_2B()
+    
+   nz <-     as.numeric(unlist(strsplit(input$samplezB,   ",")))
+   mz <-     as.numeric(unlist(strsplit(input$methodzB,   ",")))
+   az <-     as.numeric(unlist(strsplit(input$alphazB,    ",")))
+   bz <-     as.numeric(unlist(strsplit(input$betazB,     ",")))
+   rz <-     as.numeric(unlist(strsplit(input$repzB,      ",")))
+   
+   miz <-    sample$miz  # the sds
+   irz <-    sample$irz
+   mirz <-   sample$mirz
+   
+   rangez <- as.numeric(unlist(strsplit(input$mu.rangezB, ",")))
+   mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
+    
+    # repeat the data generation the sds will produce fresh data
+   foo <-  Meth.sim(Ni=nz[1] , 
+                   Nm=mz[1],
+                Nr=rz[1], 
+                nr=rz[2],
+                alpha=az, 
+                beta= bz,
+                m.thin=mizz[1], 
+                i.thin=mizz[2],
+                
+                sigma.mi=miz, 
+                sigma.ir=irz[1], 
+                sigma.mir=mirz , 
+                
+                mu.range=rangez
+                )
+     
+
+ return(list( foo=foo ))
+     
+  })
+
+
+
+
+# 
+# 
+ renderPrint({
+ 
+  foo <- r1_2B()$foo
+
+     print(foo)
+   
+   
+   })
+#   
+# 
+# 
+ 
+```
+ 
+### xxx 
+ 
+```{r testy}
+
+
+```
+
+
+
+
+
+  
  
 
 T-test 
