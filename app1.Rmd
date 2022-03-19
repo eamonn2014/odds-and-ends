@@ -597,7 +597,7 @@ output$text4a <- renderText({  # create interactive text t1
 
 <!-- ``` -->
  
-Method Comparison Diagnostics
+Method Comp. Diagnostics
 ====
 
 <!-- Column {.sidebar} -->
@@ -2639,28 +2639,23 @@ Column {.tabset .tabset-fade .width=600}
   y <- alphavec + betavec * (mu + e.mi + e.ir) + e.mir
   
   # this is all that is needed
-  dfr1 <- dfr <- data.frame(dfr, y = y)
+  # this is all that is needed
+#  dfr1 <- dfr <- data.frame(dfr, y = y)
   
- # d1 <- Meth(dfr)
+  #d1 <- Meth(dfr)
   
   # analysis
-#  if (Nr ==1) (m<-BA.plot(d1, eqn=TRUE)) 
+ # if (Nr ==1) (m<-BA.plot(d1, eqn=TRUE)) 
 #  if (Nr >1 & sigma.ir >0 ) m <- BA.est(d1, linked=TRUE)
 #  if (Nr >1 & sigma.ir ==0 ) M <- BA.est(d1, linked=FALSE)
   
   
   # lets get a dataset with true sds etc
-  
+   dfr <- data.frame(dfr )
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # shifts from mu and true parametrer
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
-  dfr$mu <- mu
-  dfr$IR <- e.ir
-  dfr$MI <- e.mi
-  dfr$MIR <- e.mir
-
-  
+  ##
   dfr$alpha <- alphavec
   dfr$beta <- betavec
   
@@ -2672,6 +2667,14 @@ Column {.tabset .tabset-fade .width=600}
   dfr$ sigma.mir <-  sigma.mir[meth]
 
   
+  
+  dfr$mu <- mu
+  dfr$IR <- e.ir
+  dfr$MI <- e.mi
+  dfr$MIR <- e.mir
+
+  dfr$y <- y
+  
   #dfr <- data.frame(dfr, y = y)
   
   row.names(dfr) <- NULL
@@ -2682,7 +2685,8 @@ Column {.tabset .tabset-fade .width=600}
  
    
    #BA.est(foo, linked=TRUE)
-  
+#    foo <- foo[ c("meth","item","repl","alpha","beta","sigma.ir","sigma.mi","sigma.mir","mu","IR","MI","MIR","y"), ]
+
   
   
   
@@ -2763,7 +2767,7 @@ Column {.tabset .tabset-fade .width=600}
   y <- alphavec + betavec * (mu + e.mi + e.ir) + e.mir
   
   # this is all that is needed
-  dfr1 <- dfr <- data.frame(dfr, y = y)
+#  dfr1 <- dfr <- data.frame(dfr, y = y)
   
   #d1 <- Meth(dfr)
   
@@ -2774,17 +2778,11 @@ Column {.tabset .tabset-fade .width=600}
   
   
   # lets get a dataset with true sds etc
-  
+   dfr <- data.frame(dfr )
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # shifts from mu and true parametrer
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
-  dfr$mu <- mu
-  dfr$IR <- e.ir
-  dfr$MI <- e.mi
-  dfr$MIR <- e.mir
-
-  
+  ##
   dfr$alpha <- alphavec
   dfr$beta <- betavec
   
@@ -2796,6 +2794,15 @@ Column {.tabset .tabset-fade .width=600}
   dfr$ sigma.mir <-  sigma.mir[meth]
 
   
+  
+  dfr$mu <- mu
+  dfr$IR <- e.ir
+  dfr$MI <- e.mi
+  dfr$MIR <- e.mir
+
+  dfr$y <- y
+
+  
   #dfr <- data.frame(dfr, y = y)
   
   row.names(dfr) <- NULL
@@ -2804,7 +2811,8 @@ Column {.tabset .tabset-fade .width=600}
   foo <- dfr
   
  
-     
+   #    foo <- foo[ c("meth","item","repl","alpha","beta","sigma.ir","sigma.mi","sigma.mir","mu","IR","MI","MIR","y"), ]
+
 
  return(list( foo=foo ))
      
@@ -2819,6 +2827,10 @@ options(width = 300)
  
   foo <- r1_2B()$foo
 
+  ##
+  
+  
+  
      print(foo)
    
    
@@ -2828,12 +2840,88 @@ options(width = 300)
 # 
  
 ```
+
+### explanation
  
 
+```{r xxx}
+
+
+h5(htmlOutput("e99"))   
+h5(htmlOutput("e99a"))
+h5(htmlOutput("e99b"))
+h5(htmlOutput("e100"))   
+h5(htmlOutput("e101"))   
+h5(htmlOutput("e102"))  
+
+output$e99 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "The listing includes the design matrix, the true population parameters and the eventual response y.")) )
+
+ })
+
+
+
+output$e99a <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "mu is the true sample values.")) )
+
+ })
+
+output$e99b <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "IR is the item x replicate component, this is a shift based on realisations from sigma.ir. This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods.")) )
+
+ })
+
+
+output$e100 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "MI is the method x item component, you can see it affects the same method items which receive a shift realisation from a method specific sd, namely sigma.mi")) )
+
+ })
+
+output$e101 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "MIR is the method x item x rep component, repeatability or residual you can see it affects each replicate which receive a realisation from a method specific sigma.mir.")) )
+
+ })
+
+
+output$e102 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "y <- alpha + beta * (mu + MI + IR) + MIR")) )
+
+ })
 
 
 
   
+``` 
  
 
 T-test 
