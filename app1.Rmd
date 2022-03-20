@@ -1538,19 +1538,19 @@ output$text.reg.notes <- renderText({  # create text
 
   textInput('sigma.irz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'IxR' Method-specific \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
+              "sigma.ir produces 'IxR' specific shift \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
 # 0.02,0.03, 0.05
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
   textInput('sigma.miz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'MxI' Method-specific \u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
+              "sigma.mi produces 'MxI' Method-specific shifts \u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.062, 0.05")
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirz', 
             strong(div(h5(tags$span(style="color:blue", 
-              "'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
+              "sigma.mir 'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2478,23 +2478,25 @@ output$text.reg.notesB <- renderText({  # create text
               "betas")))), "1,1,1")
 )
  
+  
+  textInput('sigma.mizB', 
+            strong(div(h5(tags$span(style="color:blue", 
+              "sigma.mi produces 'MxI' Method-specific shift\u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.04, 0.05")
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.irzB', 
             strong(div(h5(tags$span(style="color:blue", 
-              "sigma.ir produces 'IxR' Method-specific shift \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
+              "sigma.ir produces 'IxR' specific shift \u03C3s for the sample by replicate random effect. Only one can be estimated, if >0 this means reps are linked! The minimum reps (above box) only come into play if this is zero!")))), "0.05")
 # 0.02,0.03, 0.05
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-  textInput('sigma.mizB', 
-            strong(div(h5(tags$span(style="color:blue", 
-              "sigma.ir produces 'MxI' Method-specific shift\u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.04, 0.05")
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.mirzB', 
             strong(div(h5(tags$span(style="color:blue", 
-              "sigma.mir 'res' A vector of method-specific residual \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
+              "sigma.mir 'res' produces replicate shift \u03C3s for a method by sample by replicate random effect (residual variation). All components must be greater than zero.")))), "0.128,0.143, 0.222")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2529,7 +2531,7 @@ output$text.reg.notesB <- renderText({  # create text
 Column {.tabset .tabset-fade .width=600}  
 -----------------------------------------------------------------------
 
-### Introduction
+### Listing (design, parameters, realisation and y)
 
 ```{r mc2B D}
  
@@ -2661,16 +2663,15 @@ Column {.tabset .tabset-fade .width=600}
   
   
   # put variance components in dfr too!
-  
-  dfr$ sigma.ir  <- sigma.ir 
   dfr$ sigma.mi  <-  sigma.mi[meth]
+  dfr$ sigma.ir  <- sigma.ir 
   dfr$ sigma.mir <-  sigma.mir[meth]
 
   
   
   dfr$mu <- mu
-  dfr$IR <- e.ir
   dfr$MI <- e.mi
+  dfr$IR <- e.ir
   dfr$MIR <- e.mir
 
   dfr$y <- y
@@ -2789,15 +2790,15 @@ Column {.tabset .tabset-fade .width=600}
   
   # put variance components in dfr too!
   
-  dfr$ sigma.ir  <- sigma.ir 
   dfr$ sigma.mi  <-  sigma.mi[meth]
+  dfr$ sigma.ir  <- sigma.ir 
   dfr$ sigma.mir <-  sigma.mir[meth]
 
   
   
   dfr$mu <- mu
-  dfr$IR <- e.ir
   dfr$MI <- e.mi
+  dfr$IR <- e.ir
   dfr$MIR <- e.mir
 
   dfr$y <- y
@@ -2841,7 +2842,7 @@ options(width = 300)
  
 ```
 
-### explanation
+### Explanation
  
 
 ```{r xxx}
@@ -2860,7 +2861,7 @@ output$e99 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "The listing includes the design matrix, the true population parameters and the eventual response y.")) )
+     "The listing includes the design matrix, the true population parameters, realisations from the normally distributed population sd parameters and the eventual response y.")) )
 
  })
 
@@ -2882,7 +2883,7 @@ output$e99b <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "IR is the item x replicate component, this is a shift based on realisations from sigma.ir. This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods.")) )
+     "IR is the item x replicate component, this is a shift from the sigma.ir normal distribution based on realisations from sigma.ir. This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods.")) )
 
  })
 
@@ -2893,7 +2894,7 @@ output$e100 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "MI is the method x item component, you can see it affects the same method items which receive a shift realisation from a method specific sd, namely sigma.mi")) )
+     "MI is the method x item component, you can see it affects the same method items which receive a shift, a realisation from a method specific sd, namely sigma.mi")) )
 
  })
 
@@ -2903,7 +2904,7 @@ output$e101 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "MIR is the method x item x rep component, repeatability or residual you can see it affects each replicate which receive a realisation from a method specific sigma.mir.")) )
+     "MIR is the method x item x rep component, repeatability or residual you can see it affects each replicate which receive a realisation from a method specific sigma.mir normal distribution")) )
 
  })
 
