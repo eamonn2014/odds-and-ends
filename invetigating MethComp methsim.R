@@ -1,12 +1,12 @@
 # inputs
-# unpacking meth.sim!
+# unpacking meth.sim! better ubderstanding and figure out why BA plot in app has different stats!
 # use meth.sim to simulate paired ttet
   require(MethComp)
   set.seed=10
   n = Ni = 10
-  res <-   c(10,5)  #residual
+  res <-   c(10,5)        # residual
   btw <-   c(10,3)  
-  a <-     c(0.1,0.2)   # diff
+  a <-     c(0.1,0.2)     # diff
   b <-     c(1.1, 0.9 )   # is it constant
   range <- c(0,10)
   ir <-1  
@@ -17,7 +17,7 @@
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
   Nm = 2 # methods , fix this
-  Nr = 2 # reps pre sample , fix this
+  Nr = 2# reps pre sample , fix this
   nr = Nr
   alpha = a #rep(a, Nm)
   beta =  b #rep(b, Nm)
@@ -105,8 +105,17 @@
   # we have the data frame!
   
  
-  
   r1 <- dfr1  
+  
+  IR <- interaction(item, repl) 
+  MI <- interaction(meth, item)
+  
+ 
+  library(lme4)
+  lmer(y~ item + meth + (1|MI) + (1|IR) )
+  
+  
+  
   # A <- r1[r1$meth %in% 1,"y"]
   # B <- r1[r1$meth %in% 2,"y"]
   #  
@@ -155,7 +164,7 @@
   
   
   BA.plot( r1, model=zz, repl.conn=TRUE, col.lines="blue",
-           diflim=c(-L,L), 
+           #diflim=c(-L,L), 
            xaxs="i", yaxs="i",
            las=1, eqn=TRUE,  
            pl.type="BA", 
