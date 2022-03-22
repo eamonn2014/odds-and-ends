@@ -16,8 +16,8 @@
   #             min = 2, max = 5000, value = c(1000, 1000), ticks=FALSE) 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
-  Nm = 2 # methods , fix this
-  Nr = 2# reps pre sample , fix this
+  Nm = 3 # methods , fix this
+  Nr = 3# reps pre sample , fix this
   nr = Nr
   alpha = a #rep(a, Nm)
   beta =  b #rep(b, Nm)
@@ -110,9 +110,15 @@
   IR <- interaction(item, repl) 
   MI <- interaction(meth, item)
   
- 
+  # r primer bo0k p144 edition 1
   library(lme4)
   lmer(y~ item + meth + (1|MI) + (1|IR) )
+  
+  lmer(y ~ item + (1|meth) + (1|MI) + (1|IR))
+  
+  # r primer edition 2
+  # need more than 2 meths and more than 2 reps?
+  result2 <- BA.est(d1, linked=TRUE, random.raters=TRUE )
   
   
   
