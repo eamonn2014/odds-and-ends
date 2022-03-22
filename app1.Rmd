@@ -2528,8 +2528,8 @@ output$text.reg.notesB <- renderText({  # create text
 
 ...have fun...
 
-Column {.tabset .tabset-fade .width=600}  
------------------------------------------------------------------------
+Row {data-height=650}
+-------------------------------------
 
 ### Listing (design, parameters, realisation and y)
 
@@ -2842,18 +2842,23 @@ options(width = 300)
  
 ```
 
+Row {data-height=350}
+-------------------------------------
+
 ### Explanation
  
+
 
 ```{r xxx}
 
 
 h5(htmlOutput("e99"))   
+h5(htmlOutput("e102")) 
 h5(htmlOutput("e99a"))
+h5(htmlOutput("e100")) 
 h5(htmlOutput("e99b"))
-h5(htmlOutput("e100"))   
 h5(htmlOutput("e101"))   
-h5(htmlOutput("e102"))  
+ 
 
 output$e99 <- renderText({  # create interactive text t1
 
@@ -2883,7 +2888,7 @@ output$e99b <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "IR is the item x replicate component, this is a shift from the sigma.ir normal distribution based on realisations from sigma.ir. This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods.")) )
+     "IR is the item x replicate component, this is a shift based on realisations from a normal distributed component sigma.ir. This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods.")) )
 
  })
 
@@ -2919,7 +2924,18 @@ output$e102 <- renderText({  # create interactive text t1
 
  })
 
+ 
 
+
+```
+
+### Explanation2
+
+Row {data-width=200}
+-------------------------------------
+
+
+```{r xxxx}
 
   
 ``` 
