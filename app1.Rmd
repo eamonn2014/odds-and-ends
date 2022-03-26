@@ -699,6 +699,7 @@ Column {data-width=400, height=300}
   f <- summary(lm(y~x, w))
   con.diff <- f$coefficients["x","Pr(>|t|)"]
   
+   
   
   # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
   w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
@@ -706,6 +707,8 @@ Column {data-width=400, height=300}
   # plot(r~x,w)
   f1 <- summary(lm(r~x, w))
   con.sd <- f1$coefficients["x","Pr(>|t|)"]
+  
+
   
   return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
   
@@ -744,14 +747,17 @@ renderPlot({
   
 w <- r2()$w
 con.diff <- r2()$con.diff
+
+ pitman <- cor.test(w$x, w$y)$p.value
  
+
 
   ggplot(w, aes(x=x, y=y))+
     geom_point() +  
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("Regression of differences on averages.\nTesting hypothesis slope=0, p=", formatz3(con.diff)),
+    labs(title = paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff), ". Note: the constant SD assumption can also be evaluated using the \np-value from the correlation of differences on the average (known as Pitman's test) p=", formatz3(pitman)),
          x = "Averages",
          y = "After - before")
 
@@ -823,6 +829,9 @@ w <- r2()$w
   f <- summary(lm(y~x, w)) # First regressing the differences on the averages 
   w$r <- abs(residuals(f) ) 
   mod1 <- lm(r ~ x , data = w) # regressing the absolute residuals from this on the averages
+  
+ # pitman <- cor.test(w$r, w$x, data=w)$p.value
+  
   
   w$pred = predict(mod1) # pred and fitted no dif with linear model
  # w$pred = fitted(mod1) 
@@ -1815,7 +1824,10 @@ truth <- reactive({
   
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  h5(htmlOutput("textmcr1"))    
+  h5(htmlOutput("textmcr1"))   
+   h5(htmlOutput("textmcr2")) 
+    h5(htmlOutput("textmcr3")) 
+    h5(htmlOutput("textmcr4")) 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
   output$textmcr1 <- renderText({  # create interactive text t1
 
@@ -1823,24 +1835,51 @@ truth <- reactive({
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Analyse a simulated study that includes techical replication. Replicates are needed to assess repeatability. The assumptions (contant variance and constant difference are evaluated using the data but ignoring the technical replication. Boxplots are presented, but in retrospect they are not very informative, but left as lesson on coding. The analysis itself explicitly takes into account the study design and replication. We analyse the data in two ways, considering the replicates are linked and considering they are exchangable. We also perform a hypothesis test to test whether there is evidence the repeatabilty methods are different to each other. We also permute the replicates and plot. The limits should be similar if replicates are exchangeable.\n"),
+               "Analyse a simulated study that includes technical replication. Replicates are needed to assess repeatability. The assumptions (contant variance and constant difference are evaluated using the data but ignoring the technical replication. Boxplots are presented, but in retrospect they are not very informative, but left as lesson on coding. The analysis itself explicitly takes into account the study design and replication. We analyse the data in two ways, considering the replicates are linked and considering they are exchangable. We also perform a hypothesis test to test whether there is evidence the repeatabilty methods are different to each other. We also permute the replicates and plot. The limits should be similar if replicates are exchangeable.\n"),
     
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                "Changing differences across the range of values can be a manifestation of different repeatabilities, try it and see. So replication in the design can help to draw this conclusion"))
-    
 
     )
+  
+})
+    output$textmcr2 <- renderText({  # create interactive text t1
+
+    print(paste0(   
     
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+      "There will always only be one variance estimated for IR, each item replicate is unique. If there are only two methods we can only estimate one method x item component. More than 2 and we can estimate each.\n"))
+
+    )
+  
+})
+  
+    output$textmcr3 <- renderText({  # create interactive text t1
+
+    print(paste0(   
     
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+      "Examine the BA.est output ('Analysis, exchangable reps' and 'Analysis, linked reps' tabs) - this gives the limits of agreement between all pairs of methods.\n"))
+
+    )
   
 })
   
   
+      output$textmcr4 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      "The agreement between methods is considered acceptable if the variability between the observations made with different methods on the same subject is not much larger than the variability between observations with the same method on this subject.\n"))
+
+    )
   
-  
-  
-  
+})
   
   
   
@@ -1996,7 +2035,104 @@ standard deviation is not related to the method comparison, but only to the stud
    })
 
  
- # IXR
+ 
+```
+
+### Another approach
+  
+
+```{r not metcomp}
+
+ 
+  # lmm2 <-  reactive({
+  # 
+  #   foo <- r1_2()$foo
+  # 
+  #  # fL <- BA.est( foo, linked=TRUE, IxR =TRUE, MxI = TRUE  )
+  # 
+  #   
+  #   
+  #   return(list( fL=fL))
+  #          
+  #    })
+
+    h5(htmlOutput("textzz1")) 
+
+     output$textzz1 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      "\nSelect 2 methods to try this approach. Here's our reference LME model that specifies a symmetric matrix structure for both between-subject and within-subject variances.\nNo Equality Constraints.\n"))
+
+    )
+  
+})
+  
+  
+
+
+  renderPrint({
+  
+      
+      foo <- r1_2()$foo  # data
+      
+#     cat("\nSelect 2 methods to try this approach. Here's our reference LME model that specifies a symmetric matrix structure for both between-subject and within-subject variances.\nNo Equality Constraints.\n")
+  
+
+      REF = lme(y ~ meth,
+      data = foo,
+     random = list(item=pdSymm(~ meth-1)),
+    #random = list(item=pdSymm(~ meth-1), repl = ~ 1 ),
+      weights=varIdent(form=~1|meth),
+      correlation = corSymm(form=~1 | item/repl),
+      method="ML")
+           
+      print(REF)
+           
+      
+         # Bendix book page 144 re pdIdent v pdIdiag
+  #   if (mz[1] < 3) {
+  #     
+  #     
+  #   a <-lme( y ~ meth + item,
+  #         random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
+  #         weights = varIdent( form = ~1 | meth ),
+  #         data = foo )
+  #   
+  #   b <-lme( y ~ meth + item,
+  #         random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
+  #         #weights = varIdent( form = ~1 | meth ),
+  #         data = foo )
+  #     
+  #    print(a)
+  #     cat("\nEvidence against null of similar repeatabilities?\n")
+  #     print(anova(a,b)) #evidence of different residual errors?
+  #     
+  #     
+  # } else {
+  #   
+  #     a <- lme( y ~ meth + item,
+  #         random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
+  #         weights = varIdent( form = ~1 | meth ),
+  #         data = foo )
+  #     
+  #     b <- lme( y ~ meth + item,
+  #         random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
+  #        # weights = varIdent( form = ~1 | meth ),
+  #         data = foo )
+  #     
+  #      print(a)
+  #     cat("\nEvidence against null of similar repeatabilities?\n")
+  #     print(anova(a,b)) #evidence of different residual errors?
+      
+      
+ # }
+     
+  
+   })
+
 
 ```
 
