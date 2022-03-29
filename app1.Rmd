@@ -18,7 +18,7 @@ Paired data
 
   rm(list=ls())
 
-  set.seed(64453)
+  set.seed(874765)
   #library(MASS)      # for correlated data generation
   library(flexdashboard)
   library(ggplot2)
@@ -2042,20 +2042,7 @@ standard deviation is not related to the method comparison, but only to the stud
   
 
 ```{r not metcomp}
-
  
-  # lmm2 <-  reactive({
-  # 
-  #   foo <- r1_2()$foo
-  # 
-  #  # fL <- BA.est( foo, linked=TRUE, IxR =TRUE, MxI = TRUE  )
-  # 
-  #   
-  #   
-  #   return(list( fL=fL))
-  #          
-  #    })
-
     h5(htmlOutput("textzz1")) 
 
      output$textzz1 <- renderText({  # create interactive text t1
@@ -2064,24 +2051,205 @@ standard deviation is not related to the method comparison, but only to the stud
     
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      "\nSelect 2 methods to try this approach. Here's our reference LME model that specifies a symmetric matrix structure for both between-subject and within-subject variances.\nNo Equality Constraints.\n"))
+      "\nHere's our reference LME model that specifies a symmetric matrix structure for both between-subject and within-subject variances.\nNo Equality Constraints.\n"))
 
     )
   
 })
   
-  
-
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
   renderPrint({
   
       
-      foo <- r1_2()$foo  # data
+  #    foo <- r1_2()$foo  # data
+      f <- Roy()$REF
+      print(f)
       
-#     cat("\nSelect 2 methods to try this approach. Here's our reference LME model that specifies a symmetric matrix structure for both between-subject and within-subject variances.\nNo Equality Constraints.\n")
+   })
+  
+ 
+```
+
+### Another approach2
   
 
-      REF = lme(y ~ meth,
+```{r not metcomp2}
+   
+  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+     h5(htmlOutput("textzz2")) 
+
+     output$textzz2<- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      "\nLME model that specifies a compound symmetric matrix structure
+for between-subject (i.e. Equality constraint imposed) and symmetric structure within-subject variances.\n"))
+)
+    
+     })       
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+     
+       renderPrint({
+  
+      
+    #  foo <- r1_2()$foo  # data
+      f <- Roy()$NMB
+      print(f)
+      
+   })
+     
+  # renderPrint({
+  # 
+  #     
+  #     foo <- r1_2()$foo  # data
+  #  
+  #       NMB = lme(y ~ meth,
+  #       data = foo,
+  #       random = list(item=pdCompSymm(~ meth-1)),
+  #       weights=varIdent(form=~1|meth),
+  #       correlation = corSymm(form=~1 | item/repl),
+  #       method="ML")
+  #       
+  #     print(NMB)
+  #  })
+
+  
+         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+ 
+  
+
+```
+
+### Another approach3
+  
+
+```{r not metcomp3, eval=TRUE}
+   
+  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+     h5(htmlOutput("textzz3")) 
+
+     output$textzz3<- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      "\nLME model that specifies a symmetric matrix structure for
+between-subject and compound symmetric structure
+within-subject variances (i.e. Equality Constraint imposed)\n"))
+)
+    
+     })       
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+            renderPrint({
+  
+      
+     # foo <- r1_2()$foo  # data
+      f <- Roy()$NMW
+      print(f)
+      
+   })
+     
+  # renderPrint({
+  # 
+  #     
+  #     foo <- r1_2()$foo  # data
+  #     
+  #  
+  #       NMW = lme(y ~ meth,
+  #       data = foo,
+  #       random = list(item=pdSymm(~ meth-1)),
+  #       #weights=varIdent(form=~1|meth),
+  #       correlation = corCompSymm(form=~1 | item/repl),
+  #       method="ML")
+  #       
+  #     print(NMW)
+  #  })
+
+  
+         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+ 
+  
+
+
+```
+
+### Another approach4
+  
+
+```{r not metcomp4, eval=TRUE}
+   
+  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+     h5(htmlOutput("textzz4")) 
+
+     output$textzz4<- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      "\nLME model that specifies a compound symmetric matrix structure
+for both between-subject and within-subject variances.\n"))
+)
+    
+     })       
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+     
+            renderPrint({
+  
+      
+     # foo <- r1_2()$foo  # data
+      f <- Roy()$NMO
+      print(summary(f))
+      
+   })
+     
+     
+  # renderPrint({
+  # 
+  #     
+  #     foo <- r1_2()$foo  # data
+  #  
+  #       NMO = lme(y ~ meth,
+  #       data = foo,
+  #       random = list(item=pdCompSymm(~ meth-1)),
+  #       #weights=varIdent(form=~1|meth),
+  #       correlation = corCompSymm(form=~1 | item/repl),
+  #       method="ML")
+  #       
+  #     print(NMO)
+  #  })
+
+  
+         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+ 
+  
+  Roy<- reactive({
+ 
+   foo <- r1_2()$foo  # data
+   
+   
+   
+     REF = lme(y ~ meth,
       data = foo,
      random = list(item=pdSymm(~ meth-1)),
     #random = list(item=pdSymm(~ meth-1), repl = ~ 1 ),
@@ -2089,52 +2257,48 @@ standard deviation is not related to the method comparison, but only to the stud
       correlation = corSymm(form=~1 | item/repl),
       method="ML")
            
-      print(REF)
-           
-      
-         # Bendix book page 144 re pdIdent v pdIdiag
-  #   if (mz[1] < 3) {
-  #     
-  #     
-  #   a <-lme( y ~ meth + item,
-  #         random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
-  #         weights = varIdent( form = ~1 | meth ),
-  #         data = foo )
-  #   
-  #   b <-lme( y ~ meth + item,
-  #         random=list( item = pdIdent( ~ meth-1 ), repl = ~ 1 ),
-  #         #weights = varIdent( form = ~1 | meth ),
-  #         data = foo )
-  #     
-  #    print(a)
-  #     cat("\nEvidence against null of similar repeatabilities?\n")
-  #     print(anova(a,b)) #evidence of different residual errors?
-  #     
-  #     
-  # } else {
-  #   
-  #     a <- lme( y ~ meth + item,
-  #         random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
-  #         weights = varIdent( form = ~1 | meth ),
-  #         data = foo )
-  #     
-  #     b <- lme( y ~ meth + item,
-  #         random=list( item = pdDiag( ~ meth-1 )  , repl = ~ 1 ),
-  #        # weights = varIdent( form = ~1 | meth ),
-  #         data = foo )
-  #     
-  #      print(a)
-  #     cat("\nEvidence against null of similar repeatabilities?\n")
-  #     print(anova(a,b)) #evidence of different residual errors?
-      
-      
- # }
-     
   
-   })
-
+    NMB = lme(y ~ meth,
+        data = foo,
+        random = list(item=pdCompSymm(~ meth-1)),
+        weights=varIdent(form=~1|meth),
+        correlation = corSymm(form=~1 | item/repl),
+        method="ML")
+        
+    NMW = lme(y ~ meth,
+        data = foo,
+        random = list(item=pdSymm(~ meth-1)),
+        #weights=varIdent(form=~1|meth),
+        correlation = corCompSymm(form=~1 | item/repl),
+        method="ML")
+   
+   NMO = lme(y ~ meth,
+        data = foo,
+        random = list(item=pdCompSymm(~ meth-1)),
+        #weights=varIdent(form=~1|meth),
+        correlation = corCompSymm(form=~1 | item/repl),
+        method="ML")
+        
+  
+  
+  return(list(REF=REF, NMB=NMB, NMW=NMW, NMO=NMO))
+  
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 ```
+
 
 ### Boxplots 
  
