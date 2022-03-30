@@ -2,7 +2,7 @@
 # unpacking meth.sim! better ubderstanding and figure out why BA plot in app has different stats!
 # use meth.sim to simulate paired ttet
   require(MethComp)
-  set.seed=10
+  set.seed=101
   n = Ni = 10
   res <-   c(10,5)        # residual
   btw <-   c(10,3)  
@@ -16,7 +16,7 @@
   #             min = 2, max = 5000, value = c(1000, 1000), ticks=FALSE) 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
-  Nm = 3 # methods , fix this
+  Nm = 2 # methods , fix this
   Nr = 3# reps pre sample , fix this
   nr = Nr
   alpha = a #rep(a, Nm)

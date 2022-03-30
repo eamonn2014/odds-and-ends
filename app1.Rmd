@@ -2278,9 +2278,9 @@ for both between-subject and within-subject variances.\n"))
     
     # within variance covariance!!
     # https://stat.ethz.ch/pipermail/r-sig-mixed-models/2009q3/002759.html
-    as.numeric(REF$sigma*coef(REF$modelStruct$varStruct, unconstrained=FALSE, allCoef=TRUE))
+    # as.numeric(REF$sigma*coef(REF$modelStruct$varStruct, unconstrained=FALSE, allCoef=TRUE))
     # https://stats.oarc.ucla.edu/r/examples/alda/r-applied-longitudinal-data-analysis-ch-7/
-    r <- corMatrix(REF$modelStruct$corStruct)[[5]]
+    # r <- corMatrix(REF$modelStruct$corStruct)[[5]]
     
     
     # this function does it
@@ -2295,12 +2295,10 @@ for both between-subject and within-subject variances.\n"))
       covm <- corm*REF$sigma^2*t(t(varests))%*%t(varests)
       
    return(covm)}
-    
-    
-    
-   w <- corandcov(REF)
-   o <-  w+b # overall w+b
-  # Standard deviation of the differences can be computed accordingly :
+
+    w <- corandcov(REF)
+    o <-  w+b              # overall w+b
+    # Standard deviation of the differences can be computed accordingly :
     vdiff <-  sum(diag(o)) - 2*o[1,2]
     sqrt(vdiff)
     
