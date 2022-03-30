@@ -2257,7 +2257,63 @@ for both between-subject and within-subject variances.\n"))
       correlation = corSymm(form=~1 | item/repl),
       method="ML")
            
-  
+    # between sample  
+  #  v <- VarCorr(REF)
+    # vars <- as.numeric(as.vector(v[(grep("Residual", rownames(v), invert=TRUE)),"Variance"]) )
+    # r = as.numeric(v[,"Corr"])
+    # r = r[!is.na(r)]
+    # covars <- prod(sqrt(vars)*r)##
+    
+   # vc <- matrix(c(vars[1],covars, covars, vars[2]),nrow=2,ncol=2,byrow=TRUE)
+    
+    ################
+   # v <- VarCorr(REF)
+  #  corMatrix(as.numeric(v[,"Corr"]))
+    
+    #https://rstudio-pubs-static.s3.amazonaws.com/5374_04621aa8517e488e8d532e56cf636469.html
+    r <- cov2cor(getVarCov(REF))
+    
+    b <-  getVarCov(REF)
+    
+    
+    # within variance covariance!!
+    # https://stat.ethz.ch/pipermail/r-sig-mixed-models/2009q3/002759.html
+    as.numeric(REF$sigma*coef(REF$modelStruct$varStruct, unconstrained=FALSE, allCoef=TRUE))
+    # https://stats.oarc.ucla.edu/r/examples/alda/r-applied-longitudinal-data-analysis-ch-7/
+    r <- corMatrix(REF$modelStruct$corStruct)[[5]]
+    
+    
+    # this function does it
+    
+    corandcov <- function(REF,cov=T,...){
+      
+      corm <- corMatrix(REF$modelStruct$corStruct)[[5]]  # corr matrix
+      #print(corm)
+      varstruct <- (REF$modelStruct$varStruct)  ## ratio of SDs
+     # print(varstruct)
+      varests <- coef(varstruct, uncons=F, allCoef=T) # ratio of SDs again
+      covm <- corm*REF$sigma^2*t(t(varests))%*%t(varests)
+      
+   return(covm)}
+    
+    
+    
+   w <- corandcov(REF)
+   o <-  w+b # overall w+b
+  # Standard deviation of the differences can be computed accordingly :
+    vdiff <-  sum(diag(o)) - 2*o[1,2]
+    sqrt(vdiff)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     
     NMB = lme(y ~ meth,
         data = foo,
         random = list(item=pdCompSymm(~ meth-1)),
