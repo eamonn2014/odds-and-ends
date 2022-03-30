@@ -2043,7 +2043,9 @@ standard deviation is not related to the method comparison, but only to the stud
 
 ```{r not metcomp}
  
-    h5(htmlOutput("textzz1")) 
+    h5(htmlOutput("textzz1"))
+    h5(htmlOutput("textref")) 
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      output$textzz1 <- renderText({  # create interactive text t1
 
@@ -2058,16 +2060,45 @@ standard deviation is not related to the method comparison, but only to the stud
 })
   
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     
+  output$textref<- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      "\nPrediction SD...")
+    
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",Roy()$sd.pred )   
+    
+    ,  tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+      " <- only coded to work for 2 methods presently and exchangable replicates, so change no of methods to 2 and 0 for item x replicated variance component to compare to Methcomp!")
+
+    ))
+  
+})
+  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-  renderPrint({
+   renderPrint({
   
       
-  #    foo <- r1_2()$foo  # data
-      f <- Roy()$REF
-      print(f)
+        f <- Roy()$REF
+        print(f)
       
+        
+             
    })
+  
+   #  renderPrint({
+   # 
+   # 
+   #      cat("\nThe prediction sd:\n")
+   #      f1 <- Roy()$sd.pred
+   #      print(f1)
+   #           
+   # })
   
  
 ```
@@ -2154,8 +2185,10 @@ within-subject variances (i.e. Equality Constraint imposed)\n"))
      })       
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     
+     
 
-            renderPrint({
+  renderPrint({
   
       
      # foo <- r1_2()$foo  # data
@@ -2214,8 +2247,8 @@ for both between-subject and within-subject variances.\n"))
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      
-            renderPrint({
-  
+ renderPrint({
+   #file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/METHOD%20COMPARISON/new%20meth%20comp%20for%20K%20obrien.pdf
       
      # foo <- r1_2()$foo  # data
       f <- Roy()$NMO
@@ -2256,9 +2289,15 @@ for both between-subject and within-subject variances.\n"))
       weights=varIdent(form=~1|meth),
       correlation = corSymm(form=~1 | item/repl),
       method="ML")
-           
+         
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     # calc of sd prediction
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+     #~~~~~~~~~~~~~
     # between sample  
-  #  v <- VarCorr(REF)
+     #~~~~~~~~~~~~
+    #  v <- VarCorr(REF)
     # vars <- as.numeric(as.vector(v[(grep("Residual", rownames(v), invert=TRUE)),"Variance"]) )
     # r = as.numeric(v[,"Corr"])
     # r = r[!is.na(r)]
@@ -2270,13 +2309,17 @@ for both between-subject and within-subject variances.\n"))
    # v <- VarCorr(REF)
   #  corMatrix(as.numeric(v[,"Corr"]))
     
+     
+     
     #https://rstudio-pubs-static.s3.amazonaws.com/5374_04621aa8517e488e8d532e56cf636469.html
     r <- cov2cor(getVarCov(REF))
     
     b <-  getVarCov(REF)
     
-    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # within variance covariance!!
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     # https://stat.ethz.ch/pipermail/r-sig-mixed-models/2009q3/002759.html
     # as.numeric(REF$sigma*coef(REF$modelStruct$varStruct, unconstrained=FALSE, allCoef=TRUE))
     # https://stats.oarc.ucla.edu/r/examples/alda/r-applied-longitudinal-data-analysis-ch-7/
@@ -2294,24 +2337,27 @@ for both between-subject and within-subject variances.\n"))
       varests <- coef(varstruct, uncons=F, allCoef=T) # ratio of SDs again
       covm <- corm*REF$sigma^2*t(t(varests))%*%t(varests)
       
-   return(covm)}
+    return(covm)
+      }
 
     w <- corandcov(REF)
+    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # overall
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
     o <-  w+b              # overall w+b
     # Standard deviation of the differences can be computed accordingly :
     vdiff <-  sum(diag(o)) - 2*o[1,2]
-    sqrt(vdiff)
+    sd.pred<-sqrt(vdiff)
     
     
     
     
     
     
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-    
-    
-    
-     
     NMB = lme(y ~ meth,
         data = foo,
         random = list(item=pdCompSymm(~ meth-1)),
@@ -2332,10 +2378,8 @@ for both between-subject and within-subject variances.\n"))
         #weights=varIdent(form=~1|meth),
         correlation = corCompSymm(form=~1 | item/repl),
         method="ML")
-        
-  
-  
-  return(list(REF=REF, NMB=NMB, NMW=NMW, NMO=NMO))
+
+  return(list(REF=REF, NMB=NMB, NMW=NMW, NMO=NMO, sd.pred=sd.pred))
   
   })
   
