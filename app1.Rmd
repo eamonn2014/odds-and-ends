@@ -3061,7 +3061,8 @@ options(width = 300)
  
 ```
 
-Row {data-height=350}
+
+
 -------------------------------------
 
 ### Explanation
@@ -3154,18 +3155,6 @@ output$e102 <- renderText({  # create interactive text t1
 
 
 ```
-
-### Explanation2
-
-Row {data-width=200}
--------------------------------------
-
-
-```{r xxxx}
-
-  
-``` 
- 
 
 T-test 
 ====
