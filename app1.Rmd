@@ -2167,7 +2167,7 @@ within-subject variances (i.e. Equality Constraint imposed)\n"))
 
 ```
 
-### D flex within btwn
+### D No flexibilty within btwn
   
 
 ```{r not metcomp4, eval=TRUE}
@@ -2203,7 +2203,80 @@ for both between-subject & within-subject variances.\n"))
  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+   
+   
+```
 
+### E LR Tests
+  
+
+```{r not metcomp5, eval=TRUE}
+   
+  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+      h5(htmlOutput("textzz5")) 
+      h5(htmlOutput("textzz7")) 
+      h5(htmlOutput("textzz6")) 
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     output$textzz5<- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+           tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+   "\nTest the hypothesis that both methods have equal between-subject variances, p = ")
+
+         , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
+                     
+                     formatz3(Roy()$RB )  ) 
+   
+     ))
+       
+       
+     })       
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+  output$textzz6<- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+            tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+   "\nTest the hypothesis that both methods have equal within-subject variances, p = ")
+
+         , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
+                     
+                     formatz3(Roy()$RW )  )  
+       
+     ))
+       
+       
+     }) 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+    output$textzz7<- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+   "\nTest the hypothesis of equality of overall variances, p = ")
+
+         , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
+                     
+                     formatz3(Roy()$RO )  ) 
+   
+       
+     ))
+       
+       
+     }) 
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
+   
+   
+   
     #file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/METHOD%20COMPARISON/new%20meth%20comp%20for%20K%20obrien.pdf
 
   Roy<- reactive({
@@ -2272,7 +2345,7 @@ for both between-subject & within-subject variances.\n"))
     
     o <-  w+b              # overall w+b
     
-    # Standard deviation of the differences can be computed accordingly ..var of diff equals var of sum -2 x covariance
+    # Standard deviation of the differences can be computed accordingly ..var of diff equals sum of var -2 x covariance
     vdiff <-  sum(diag(o)) - 2*o[1,2] 
     sd.pred <- sqrt(vdiff)  # SD
     
@@ -2303,26 +2376,16 @@ for both between-subject & within-subject variances.\n"))
         method="ML")
 
   # Test the hypothesis that both methods have equal between-subject variances 
-  RB <- anova(REF, NMB)
+  RB <- anova(REF, NMB)$`p-value`[2]
   # Test the hypothesis that both methods have equal within-subject variances
-  RW <- anova(REF, NMW)
+  RW <- anova(REF, NMW)$`p-value`[2]
   # A test for equality of overall variances.
-  RO <- anova(REF, NMO)
+  RO <- anova(REF, NMO)$`p-value`[2]
     
   return(list(REF=REF, NMB=NMB, NMW=NMW, NMO=NMO, sd.pred=sd.pred , RB=RB, RW=RW, RO=RO))
   
   })
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
 
 ```
