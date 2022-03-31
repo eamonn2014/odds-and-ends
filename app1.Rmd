@@ -2656,8 +2656,8 @@ output$text4az <- renderText({  # create interactive text t1
 
 ```
 
-Method Comp. listing
-===
+Method Comp. listing {data-orientation=rows}
+===================================== 
 
 Column {.sidebar data-width=380}
 -----------------------------------------------------------------------
@@ -3021,8 +3021,14 @@ Row {data-height=650}
   dfr$MI <- e.mi
   dfr$IR <- e.ir
   dfr$MIR <- e.mir
-
   dfr$y <- y
+
+  
+  dfr$mu <- formatz3(mu)
+  dfr$MI <- formatz3(e.mi)
+  dfr$IR <- formatz3(e.ir)
+  dfr$MIR <- formatz3(e.mir)
+  dfr$y <- formatz3(y)
 
   
   #dfr <- data.frame(dfr, y = y)
@@ -3061,16 +3067,12 @@ options(width = 300)
  
 ```
 
-
-
 -------------------------------------
 
 ### Explanation
  
 
-
 ```{r xxx}
-
 
 h5(htmlOutput("e99"))   
 h5(htmlOutput("e102")) 
@@ -3091,7 +3093,6 @@ output$e99 <- renderText({  # create interactive text t1
 
  })
 
-
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 output$e99a <- renderText({  # create interactive text t1
@@ -3100,7 +3101,7 @@ output$e99a <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "mu is the true sample values.")) )
+     "mu are the true sample values.")) )
 
  })
 
@@ -3112,7 +3113,7 @@ output$e99b <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "IR is the item x replicate component, this is a shift based on realisations from a normal distributed component sigma.ir. This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods.")) )
+     "IR is the item×replicate component, this is a shift based on realisations from a normally distributed component ~N(0,sigma.ir). This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods. Only one component can be estimated. Think of MMRM scenario and a treatment effect at each visit, there is only one sd to estimate if it were treated as a random effect.")) )
 
  })
 
@@ -3124,7 +3125,12 @@ output$e100 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "MI is the method x item component, you can see it affects the same method items which receive a shift, a realisation from a method specific sd, namely sigma.mi")) )
+     "MI is the method×item component, you can see it affects the same method items which receive a shift, a realisation from a method specific sd, namely ~N(0,sigma.mi). As explained by Bendix Carsrensen 'The introduction of a third method allows the separation of the
+method×item variation between the methods. In the case of only two
+methods the deviations of the empirical method means for a given item
+can only be taken to be of opposite sign from the method×item means
+μi + αm (this is how μi is determined). But with three methods, we
+have three different distances to the method×item means.")) )
 
  })
 
@@ -3136,7 +3142,7 @@ output$e101 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "MIR is the method x item x rep component, repeatability or residual you can see it affects each replicate which receive a realisation from a method specific sigma.mir normal distribution")) )
+     "MIR is the method×item×rep component, repeatability or residual you can see it affects each replicate which receive a realisation from a method specific ~N(0,sigma.mir) distribution")) )
 
  })
 
