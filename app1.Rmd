@@ -35,6 +35,16 @@ Paired data
   library(nlme)
   lwd.=3             # used when plotting
   
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+ # FUNCTIONS ROUNDING/GEN COR DATA.ROUNDING/LOGNORMAL
+  
+  
+  
+  
+  
+  
+  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # function to format decimals
   # https://stackoverflow.com/questions/3245862/format-numbers-to-significant-figures-nicely-in-r
@@ -130,7 +140,7 @@ Column {.sidebar}
 
 **Design your method comparison, a simple setting, no replication **
 
-```{r tab1}
+```{r tab1 inputs}
 
  
  
@@ -175,7 +185,7 @@ Column {data-width=400}
 
 ### Paired boxplots and scatter plot
 
-```{r, tab1 plot3}
+```{r, tab1 plot1}
 
    # --------------------------------------------------------------------------
  
@@ -233,7 +243,7 @@ renderPlot({
 
 ### Bland Altman plot (or conversion plot) with 95% limits of agreement, within which we expect 95% of the differences to lie.
 
-```{r, tab1 plot4}
+```{r, tab1 plot2}
 
     
   # --------------------------------------------------------------------------
@@ -284,7 +294,7 @@ Column {data-width=400, height=75}
 
 ### Introduction
 
-```{r tab1 plot1}
+```{r tab1 generate data}
  
    # --------------------------------------------------------------------------
     # I looked back to two period cross over trial to get this button working to resimulate
@@ -385,7 +395,7 @@ Column {data-width=400, height=75}
 ```
 
 
-```{r, test}
+```{r, text}
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
    # help on font size
@@ -420,7 +430,7 @@ Column {data-width=400, height=75}
 ```
 
  
-```{r } 
+```{r text2} 
 
   # --------------------------------------------------------------------------
 output$text2 <- renderText({  # create interactive text t1
@@ -588,46 +598,13 @@ output$text4a <- renderText({  # create interactive text t1
 
 ``` 
 
-
-<!-- tab2 $\alpha$ -->
-<!-- ==== -->
-
-<!-- ```{r, not used} -->
-
-
-<!-- ``` -->
- 
 Method Comp. Diagnostics
 ====
-
-<!-- Column {.sidebar} -->
-<!-- ----------------------------------------------------------------------- -->
 
 
 ```{r gammapoisson}
 
-                                
-    # sliderInput('N.pg', 'Patients per arm', value=1000,
-    #               min = 1000, max = 100000, step=5, ticks=F)
-    # 
-    # sliderInput('mu0.pg', 'Placebo event rate \u03BC per patient yr of follow up', value=1,
-    #               min = 0.1, max = 25, step=.05, ticks=F)
-    # 
-    # sliderInput('eff.pg', 'Hypothesised treatment effect ', value=.75,  # 1/2 ing to doubling
-    #               min = 0.5, max = 2, step=.05, ticks=F)
-    # 
-    # sliderInput('k.pg', 'This needs to be \u03B1 the heterogeneity (ancillary) parameter. \u03B1 = 1/k', value = 1.3 ,  
-    #               min = 0, max = 5 ,step=0.01, ticks=F)
-    # 
-    # sliderInput('d1.pg', 'Placebo discontinuation prob', value = c(0.1),
-    #               min = 0, max = .5 ,step=0.05, ticks=F)
-    # 
-    # sliderInput('d2.pg', 'Treatment discontinuation prob', value = c(0.1),
-    #               min = 0, max = .5 ,step=0.05, ticks=F)
-    # 
-    # sliderInput('fup.pg', 'Follow up (yrs)', value = c(1),
-    #         min = 1, max = 10, step=1,ticks=F)
-
+  
 ```
 
 Method Comparison Diagnostics
@@ -969,21 +946,13 @@ Column {.sidebar data-width=350}
                "Select range over which methods measure", 
                min = 0, max = 100, value = c(0, 10), ticks=FALSE) 
       
-        
-  
-  
-  
+ 
   selectInput("SD.typeq", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
   
   selectInput("Dif.typeq", "Select difference type", choices = c("cons", "lin"), selected="lin")
   
   selectInput("Pl.typeq", "Select plot",             choices = c("BA", "conv"), selected="BA")
  
-  
-  
-  
-  
-  
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # orange button
    actionButton("resampleq",   "Hit to simulate a new sample" , style = "width:100%;")
@@ -1004,8 +973,6 @@ Column {data-width=400}
 ### Paired boxplots and scatter plot
 
 ```{r, tab2q}
-
- 
 
 renderPlot({
   
@@ -1051,7 +1018,6 @@ renderPlot({
   plot2 <- BB
   grid.arrange(plot1, plot2, ncol=2)
 
-
 })
   # --------------------------------------------------------------------------
 
@@ -1062,9 +1028,7 @@ renderPlot({
 
 ```{r, tab3q}
 
-    
   # --------------------------------------------------------------------------
-
 
 renderPlot({
   
@@ -1106,8 +1070,6 @@ renderPlot({
     
     
 if ( input$Pl.typeq=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
-
-    
 
 })
 
@@ -1243,22 +1205,6 @@ random.sampleq <- reactive({
      
   })
   
- 
-    # s1 <- input$res[1]
-    #     s2 <- input$res[2]     # mean
-    #     
-    #     btw1 <- input$btw[1]  # sd
-    #     btw2 <- input$btw[2]
-    # 
-    #     a1 <- input$alphas[1]  # sd
-    #     a2 <- input$alphas[2]
-    # 
-    #     b1 <- input$betas[1]  # sd
-    #     b2 <- input$betas[2]
-    # 
-    #     r1 <- input$ranges[1]  # sd
-    #     r2 <- input$ranges[2]
-  
     h5(htmlOutput("textmc2.1"))  
     h5(htmlOutput("textmc2.2"))  
     h5(htmlOutput("textmc2.3"))  
@@ -1324,30 +1270,11 @@ random.sampleq <- reactive({
 
                    input$res[2]) ,
 
-  #   tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-
-   #  ", also there is a true between sample variability for method 1 of ")
-
- #       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
- # 
- #                   input$btw[1]) ,
- # 
- #     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
- # 
- # ", also there is a true between sample variability for method 2 of ")
- # 
- #       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",
- # 
- #                   input$btw[2]) ,
-
-    
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
 
     ". There are no technical replicates.") 
  
- 
- 
- ))
+     ))
   # --------------------------------------------------------------------------
  })
   
@@ -1391,17 +1318,12 @@ random.sampleq <- reactive({
    , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
 
     " (check this to the plot when constant SD and constant differences are assumed). ") 
-  
- 
-    
-    
+
          ))
    # --------------------------------------------------------------------------
  })
   
   
-  
-    
    output$textmc2.3 <- renderText({  # create interactive text t1  
 
     print(paste0(   
@@ -1417,12 +1339,7 @@ random.sampleq <- reactive({
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
 
     ". This is not useful when measuring agreement. Change the range of the data and observe the change in correlation!") 
- 
-  
-  
- 
-    
-    
+
          ))
    })
    # --------------------------------------------------------------------------
@@ -1439,11 +1356,6 @@ random.sampleq <- reactive({
 })
      # --------------------------------------------------------------------------
 
-  
-   
-  
-  
-  
   
 ```
 
@@ -1471,15 +1383,7 @@ Column {.sidebar data-width=380}
 **Design your method comparison, replication! **
 
 ```{r mc2}
- 
-#   
-# textInput('methodz', 
-#           strong(div(h5(tags$span(style="color:blue", 
-#             "No of methods, No of sample")))), "2, 20")
-#  textInput('samplez', 
-#            strong(div(h5(tags$span(style="color:blue", 
-#              "No of items")))), "20")
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 # orange button
 
   actionButton("resample_2",   "Hit to simulate a new sample", style = "width:100%;")
@@ -1585,7 +1489,6 @@ output$text.reg.notes <- renderText({  # create text
               choices = c("exch", "linked"), selected="exch")
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
 
 ```
 
@@ -1599,7 +1502,6 @@ Column {data-width=400}
 ```{r, mc2 B}
 
    # --------------------------------------------------------------------------
- 
 
 renderPlot({
   
@@ -1749,20 +1651,7 @@ Column {.tabset .tabset-fade}
                 
                 mu.range=rangez
                 )
-  
-  
-  # break down Meth.sim for more detail on listing
-  
-   
-  
-  
-   
-   #BA.est(foo, linked=TRUE)
-  
-  
-  
-  
-        
+
     return(list(foo=foo, miz=miz, irz=irz, mirz=mirz, mz=mz))
      })
    
@@ -1824,8 +1713,8 @@ truth <- reactive({
   
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  h5(htmlOutput("textmcr1"))   
-   h5(htmlOutput("textmcr2")) 
+    h5(htmlOutput("textmcr1"))   
+    h5(htmlOutput("textmcr2")) 
     h5(htmlOutput("textmcr3")) 
     h5(htmlOutput("textmcr4")) 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
@@ -1881,14 +1770,7 @@ truth <- reactive({
   
 })
   
-  
-  
-  
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- # h5(htmlOutput("text3z"))      ## print 
-  
-
-        
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
      
 ```
 
@@ -1909,6 +1791,7 @@ lmm <-  reactive({
        
    })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
   renderPrint({
   
@@ -1968,7 +1851,6 @@ standard deviation is not needed as the replicates are not linked and should be 
 
 ```{r mcomp2.3}
 
- 
   lmm1 <-  reactive({
   
     foo <- r1_2()$foo
@@ -1979,6 +1861,7 @@ standard deviation is not needed as the replicates are not linked and should be 
            
      })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
   renderPrint({
   
@@ -2031,10 +1914,8 @@ standard deviation is not related to the method comparison, but only to the stud
       
   }
      
-  
    })
 
- 
  
 ```
 
@@ -2200,7 +2081,6 @@ for both between-subject & within-subject variances.\n"))
         
      })
      
- 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
    
@@ -2212,7 +2092,6 @@ for both between-subject & within-subject variances.\n"))
 
 ```{r not metcomp5, eval=TRUE}
    
-  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
       h5(htmlOutput("textzz5")) 
@@ -2274,9 +2153,7 @@ for both between-subject & within-subject variances.\n"))
      }) 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     
-   
-   
-   
+
     #file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/METHOD%20COMPARISON/new%20meth%20comp%20for%20K%20obrien.pdf
 
   Roy<- reactive({
@@ -2386,7 +2263,6 @@ for both between-subject & within-subject variances.\n"))
   
   })
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
 
 ```
 
@@ -2425,8 +2301,6 @@ for both between-subject & within-subject variances.\n"))
 })
 
 
-
-  
 ```
 
 ### Permute the reps
@@ -2445,7 +2319,6 @@ cat("Replicates within samples within methods are permuted, this therefore evalu
 ### Analyse as if no replication?
 
 ```{r mcomp2.6}
-
 
 renderPlot({
   
@@ -2504,8 +2377,6 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 })
 
 
-
-  
 ```
 
 ### Const. sd assumption
@@ -2513,11 +2384,8 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
  
 ```{r mcomp2.7}
 
- 
- 
   mixed.assump <- reactive({
- 
-   
+
   foo <- r1_2()$foo
      
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2579,6 +2447,8 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 
 })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+
 renderPlot({
   
 w <- mixed.assump()$w
@@ -2595,16 +2465,14 @@ con.sd <- mixed.assump()$con.sd
    
 })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
-
-  
 ```
 
 ### Const. diff. assumption
  
  
 ```{r mcomp2.8}
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -2628,13 +2496,6 @@ con.diff <- mixed.assump()$con.diff
          )
 
 })
-
-
-
-
-
-
-
 
 
 ```
@@ -2662,17 +2523,17 @@ con.diff <- mixed.assump()$con.diff
      })
 
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
   renderPrint({
   
     w <- Listing()$w
-    rownames(w) <- NULL  # refressh rownames
+    rownames(w) <- NULL  # refresh row names
     print(w)
     
  
   })
-
- 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
 ```
  
@@ -2778,6 +2639,7 @@ output$text4z <- renderText({  # create interactive text t1
 
  })
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
 output$text4az <- renderText({  # create interactive text t1
 
@@ -2804,14 +2666,11 @@ Column {.sidebar data-width=380}
 
 ```{r mc2B}
  
- 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # orange button
 
   actionButton("resample_2B",   "Hit to simulate a new sample", style = "width:100%;")
-
- 
-       
+      
    tags$style(HTML('#resample_2B{background-color:orange}'))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2874,8 +2733,7 @@ output$text.reg.notesB <- renderText({  # create text
             strong(div(h5(tags$span(style="color:blue", 
               "sigma.mi produces 'MxI' Method-specific shift\u03C3s for a method by sample random effect. Some or all components can be zero.")))), "0.062,0.04, 0.05")
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   textInput('sigma.irzB', 
@@ -2896,24 +2754,6 @@ output$text.reg.notesB <- renderText({  # create text
               "The range across items of the 'true' mean measurement. Sample means are uniformly spaced across the range. ")))), "-0.5 ,1")
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  # textInput('mizzB', 
-  #           strong(div(h5(tags$span(style="color:blue", 
-  #            "Fraction of the observations from each method to keep, fraction of the observations from each sample to keep")))), "1 ,1")
-  # 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  # selectInput("Pl.typezB", 
-  #             strong(div(h5(tags$span(style="color:blue",
-  #             "Select plot type (main top left)")))),  choices = c("BA", "conv"), selected="BA")
-  #   
-  # selectInput("modelzB", 
-  #               strong(div(h5(tags$span(style="color:blue",
-  #             "Model: replicates exchangable or linked?")))),  
-  #             choices = c("exch", "linked"), selected="exch")
-  
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
 
 ```
 
@@ -3074,16 +2914,8 @@ Row {data-height=650}
  
   foo <- dfr
   
- 
-   
-   #BA.est(foo, linked=TRUE)
-#    foo <- foo[ c("meth","item","repl","alpha","beta","sigma.ir","sigma.mi","sigma.mir","mu","IR","MI","MIR","y"), ]
-
+  return(list(foo=foo, miz=miz, irz=irz, mirz=mirz, mz=mz))
   
-  
-  
-        
-    return(list(foo=foo, miz=miz, irz=irz, mirz=mirz, mz=mz))
      })
 
 
@@ -3107,8 +2939,6 @@ Row {data-height=650}
     
     # repeat the data generation the sds will produce fresh data
  
-  
-  
   
   Ni <- nz
   
@@ -3227,9 +3057,7 @@ options(width = 300)
    
    
    })
-#   
-# 
-# 
+
  
 ```
 
@@ -3250,6 +3078,7 @@ h5(htmlOutput("e100"))
 h5(htmlOutput("e99b"))
 h5(htmlOutput("e101"))   
  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 output$e99 <- renderText({  # create interactive text t1
 
@@ -3262,6 +3091,7 @@ output$e99 <- renderText({  # create interactive text t1
  })
 
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 output$e99a <- renderText({  # create interactive text t1
 
@@ -3273,6 +3103,8 @@ output$e99a <- renderText({  # create interactive text t1
 
  })
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 output$e99b <- renderText({  # create interactive text t1
 
     print(paste0(   
@@ -3283,6 +3115,7 @@ output$e99b <- renderText({  # create interactive text t1
 
  })
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 output$e100 <- renderText({  # create interactive text t1
 
@@ -3294,6 +3127,8 @@ output$e100 <- renderText({  # create interactive text t1
 
  })
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 output$e101 <- renderText({  # create interactive text t1
 
     print(paste0(   
@@ -3304,6 +3139,7 @@ output$e101 <- renderText({  # create interactive text t1
 
  })
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 output$e102 <- renderText({  # create interactive text t1
 
@@ -3314,8 +3150,7 @@ output$e102 <- renderText({  # create interactive text t1
      "y <- alpha + beta * (mu + MI + IR) + MIR")) )
 
  })
-
- 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ```
@@ -3342,7 +3177,6 @@ Here we define the parameters of a lognormal distribution and a proportional cha
 
 ```{r, main power tab2}
  
-    
       div(h5(tags$span(style="color:blue", "Enter true population values:")))
 
       textInput("v3", div(h5(tags$span(style="color:blue", "Sample size per arm"))),     value= "60")
@@ -4508,61 +4342,6 @@ inference <- reactive({
 
 
 ```  
-
-<!-- tab 6   -->
-<!-- ==== -->
-
-<!-- Column {.sidebar} -->
-<!-- ----------------------------------------------------------------------- -->
-
-<!-- xxxxxxxxxxxx -->
-
-<!-- ```{r A, eval=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- Row {data-height=275} -->
-<!-- ----------------------------------------------------------------------- -->
-
-<!-- ### xxxxxxxxxxxxxxxx -->
-  
-
-<!-- ```{r B, eval=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- Row {data-height=250} -->
-<!-- ----------------------------------------------------------------------- -->
-
-<!-- ### xxxx -->
-
-
-<!-- ```{r C, eval=TRUE} -->
-
-
-<!-- ``` -->
-
-   
-<!-- Row {.tabset .tabset-fade} -->
-<!-- ----------------------------------------------------------------------- -->
-
-<!-- ### xxxx -->
-  
-
-<!-- ```{r D, eval=TRUE} -->
-
-
-<!-- ``` -->
-
-<!-- ### xxxx -->
-
-<!-- ```{r E} -->
-
-
-<!-- ``` -->
-
 
 Wiki
 ====
