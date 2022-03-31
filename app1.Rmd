@@ -2038,14 +2038,15 @@ standard deviation is not related to the method comparison, but only to the stud
  
 ```
 
-### Another approach
+### A No constraints
   
 
 ```{r not metcomp}
  
     h5(htmlOutput("textzz1"))
     h5(htmlOutput("textref")) 
-     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      output$textzz1 <- renderText({  # create interactive text t1
 
@@ -2053,7 +2054,7 @@ standard deviation is not related to the method comparison, but only to the stud
     
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      "\nHere's our reference LME model that specifies a symmetric matrix structure for both between-subject and within-subject variances.\nNo Equality Constraints.\n"))
+      "\nReference LME model, a symmetric matrix structure for both between-subject & within-subject variances. No Equality Constraints.\n"))
 
     )
   
@@ -2069,11 +2070,11 @@ standard deviation is not related to the method comparison, but only to the stud
                
       "\nPrediction SD...")
     
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",Roy()$sd.pred )   
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(Roy()$sd.pred )  ) 
     
     ,  tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      " <- only coded to work for 2 methods presently and exchangable replicates, so change no of methods to 2 and 0 for item x replicated variance component to compare to Methcomp!")
+      " <- only coded to work for 2 methods presently, so change no. of methods to 2 to compare to Methcomp!")
 
     ))
   
@@ -2083,27 +2084,16 @@ standard deviation is not related to the method comparison, but only to the stud
 
    renderPrint({
   
-      
         f <- Roy()$REF
         print(f)
-      
-        
-             
+
    })
   
-   #  renderPrint({
-   # 
-   # 
-   #      cat("\nThe prediction sd:\n")
-   #      f1 <- Roy()$sd.pred
-   #      print(f1)
-   #           
-   # })
-  
+    
  
 ```
 
-### Another approach2
+### B flex within only
   
 
 ```{r not metcomp2}
@@ -2113,54 +2103,33 @@ standard deviation is not related to the method comparison, but only to the stud
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      h5(htmlOutput("textzz2")) 
-
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      output$textzz2<- renderText({  # create interactive text t1
 
     print(paste0(   
     
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      "\nLME model that specifies a compound symmetric matrix structure
-for between-subject (i.e. Equality constraint imposed) and symmetric structure within-subject variances.\n"))
+      "\nSpecify a compound symmetric matrix structure
+for between-subject (i.e. Equality constraint imposed) & symmetric structure within-subject variances.\n"))
 )
     
      })       
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-     
        renderPrint({
-  
-      
-    #  foo <- r1_2()$foo  # data
-      f <- Roy()$NMB
-      print(f)
-      
-   })
+    
+        f <- Roy()$NMB
+        print(f)
+        
+      })
      
-  # renderPrint({
-  # 
-  #     
-  #     foo <- r1_2()$foo  # data
-  #  
-  #       NMB = lme(y ~ meth,
-  #       data = foo,
-  #       random = list(item=pdCompSymm(~ meth-1)),
-  #       weights=varIdent(form=~1|meth),
-  #       correlation = corSymm(form=~1 | item/repl),
-  #       method="ML")
-  #       
-  #     print(NMB)
-  #  })
-
-  
-         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
- 
-  
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
 ```
 
-### Another approach3
+### C flex Btwn only
   
 
 ```{r not metcomp3, eval=TRUE}
@@ -2170,15 +2139,15 @@ for between-subject (i.e. Equality constraint imposed) and symmetric structure w
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      h5(htmlOutput("textzz3")) 
-
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      output$textzz3<- renderText({  # create interactive text t1
 
     print(paste0(   
     
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      "\nLME model that specifies a symmetric matrix structure for
-between-subject and compound symmetric structure
+      "\nSpecify a symmetric matrix structure for
+between-subject & compound symmetric structure
 within-subject variances (i.e. Equality Constraint imposed)\n"))
 )
     
@@ -2186,42 +2155,19 @@ within-subject variances (i.e. Equality Constraint imposed)\n"))
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      
-     
-
-  renderPrint({
-  
-      
-     # foo <- r1_2()$foo  # data
+  renderPrint({ 
+    
       f <- Roy()$NMW
       print(f)
       
    })
-     
-  # renderPrint({
-  # 
-  #     
-  #     foo <- r1_2()$foo  # data
-  #     
-  #  
-  #       NMW = lme(y ~ meth,
-  #       data = foo,
-  #       random = list(item=pdSymm(~ meth-1)),
-  #       #weights=varIdent(form=~1|meth),
-  #       correlation = corCompSymm(form=~1 | item/repl),
-  #       method="ML")
-  #       
-  #     print(NMW)
-  #  })
-
+   
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
   
-         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
- 
-  
-
 
 ```
 
-### Another approach4
+### D flex within btwn
   
 
 ```{r not metcomp4, eval=TRUE}
@@ -2231,15 +2177,15 @@ within-subject variances (i.e. Equality Constraint imposed)\n"))
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      h5(htmlOutput("textzz4")) 
-
+     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      output$textzz4<- renderText({  # create interactive text t1
 
     print(paste0(   
     
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      "\nLME model that specifies a compound symmetric matrix structure
-for both between-subject and within-subject variances.\n"))
+      "\nSpecify a compound symmetric matrix structure
+for both between-subject & within-subject variances.\n"))
 )
     
      })       
@@ -2247,40 +2193,22 @@ for both between-subject and within-subject variances.\n"))
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
      
- renderPrint({
-   #file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/METHOD%20COMPARISON/new%20meth%20comp%20for%20K%20obrien.pdf
-      
-     # foo <- r1_2()$foo  # data
-      f <- Roy()$NMO
-      print(summary(f))
-      
-   })
+   renderPrint({
+        
+        f <- Roy()$NMO
+        print(summary(f))
+        
+     })
      
-     
-  # renderPrint({
-  # 
-  #     
-  #     foo <- r1_2()$foo  # data
-  #  
-  #       NMO = lme(y ~ meth,
-  #       data = foo,
-  #       random = list(item=pdCompSymm(~ meth-1)),
-  #       #weights=varIdent(form=~1|meth),
-  #       correlation = corCompSymm(form=~1 | item/repl),
-  #       method="ML")
-  #       
-  #     print(NMO)
-  #  })
-
-  
-         #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
  
-  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+
+    #file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/METHOD%20COMPARISON/new%20meth%20comp%20for%20K%20obrien.pdf
+
   Roy<- reactive({
  
    foo <- r1_2()$foo  # data
-   
-   
    
      REF = lme(y ~ meth,
       data = foo,
@@ -2291,30 +2219,27 @@ for both between-subject and within-subject variances.\n"))
       method="ML")
          
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-     # calc of sd prediction
+     # calculation of sd for prediction
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-     #~~~~~~~~~~~~~
-    # between sample  
-     #~~~~~~~~~~~~
-    #  v <- VarCorr(REF)
+     #~~~~~~~~~~~~~~~~~~~~~~~~~
+     # between sample covariance
+     #~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+    # v <- VarCorr(REF)
     # vars <- as.numeric(as.vector(v[(grep("Residual", rownames(v), invert=TRUE)),"Variance"]) )
     # r = as.numeric(v[,"Corr"])
     # r = r[!is.na(r)]
     # covars <- prod(sqrt(vars)*r)##
+    # vc <- matrix(c(vars[1],covars, covars, vars[2]),nrow=2,ncol=2,byrow=TRUE)
     
-   # vc <- matrix(c(vars[1],covars, covars, vars[2]),nrow=2,ncol=2,byrow=TRUE)
+    #~~~~~~~~~~~~~~~~~~~~~~~
+    # v <- VarCorr(REF)
+    # corMatrix(as.numeric(v[,"Corr"]))
     
-    ################
-   # v <- VarCorr(REF)
-  #  corMatrix(as.numeric(v[,"Corr"]))
-    
-     
-     
     #https://rstudio-pubs-static.s3.amazonaws.com/5374_04621aa8517e488e8d532e56cf636469.html
     r <- cov2cor(getVarCov(REF))
-    
-    b <-  getVarCov(REF)
+    b <- getVarCov(REF)
     
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # within variance covariance!!
@@ -2324,8 +2249,7 @@ for both between-subject and within-subject variances.\n"))
     # as.numeric(REF$sigma*coef(REF$modelStruct$varStruct, unconstrained=FALSE, allCoef=TRUE))
     # https://stats.oarc.ucla.edu/r/examples/alda/r-applied-longitudinal-data-analysis-ch-7/
     # r <- corMatrix(REF$modelStruct$corStruct)[[5]]
-    
-    
+
     # this function does it
     
     corandcov <- function(REF,cov=T,...){
@@ -2347,15 +2271,14 @@ for both between-subject and within-subject variances.\n"))
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     o <-  w+b              # overall w+b
-    # Standard deviation of the differences can be computed accordingly :
-    vdiff <-  sum(diag(o)) - 2*o[1,2]
-    sd.pred<-sqrt(vdiff)
     
+    # Standard deviation of the differences can be computed accordingly ..var of diff equals var of sum -2 x covariance
+    vdiff <-  sum(diag(o)) - 2*o[1,2] 
+    sd.pred <- sqrt(vdiff)  # SD
     
-    
-    
-    
-    
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # models to test against reference model
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
     NMB = lme(y ~ meth,
@@ -2372,14 +2295,21 @@ for both between-subject and within-subject variances.\n"))
         correlation = corCompSymm(form=~1 | item/repl),
         method="ML")
    
-   NMO = lme(y ~ meth,
+    NMO = lme(y ~ meth,
         data = foo,
         random = list(item=pdCompSymm(~ meth-1)),
         #weights=varIdent(form=~1|meth),
         correlation = corCompSymm(form=~1 | item/repl),
         method="ML")
 
-  return(list(REF=REF, NMB=NMB, NMW=NMW, NMO=NMO, sd.pred=sd.pred))
+  # Test the hypothesis that both methods have equal between-subject variances 
+  RB <- anova(REF, NMB)
+  # Test the hypothesis that both methods have equal within-subject variances
+  RW <- anova(REF, NMW)
+  # A test for equality of overall variances.
+  RO <- anova(REF, NMO)
+    
+  return(list(REF=REF, NMB=NMB, NMW=NMW, NMO=NMO, sd.pred=sd.pred , RB=RB, RW=RW, RO=RO))
   
   })
   
