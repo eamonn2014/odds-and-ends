@@ -858,7 +858,10 @@ w <- r2()$w
   argz2 <- c(   sd(df$y),     sqrt(r1()$true) )
   colz <-  c("black", "red")
   
-  xv <- argz1[2]+1.2
+  xv <- argz1[2]+sd(df$y)*1.5  # x co-ordinate of text
+  
+  ## https://stats.stackexchange.com/questions/143631/height-of-a-normal-distribution-curve
+  top <- 1/sqrt(2 * pi * var(df$y) )  # y co ordinate of text
 
  p <- ggplot(df, aes(y)) +      
   
@@ -867,8 +870,8 @@ w <- r2()$w
  
    theme_bw() +
   
-  annotate("text",  x=xv, y=.8, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ",          formatz3(sd(df$y)), " (black)"))  +
-  annotate("text",  x=xv, y=.7, label= paste0("True Mean difference = ",      formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
+  annotate("text",  x=xv, y=top*1.3, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ",          formatz3(sd(df$y)), " (black)"))  +
+  annotate("text",  x=xv, y=top*1.2,   label= paste0("True Mean difference = ",      formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
   
 # https://stackoverflow.com/questions/2237600/how-can-i-plot-multiple-functions-in-r
  # adding density plots
@@ -1176,7 +1179,6 @@ random.sampleq <- reactive({
    
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
   r1q <- reactive({
  
     sample <- random.sampleq()
@@ -1205,10 +1207,14 @@ random.sampleq <- reactive({
      
   })
   
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
     h5(htmlOutput("textmc2.1"))  
     h5(htmlOutput("textmc2.2"))  
     h5(htmlOutput("textmc2.3"))  
     h5(htmlOutput("textmc2.4"))  
+    
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
    
   output$textmc2.1 <- renderText({  # create interactive text t1
 
@@ -1364,12 +1370,179 @@ random.sampleq <- reactive({
 
 ```{r xx1, eval=TRUE}
 
+  r2q <- reactive({
+    
+  before <- r1q()$pp1 ##1179
+  after  <- r1q()$pp2 ##1179
 
+  y <-    before - after    # notice 1-2
+  x <-   (before + after) /2
+  
+  w <- data.frame(x=x,y=y)
+  
+  
+  f <- summary(lm(y~x, w))
+   con.diff <- f$coefficients["x","Pr(>|t|)"]
+  # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
+  w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
+  # w$r <- (residuals(f) )
+  # plot(r~x,w)
+  f1 <- summary(lm(r~x, w))
+  con.sd <- f1$coefficients["x","Pr(>|t|)"]
+  
+
+  
+  return(list( con.diff=con.diff, con.sd=con.sd , w=w , f=f))
+  
+  
+  
+  })
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+renderPlot({
+  
+  
+  w <-r2q()$w
+ con.diff <-r2q()$con.diff
+ # Constant difference - this is the test of 0 slope in the regression of differences on averages.
+ # f <- summary(lm(y~x, w))
+#  con.diff <- f$coefficients["x","Pr(>|t|)"]
+ 
+  mod1 <- lm(y ~ x, data = w) 
+  w$pred = predict(mod1)  
+  
+  p <- w %>%
+    ggplot(aes(x = x, y = y) ) +
+    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="cornflowerblue") +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$y))+
+    
+     labs(title = 
+    paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff)),
+         x = "Averages",
+         y = "1 - 2") +
+
+    geom_segment(
+      aes(xend = x, yend = pred),
+      size = 0.5, alpha = 0.8, lineend = "round", col="pink"
+    ) +
+    
+    theme_bw(base_size = 12)
+  
+    ggMarginal(p, type = "histogram", bins = 50)
+
+})
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
 ```
 
 ###  Constant variance assumption
  
 ```{r xx2}
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# x averages
+# y differences
+# r abs residuals
+
+renderPlot({
+  
+  w      <- r2q()$w
+  con.sd <- r2q()$con.sd
+  f      <- r2q()$f
+
+  w$r <- abs(residuals(f) ) 
+  mod1 <- lm(r ~ x , data = w) # regressing the absolute residuals from this on the averages
+  
+ # pitman <- cor.test(w$r, w$x, data=w)$p.value
+
+  w$pred = predict(mod1) # pred and fitted no dif with linear model
+ # w$pred = fitted(mod1) 
+
+p1 <-  ggplot(w, aes(x=x, y=r))+
+    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+    geom_smooth(method = "lm", colour = "red", se=TRUE, level=.95, fill="#69b3a2") +
+     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages. Testing hypothesis slope=0, p=", formatz3(con.sd)),
+         x = "Averages",
+         y = "Absolute residuals") +
+    
+    geom_segment(
+      aes(xend = x, yend = pred),   ## trying to join to reg line
+      size = 0.5, alpha = 0.8, lineend = "round", col="pink"
+    ) +
+    
+    theme_bw(base_size = 12)
+
+  ggMarginal(p1, type = "histogram", bins = 50)
+
+})
+  
+
+ 
+```
+
+### Distribution of differences
+  
+```{r xx3, eval=TRUE}
+
+
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
+# calculate mean and sd by group
+# stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
+ 
+
+renderPlot({
+  
+w <- r2q()$w
+
+  df <- w
+  
+  a2 <- input$alphas[1]  # sd
+  a1 <- input$alphas[2]
+    
+  eff.p <-a2-a1
+  argz1 <- c(   mean(df$y),   eff.p)
+  argz2 <- c(   sd(df$y),     sqrt(r1q()$true) )
+  colz <-  c("black", "red")
+  
+  xv <- argz1[2]+sd(df$y)*1.5  # x co-ordinate of text
+  
+  top <- 1/sqrt(2 * pi * var(df$y) )  # height of normal density for text
+
+ p <- ggplot(df, aes(y)) +      
+  
+  geom_histogram(aes(y = ..density..),
+                 colour = "white", fill = "cornflowerblue", size = 0.1) +
+ 
+   theme_bw() +
+  
+  annotate("text",  x=xv, y=top*1.3, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ",          formatz3(sd(df$y)), " (black)"))  +
+  annotate("text",  x=xv, y=top*1.2, label= paste0("True Mean difference = ",      formatz3( eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1q()$true)) ,  " (red)"))
+  
+# https://stackoverflow.com/questions/2237600/how-can-i-plot-multiple-functions-in-r
+ # adding density plots
+ for(i in 1:2)
+   
+    p <- p +  stat_function(fun = dnorm,
+                args = list( mean = argz1[i], sd = argz2[i] ),
+                col = colz[i],
+                size = 1.5)
+    print(p)
+
+})
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+
 
 
 ```
@@ -3069,7 +3242,7 @@ options(width = 300)
 
 -------------------------------------
 
-### Explanation
+### Explanation  {data-commentary-width=400}
  
 
 ```{r xxx}
@@ -3113,7 +3286,7 @@ output$e99b <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "IR is the item×replicate component, this is a shift based on realisations from a normally distributed component ~N(0,sigma.ir). This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods. Only one component can be estimated. Think of MMRM scenario and a treatment effect at each visit, there is only one sd to estimate if it were treated as a random effect.")) )
+     "IR is the item×replicate component, this is a shift based on realisations from a normally distributed component ~N(0,sigma.ir). This is only for a linked experiment, for example the same items replicates receive the same shift regardless of method. So this component has nothing to do with the methods. Only one component can be estimated. Think of mixed model repeated measures (MMRM) scenario and a single treatment effect at each visit, if treated as a random effect there is only one sd to estimate.")) )
 
  })
 
@@ -3125,7 +3298,7 @@ output$e100 <- renderText({  # create interactive text t1
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
           
-     "MI is the method×item component, you can see it affects the same method items which receive a shift, a realisation from a method specific sd, namely ~N(0,sigma.mi). As explained by Bendix Carsrensen 'The introduction of a third method allows the separation of the
+     "MI is the method×item component, you can see it affects the same method items which receive a shift, a realisation from a method specific sd, namely ~N(0,sigma.mi). As explained by Bendix Carstensen 'The introduction of a third method allows the separation of the
 method×item variation between the methods. In the case of only two
 methods the deviations of the empirical method means for a given item
 can only be taken to be of opposite sign from the method×item means
@@ -3168,15 +3341,15 @@ T-test
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-Here we define the parameters of a lognormal distribution and a proportional change (independent groups)
+Here we define the parameters of a log normal distribution and a proportional change (independent groups)
 
 ```{r, main power tab2}
  
       div(h5(tags$span(style="color:blue", "Enter true population values:")))
 
-      textInput("v3", div(h5(tags$span(style="color:blue", "Sample size per arm"))),     value= "60")
+      textInput("v3", div(h5(tags$span(style="color:blue", "Sample size per arm"))), value= "60")
       textInput("v1", div(h5(tags$span(style="color:blue", "Log Normal mean"))),     value= "100")
-      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD"))),      value= "50")
+      textInput("v2", div(h5(tags$span(style="color:blue", "Log Normal SD"))),       value= "50")
       textInput("v4", div(h5(tags$span(style="color:blue", "Confidence Level"))),    value= "0.90")
       textInput("v5", div(h5(tags$span(style="color:blue", "QC Level"))),            value= "0.85")
       textInput("v6", div(h5(tags$span(style="color:blue", "Proportional change"))), value= "0.95")
