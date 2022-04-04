@@ -8,14 +8,18 @@ output:
     social: menu
     source_code: embed
 runtime: shiny
+
+
 ---
-Paired data
+Paired data {data-icon="fa-home"}
 ===
 
 
 
 ```{r global, include=FALSE}
 
+
+ 
   rm(list=ls())
 
   set.seed(874765)
@@ -4520,6 +4524,7 @@ Wiki
 ```{r}
 
   # --------------------------------------------------------------------------
+tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}")
 
 output$text.wiki <- renderText({  # create interactive text t1
 
@@ -4527,8 +4532,7 @@ output$text.wiki <- renderText({  # create interactive text t1
  
            tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " Method comparison is presented on the first tab. A simple experiment in which any difference is constant across the range and the standard deviation is also constant and common to both methods. Correlation between samples analysed using both methods can be introduced. If methods agree we expect there to be positive correlation. That is, if one method measures a sample to have a high value we would expect the second method to have a similar high value. We present a plot of the data using boxplots and join the same sample with a thin line, beside it a simple scattterplot. Bottom right the default plot is the familiar Bland Altman plot with 95% limits of agreement and conversion equation. There is an option to show instead the inference on a scatter plot. There are user options too for the analysis, bottom left. Here, the difference can be analysed depending on the averages assuming it is constant (default) or linear. The standard deviation can be analysed depending on the averages assuming it is constant (default) or linear
-    ", #),
+    "A simple experiment in which any difference is constant across the range and the standard deviation is also constant and common to both methods is presented on the 'Paired tab'. Here two groups are set up using a between sample variation and a defined correlation. We determine the mean and intervention effect. If for example two measurement methods agree we expect there to be positive correlation. That is, if one method measures a sample to have a high value we would expect the second method to have a similar high value. We present a plot of the data using boxplots and join the same sample with a thin line, beside it a simple scattterplot. Top right the default plot is the familiar Bland Altman plot with 95% limits of agreement and conversion equation. There is an option to show instead the inference on a scatter plot. There are user options too for the analysis, bottom left. Here, the difference can be analysed depending on the averages assuming it is constant (default) or linear. The standard deviation can be analysed depending on the averages assuming it is constant (default) or linear", #),
     
         ".") ))
  })
@@ -4543,14 +4547,57 @@ output$text.wiki2 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " Method comparison diagnostics are presented on the next tab. The diagnostics include a check of the assmptions of constant variance across the range and constant difference across the range. Below there are more tabs, the first two plots are repeated but with some small modifications (just for programming practice). There is also a tab including histogram of the differences
-    ", #),
+    "Some diagnostics are presented on the next tab. The diagnostics include a check of assumptions of constant variance across the range and constant difference across the range. Below there are more tabs, the first two plots are repeated but with some small modifications (just for programming practice). There is also a tab including histogram of the differences", #),
     
     
         ".") ))
  })
  
   # --------------------------------------------------------------------------
+
+output$text.wiki2a <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    "The next tab 'Method Comp. (no replication)' is set up is a typical method comparison experiment. No replication. On the same tab are mini tabs exploring assumptions", #),
+    
+    
+        ".") ))
+ })
+
+
+output$text.wiki2b <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    "'Method Comp. with replication' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second minitab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mintabs A-E, presents an alternative LMM approach. There are alos mini tabs presenting boxplots, plots if we permure the reps randomly. We analyse as if each replicate were a seperate sample. we look at the assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
+    
+    
+        ".") ))
+ })
+
+
+output$text.wiki2c <- renderText({  # create interactive text t1
+
+    print(paste0(   
+  
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    "The next tab 'Method Comp. listing' here we show the ideas as plain as possible behind the simulation and theory", #),
+    
+    
+        ".") ))
+ })
+
+ 
+
 
   # --------------------------------------------------------------------------
 
@@ -4611,6 +4658,12 @@ ttest diagnostics\n
   h5(htmlOutput("text.wiki"))
 
   h5(htmlOutput("text.wiki2"))
+  
+  h5(htmlOutput("text.wiki2a"))
+  
+  h5(htmlOutput("text.wiki2b"))
+  
+  h5(htmlOutput("text.wiki2c"))
   
   h5(htmlOutput("text.wiki3"))
   
