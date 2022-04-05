@@ -602,7 +602,7 @@ output$text4a <- renderText({  # create interactive text t1
 
 ``` 
 
-Method Comp. Diagnostics
+Diagnostics {data-icon="fa-cog"}
 ====
 
 
@@ -918,7 +918,7 @@ w <- r2()$w
 ```
 
  
-Method Comp. (no replication)
+Method Comp. (no reps) {data-icon="fa-pencil"}
 ===
 
 
@@ -1551,7 +1551,7 @@ w <- r2q()$w
 
 ```
 
-Method Comp with replicates!      
+Method Comp reps! {data-icon="fa-cog"}
 ===
 
 Column {.sidebar data-width=380}
@@ -2833,8 +2833,8 @@ output$text4az <- renderText({  # create interactive text t1
 
 ```
 
-Method Comp. listing {data-orientation=rows}
-===================================== 
+Method Comp. listing  {data-icon="fa-cog"}
+===
 
 Column {.sidebar data-width=380}
 -----------------------------------------------------------------------
@@ -3339,7 +3339,7 @@ output$e102 <- renderText({  # create interactive text t1
 
 ```
 
-T-test 
+T-test {data-icon="fa-pencil"}
 ====
 
 Column {.sidebar}
@@ -3779,7 +3779,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
 ``` 
 
 
-Anova (linear model) contrasts
+Anova (linear model) contrasts {data-icon="fa-cog"}
 ====
  
 
@@ -4515,7 +4515,7 @@ inference <- reactive({
 
 ```  
 
-Wiki
+Wiki {data-icon="fa-book"}
 ====
  
 <!-- x $\alpha$ x  -->
@@ -4677,7 +4677,7 @@ ttest diagnostics\n
 
 
 
-References
+References {data-icon="fa-pencil"}
 ====
 ```{r, refs}
  
