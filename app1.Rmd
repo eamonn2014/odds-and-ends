@@ -9,11 +9,9 @@ output:
     source_code: embed
 runtime: shiny
 
-
 ---
 Paired data {data-icon="fa-home"}
 ===
-
 
 ```{r global, include=FALSE}
 
