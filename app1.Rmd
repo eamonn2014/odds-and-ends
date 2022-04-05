@@ -4491,7 +4491,8 @@ output$text.wiki3 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " The T test example tab allows the user to define a lognormal distributed variable (mean, sd and sample size) and another lognormal distributed variable of the same sample size and sd but proportionally different as defined by the user input. There are also user inputs for the confidence level and QC level. At the top we plot in blue the A group on the original scale (left) and log transformed scale. The B group is plotted similarly. At the bottom we plot boxplots (remember this is unpaired data). Also there are inferential statistics above the boxplots
+    "We change tack on the T test example tab. This is not directly related to method comparison but another programming exercise.
+    This tab allows the user to define a lognormal distributed variable (mean, sd and sample size) and another lognormal distributed variable of the same sample size and sd but proportionally different as defined by the user input. There are also user inputs for the confidence level and QC level. At the top we plot in blue the A group on the original scale (left) and log transformed scale. The B group is plotted similarly. At the bottom we plot boxplots (remember this is unpaired data). Also there are inferential statistics above the boxplots
     ", #),
     
     
