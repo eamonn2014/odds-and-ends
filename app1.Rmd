@@ -15,15 +15,11 @@ Paired data {data-icon="fa-home"}
 ===
 
 
-
 ```{r global, include=FALSE}
 
-
- 
   rm(list=ls())
 
   set.seed(874765)
-  #library(MASS)      # for correlated data generation
   library(flexdashboard)
   library(ggplot2)
   library(gridExtra)
@@ -32,7 +28,6 @@ Paired data {data-icon="fa-home"}
   library(shiny)
   library(utf8)      # codes for Greek letters
   library(MethComp)
-  library(gridExtra)
   library(tidyverse)
   library(plyr)
   library(rms)
@@ -40,16 +35,8 @@ Paired data {data-icon="fa-home"}
   lwd.=3             # used when plotting
   
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
  # FUNCTIONS ROUNDING/GEN COR DATA.ROUNDING/LOGNORMAL
-  
-  
-  
-  
-  
-  
-  
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # function to format decimals
   # https://stackoverflow.com/questions/3245862/format-numbers-to-significant-figures-nicely-in-r
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -146,8 +133,6 @@ Column {.sidebar}
 
 ```{r tab1 inputs}
 
- 
- 
   sliderInput('n', 'n pairs of data', value=100,
                 min = 5, max = 1000, step=5, ticks=F)
 
@@ -192,7 +177,6 @@ Column {data-width=400}
 ```{r, tab1 plot1}
 
    # --------------------------------------------------------------------------
- 
 
 renderPlot({
   
@@ -238,10 +222,8 @@ renderPlot({
   plot2 <- BB
   grid.arrange(plot1, plot2, ncol=2)
 
-
 })
   # --------------------------------------------------------------------------
-
 
 ```
 
@@ -249,9 +231,7 @@ renderPlot({
 
 ```{r, tab1 plot2}
 
-    
   # --------------------------------------------------------------------------
-
 
 renderPlot({
   
@@ -321,21 +301,10 @@ Column {data-width=400, height=75}
    # eff.p =    0 
    # sd.   =    1 
    # r     =  0.8
-   #              
-   #  
-   #  
-   #  
-   #  
-  #     L1 <-     mu0
-  #   L2 <-      mu0+ eff.p
-  #   
-  #   
-  # Sigma = sd.  
-  #   
-  #   require(MASS)
-    
-    
-    
+   # L1 <-     mu0
+   # L2 <-      mu0+ eff.p
+   # Sigma = sd.  
+     
 # generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
 # Sample correlated N(0, 1) distributions from a multivariate normal distribution.
 # Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
@@ -400,6 +369,7 @@ Column {data-width=400, height=75}
 
 
 ```{r, text}
+
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
    # help on font size
@@ -431,13 +401,13 @@ Column {data-width=400, height=75}
     # --------------------------------------------------------------------------
     h5(htmlOutput("text4a"))   
     # --------------------------------------------------------------------------
+                            
 ```
 
- 
 ```{r text2} 
 
   # --------------------------------------------------------------------------
-output$text2 <- renderText({  # create interactive text t1
+output$text2 <- renderText({  
 
     print(paste0(   
     
@@ -448,7 +418,7 @@ output$text2 <- renderText({  # create interactive text t1
 })
   # --------------------------------------------------------------------------
 
-output$text2a <- renderText({  # create interactive text t1
+output$text2a <- renderText({  
 
     print(paste0(   
     
@@ -460,7 +430,7 @@ output$text2a <- renderText({  # create interactive text t1
    # --------------------------------------------------------------------------
    
 
-output$text3 <- renderText({  # create interactive text t1
+output$text3 <- renderText({  
 
     print(paste0(   
     
@@ -548,12 +518,8 @@ output$text4a <- renderText({  # create interactive text t1
 
  })
 
-
-
-
   # --------------------------------------------------------------------------
 
-# see line 1412
  output$text5 <- renderText({  # create interactive text t1
 
     print(paste0(   
@@ -598,7 +564,6 @@ output$text4a <- renderText({  # create interactive text t1
   
 })
 
- 
 
 ``` 
 
@@ -606,7 +571,7 @@ Diagnostics {data-icon="fa-cog"}
 ====
 
 
-```{r gammapoisson}
+```{r }
 
   
 ```
@@ -623,7 +588,6 @@ Column {data-width=400, height=300}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- 
   r2 <- reactive({
  
     L1 <-     input$mu0
@@ -680,8 +644,6 @@ Column {data-width=400, height=300}
   f <- summary(lm(y~x, w))
   con.diff <- f$coefficients["x","Pr(>|t|)"]
   
-   
-  
   # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
   w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
   # w$r <- (residuals(f) )
@@ -689,10 +651,7 @@ Column {data-width=400, height=300}
   f1 <- summary(lm(r~x, w))
   con.sd <- f1$coefficients["x","Pr(>|t|)"]
   
-
-  
   return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
-  
 
 })
 
@@ -712,7 +671,6 @@ con.sd <- r2()$con.sd
    
 })
 
- 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -726,12 +684,10 @@ con.sd <- r2()$con.sd
 
 renderPlot({
   
-w <- r2()$w
-con.diff <- r2()$con.diff
+  w <- r2()$w
+  con.diff <- r2()$con.diff
 
  pitman <- cor.test(w$x, w$y)$p.value
- 
-
 
   ggplot(w, aes(x=x, y=y))+
     geom_point() +  
@@ -937,10 +893,6 @@ Column {.sidebar data-width=350}
                "Select method variation (m1 , m2)", 
                min = 0, max = 20, value = c(5, 4), ticks=FALSE) 
   
-       # sliderInput("btw", 
-       #         "Select between?", 
-       #         min = 0, max = 20, value = c(1, 1), ticks=FALSE) 
-  
        sliderInput("alphas",  step=0.1,
                "Select alphas (m1, m2)", 
                min = -5, max = 5, value = c(0, 0), ticks=FALSE) 
@@ -954,7 +906,7 @@ Column {.sidebar data-width=350}
                min = 0, max = 100, value = c(0, 10), ticks=FALSE) 
       
  
-  selectInput("SD.typeq", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+  selectInput("SD.typeq", "Select \u03C3 type", choices = c("cons", "lin"), selected="cons")
   
   selectInput("Dif.typeq", "Select difference type", choices = c("cons", "lin"), selected="lin")
   
@@ -1394,17 +1346,12 @@ random.sampleq <- reactive({
   f1 <- summary(lm(r~x, w))
   con.sd <- f1$coefficients["x","Pr(>|t|)"]
   
-
-  
   return(list( con.diff=con.diff, con.sd=con.sd , w=w , f=f))
-  
-  
-  
+
   })
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 renderPlot({
-  
   
   w <-r2q()$w
  con.diff <-r2q()$con.diff
@@ -1444,7 +1391,6 @@ renderPlot({
 ###  Constant variance assumption
  
 ```{r xx2}
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1487,22 +1433,18 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 })
   
 
- 
 ```
 
 ### Distribution of differences
   
 ```{r xx3, eval=TRUE}
 
-
- 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
 # calculate mean and sd by group
 # stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
  
-
 renderPlot({
   
 w <- r2q()$w
@@ -1544,10 +1486,6 @@ w <- r2q()$w
 })
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- 
-
-
 
 ```
 
@@ -1935,7 +1873,7 @@ truth <- reactive({
 })
   
   
-      output$textmcr4 <- renderText({  # create interactive text t1
+    output$textmcr4 <- renderText({  # create interactive text t1
 
     print(paste0(   
     
@@ -2087,8 +2025,7 @@ standard deviation is not related to the method comparison, but only to the stud
        print(a)
       cat("\nEvidence against null of similar repeatabilities?\n")
       print(anova(a,b)) #evidence of different residual errors?
-      
-      
+
   }
      
    })
@@ -2105,7 +2042,6 @@ standard deviation is not related to the method comparison, but only to the stud
     h5(htmlOutput("textref")) 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-
      output$textzz1 <- renderText({  # create interactive text t1
 
     print(paste0(   
@@ -2147,8 +2083,6 @@ standard deviation is not related to the method comparison, but only to the stud
 
    })
   
-    
- 
 ```
 
 ### B flex within only
@@ -2230,7 +2164,6 @@ within-subject variances (i.e. Equality Constraint imposed)\n"))
 
 ```{r not metcomp4, eval=TRUE}
    
-  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
@@ -2250,7 +2183,6 @@ for both between-subject & within-subject variances.\n"))
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
 
-     
    renderPrint({
         
         f <- Roy()$NMO
@@ -2260,8 +2192,7 @@ for both between-subject & within-subject variances.\n"))
      
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
-   
-   
+
 ```
 
 ### E LR Tests
@@ -2499,7 +2430,6 @@ cat("Replicates within samples within methods are permuted, this therefore evalu
 
 renderPlot({
   
-  
      d <- r1_2()$foo
      w <- to.wide(d)
      
@@ -2607,8 +2537,7 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
   
   
   # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
- # w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
-  
+  # w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
   
   sel <- which(!is.na(w$y))
   w$r <- NA
@@ -2689,16 +2618,14 @@ con.diff <- mixed.assump()$con.diff
       
            w <- to.wide(foo)
         
-          #separate by replicate and merge together
+         # separate by replicate and merge together
          # r1<-w[w$repl==1,]
-       #   r2<-w[w$repl==2,]
-          
-     #     w2<-merge(r1,r2, by.x="item", by.y="item")
+         # r2<-w[w$repl==2,]
+         # w2<-merge(r1,r2, by.x="item", by.y="item")
         
     return(list(w=w ))
           
      })
-
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
@@ -2740,7 +2667,6 @@ output$text2az <- renderText({  # create interactive text t1
 })
    # --------------------------------------------------------------------------
    
-
 output$text3z <- renderText({  # create interactive text t1
 
     print(paste0(   
@@ -2829,8 +2755,6 @@ output$text4az <- renderText({  # create interactive text t1
  })
   # --------------------------------------------------------------------------
  
-
-
 ```
 
 Method Comp. listing  {data-icon="fa-cog"}
@@ -2943,8 +2867,6 @@ Row {data-height=650}
 
 ```{r mc2B D}
  
-   
-
  random.sample_2B <- reactive({
       
     # Dummy line to trigger off button-press
@@ -2997,9 +2919,6 @@ Row {data-height=650}
   
   
   # break down Meth.sim for more detail on listing
-  
-   
-  
   Ni <- nz
   
   Nm = mz[1] # methods , fix this
@@ -3069,14 +2988,11 @@ Row {data-height=650}
   dfr$alpha <- alphavec
   dfr$beta <- betavec
   
-  
   # put variance components in dfr too!
   dfr$ sigma.mi  <-  sigma.mi[meth]
   dfr$ sigma.ir  <- sigma.ir 
   dfr$ sigma.mir <-  sigma.mir[meth]
 
-  
-  
   dfr$mu <- mu
   dfr$MI <- e.mi
   dfr$IR <- e.ir
@@ -3112,12 +3028,10 @@ Row {data-height=650}
    mirz <-   sample$mirz
    
    rangez <- as.numeric(unlist(strsplit(input$mu.rangezB, ",")))
- #  mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
+   #  mizz <-   as.numeric(unlist(strsplit(input$mizzB,      ",")))
     
-    # repeat the data generation the sds will produce fresh data
- 
-  
-  Ni <- nz
+   # repeat the data generation the sds will produce fresh data
+   Ni <- nz
   
   Nm = mz[1] # methods , fix this
   Nr = rz[1]# reps pre sample , fix this
@@ -3172,9 +3086,8 @@ Row {data-height=650}
   
   # analysis
  # if (Nr ==1) (m<-BA.plot(d1, eqn=TRUE)) 
-#  if (Nr >1 & sigma.ir >0 ) m <- BA.est(d1, linked=TRUE)
-#  if (Nr >1 & sigma.ir ==0 ) M <- BA.est(d1, linked=FALSE)
-  
+ # if (Nr >1 & sigma.ir >0 ) m <- BA.est(d1, linked=TRUE)
+ # if (Nr >1 & sigma.ir ==0 ) M <- BA.est(d1, linked=FALSE)
   
   # lets get a dataset with true sds etc
    dfr <- data.frame(dfr )
@@ -3192,32 +3105,24 @@ Row {data-height=650}
   dfr$ sigma.ir  <- sigma.ir 
   dfr$ sigma.mir <-  sigma.mir[meth]
 
-  
-  
   dfr$mu <- mu
   dfr$MI <- e.mi
   dfr$IR <- e.ir
   dfr$MIR <- e.mir
   dfr$y <- y
-
   
   dfr$mu <- formatz3(mu)
   dfr$MI <- formatz3(e.mi)
   dfr$IR <- formatz3(e.ir)
   dfr$MIR <- formatz3(e.mir)
   dfr$y <- formatz3(y)
-
-  
-  #dfr <- data.frame(dfr, y = y)
   
   row.names(dfr) <- NULL
   head(dfr)
  
   foo <- dfr
-  
- 
-   #    foo <- foo[ c("meth","item","repl","alpha","beta","sigma.ir","sigma.mi","sigma.mir","mu","IR","MI","MIR","y"), ]
 
+  # foo <- foo[ c("meth","item","repl","alpha","beta","sigma.ir","sigma.mi","sigma.mir","mu","IR","MI","MIR","y"), ]
 
  return(list( foo=foo ))
      
@@ -3226,16 +3131,11 @@ Row {data-height=650}
 
 options(width = 300)
 
-# 
-# 
+ 
  renderPrint({
  
   foo <- r1_2B()$foo
 
-  ##
-  
-  
-  
      print(foo)
    
    
@@ -3400,7 +3300,7 @@ Here we define the parameters of a log normal distribution and a proportional ch
                   
      , tags$span(style="color:black;font-weight:bold;font-size: 20px;",   " and " )
      
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "100/" ) 
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",   "100/" ) 
      
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;",  random.sample2()$qc*100 )  
                     
@@ -3440,7 +3340,6 @@ Here we define the parameters of a log normal distribution and a proportional ch
     
     # writing like this I can write log and fraction into input boxes!
     mux  <- as.numeric(    eval(parse(text= (input$v1)) ) )
-    #a    <- as.numeric(    eval(parse(text= (input$v2)) ) )  # sd 
     n    <- as.numeric(    eval(parse(text= (input$v3)) ) )
     conf <- as.numeric(    eval(parse(text= (input$v4)) ) )
     qc   <- as.numeric(    eval(parse(text= (input$v5)) ) )
@@ -3585,7 +3484,6 @@ renderPlot({
     
     par(mfrow=c(1,1))
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 })
 
@@ -3772,8 +3670,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
    print(g1)
    
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
-    
+
   })
   
 ``` 
@@ -4280,10 +4177,7 @@ random.sample3 <- reactive({
     }
     #----------------------------------------------------
 
-
-
-
-temp <- rep(lower, top)
+  temp <- rep(lower, top)
 #-----------------------------------------------------------------------
 
   x <- matrix(data = NA, nrow = 4, ncol = 2, byrow = FALSE,
