@@ -569,13 +569,7 @@ output$text4a <- renderText({  # create interactive text t1
 Diagnostics {data-icon="fa-cog"}
 ====
 
-
-```{r }
-
-  
-```
-
-Method Comparison Diagnostics
+Diagnostics
  
 
 Column {data-width=400, height=300}
