@@ -1,5 +1,5 @@
 ---
-title: "Box plots" 
+title: "Box plot example" 
 author: 
 output: 
   flexdashboard::flex_dashboard:
@@ -21,6 +21,7 @@ Box plots {data-icon="fa-home"}
   library(flexdashboard)
   library(ggplot2)
   library(shiny)
+  library(utf8)      # codes for Greek letters
     
 
 ```
@@ -35,18 +36,18 @@ Column {.sidebar}
   sliderInput('n', 'n in each arm', value=10,
                 min = 5, max = 1000, step=5, ticks=F)
 
-  sliderInput('mu0', 'Mean  \u03BC', value=0,
-                min = -100, max = 100, step=5, ticks=F)
+  sliderInput('mu0', 'Mean \u03BC', value=0,
+                min = 0, max =200, step=5, ticks=F)
   
-  sliderInput('eff.p', 'Intervention effect', value = c(0),
+  sliderInput('eff.p', 'Intervention effect on grp 2', value = c(20),
                 min = -25, max = 25 ,step=1, ticks=F)
   
-  sliderInput('sd.', 'Common \u03C3', 1,
+  sliderInput('sd.', 'Common \u03C3', value=5,
                 min = 1, max = 100, step=1,ticks=F)
  
-  
+  checkboxInput('perc','highlight factor x', value=TRUE)
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    actionButton("resample",   "Hit to simulate a new sample")
+   actionButton("resample",   "Hit to simulate a new sample")
  
    tags$style(HTML('#resample{background-color:orange}'))
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,19 +76,37 @@ renderPlot({
   before <- A  
   after <-  B  
   n <- length(before)
+  
   d <- data.frame(y = c(before, after), 
                   x = rep(c(1,2), each=n),
-                  id = factor(rep(1:n,2)))
+                  id = factor(rep(1:n,2)) #,
+               #   r = 1
+                  )
   
+   
+  # color dots 50:50 randomly
+ # if(input$perc) {
+  #    d$r <-  sample(1:2, n, replace=TRUE)
+  #}
+   
   d$xj <- jitter(d$x, amount=.13)
-  AA <- ggplot(data=d, aes(y=y) ) +
+
+  AA <- ggplot(data=d, aes(y=y, colour=  ifelse (input$perc,     sample(1:2, n, replace=TRUE)      , 1)                 ) ) +
     geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
     geom_point(aes(x=xj), size=2) +
+    #scale_color_manual(values = c("1" = "purple", "0" = "orange")) +
     xlab("") + ylab("Response") +  
     scale_x_continuous(breaks=c(1,2), labels=c("Group 1", "Group 2"), limits=c(0.5, 2.5)) +
     theme_bw() + theme(legend.position = "none") 
   
   print(AA)
+  
+  
+  
+  
+  
+  
+  
 
 })
   # --------------------------------------------------------------------------
