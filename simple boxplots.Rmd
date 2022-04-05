@@ -1,0 +1,146 @@
+---
+title: "Box plots" 
+author: 
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: scroll
+    social: menu
+    source_code: embed
+runtime: shiny
+
+---
+Box plots {data-icon="fa-home"}
+===
+
+```{r global, include=FALSE}
+
+  rm(list=ls())
+
+  set.seed(874765)
+  library(flexdashboard)
+  library(ggplot2)
+  library(shiny)
+    
+
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**blah blah blah blah blah blah**
+
+```{r tab1 inputs}
+
+  sliderInput('n', 'n in each arm', value=10,
+                min = 5, max = 1000, step=5, ticks=F)
+
+  sliderInput('mu0', 'Mean  \u03BC', value=0,
+                min = -100, max = 100, step=5, ticks=F)
+  
+  sliderInput('eff.p', 'Intervention effect', value = c(0),
+                min = -25, max = 25 ,step=1, ticks=F)
+  
+  sliderInput('sd.', 'Common \u03C3', 1,
+                min = 1, max = 100, step=1,ticks=F)
+ 
+  
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    actionButton("resample",   "Hit to simulate a new sample")
+ 
+   tags$style(HTML('#resample{background-color:orange}'))
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum 
+
+Column {data-width=400}
+-------------------------------------
+
+### box plot
+
+```{r, boxplot}
+
+   # --------------------------------------------------------------------------
+
+renderPlot({
+  
+  A <- r1()$pp1
+  B <- r1()$pp2
+  
+  m <- ceiling(max(A,B))
+  mL <- floor(min(A,B))
+  before <- A  
+  after <-  B  
+  n <- length(before)
+  d <- data.frame(y = c(before, after), 
+                  x = rep(c(1,2), each=n),
+                  id = factor(rep(1:n,2)))
+  
+  d$xj <- jitter(d$x, amount=.13)
+  AA <- ggplot(data=d, aes(y=y) ) +
+    geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
+    geom_point(aes(x=xj), size=2) +
+    xlab("") + ylab("Response") +  
+    scale_x_continuous(breaks=c(1,2), labels=c("Group 1", "Group 2"), limits=c(0.5, 2.5)) +
+    theme_bw() + theme(legend.position = "none") 
+  
+  print(AA)
+
+})
+  # --------------------------------------------------------------------------
+ 
+
+```
+
+Column {data-width=400, height=75}
+-----------------------------------------------------------------------
+
+### blah blah
+
+```{r  generate data}
+ 
+   # --------------------------------------------------------------------------
+   
+    r1 <- reactive({
+      
+        # Dummy line to trigger off button-press
+        foo <- input$resample
+             
+        L1 <-     input$mu0
+        L2 <-     input$mu0+input$eff.p
+        n <-      input$n
+        sd. <-    input$sd.
+        
+        pp1 <- rnorm(n,L1, sd.)
+        pp2 <- rnorm(n,L2, sd.)
+    
+    return(list(pp1=pp1, pp2=pp2 ))
+    
+    })
+   
+    # --------------------------------------------------------------------------
+
+ 
+  
+```
+
+
+```{r, text}
+
+    
+   h5(htmlOutput("text2"))      
+  
+    output$text2 <- renderText({  
+    
+        print(paste0(   
+        
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+                   
+                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum ")))
+      
+    })
+  # --------------------------------------------------------------------------
+ 
