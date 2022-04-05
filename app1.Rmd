@@ -1,6 +1,6 @@
 ---
 title: "METHOD COMPARISON & BEYOND" 
-author: Eam
+author: 
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
