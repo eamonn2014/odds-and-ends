@@ -1,6 +1,6 @@
 ---
 title: "METHOD COMPARISON & BEYOND" 
-author: 
+author: Eam
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -18,6 +18,7 @@ Paired data {data-icon="fa-home"}
   rm(list=ls())
 
   set.seed(874765)
+  
   library(flexdashboard)
   library(ggplot2)
   library(gridExtra)
@@ -3673,10 +3674,8 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   
 ``` 
 
-
 Anova (linear model) contrasts {data-icon="fa-cog"}
 ====
- 
 
 Column {data-width=400}
 -------------------------------------
