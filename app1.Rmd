@@ -4518,8 +4518,6 @@ inference <- reactive({
 Wiki {data-icon="fa-book"}
 ====
  
-<!-- x $\alpha$ x  -->
- 
 
 ```{r}
 
@@ -4547,7 +4545,7 @@ output$text.wiki2 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "Some diagnostics are presented on the next tab. The diagnostics include a check of assumptions of constant variance across the range and constant difference across the range. Below there are more tabs, the first two plots are repeated but with some small modifications (just for programming practice). There is also a tab including histogram of the differences", #),
+    "Diagnostics are presented on the next tab. The diagnostics include a check of assumptions of constant variance across the range and constant difference across the range. Below there are more tabs, the first two plots are repeated but with some small modifications (just for programming practice). There is also a tab including histogram of the differences", #),
     
     
         ".") ))
@@ -4562,7 +4560,7 @@ output$text.wiki2a <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "The next tab 'Method Comp. (no replication)' is set up is a typical method comparison experiment. No replication. On the same tab are mini tabs exploring assumptions", #),
+    "The next tab 'Method Comp. (no replication)' is set up is a typical method comparison experiment, that is no replication, an inferior design. On the same main tab are mini tabs exploring assumptions", #),
     
     
         ".") ))
@@ -4576,7 +4574,7 @@ output$text.wiki2b <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "'Method Comp. with replication' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second minitab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mintabs A-E, presents an alternative LMM approach. There are alos mini tabs presenting boxplots, plots if we permure the reps randomly. We analyse as if each replicate were a seperate sample. we look at the assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
+    "'Method Comp. with replication' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second mini tab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mini tabs A-E, presents an alternative LMM approach. There are also mini tabs presenting boxplots, plots if we permute the reps randomly. We then analyse as if each replicate were a seperate sample. We examine assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
     
     
         ".") ))
@@ -4637,15 +4635,13 @@ output$text.wiki2do <- renderText({  # create interactive text t1
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
     "  
-      vickers code\n
-      diagnostis for ANOVA\n
-      reference\n
-       pi/2 explanation\n
- gelmans book residuals\n
-replicates\n
-drop some reps\n
-anova diagnostics\n
-ttest diagnostics\n
+      ideas to include/mention : Vicker's code ; Pitman's test ;
+      diagnostis for ANOVA ;
+       pi/2 explanation ;
+ Gelmans book residuals ;
+drop some reps ;
+anova diagnostics ;
+ttest diagnostics ;
     ", #),
     
     
@@ -4675,20 +4671,22 @@ ttest diagnostics\n
     
 ```
 
-
-
 References {data-icon="fa-pencil"}
 ====
+
 ```{r, refs}
  
     tags$a(href = "https://pubmed.ncbi.nlm.nih.gov/8337548/", target="_blank",
            tags$span(style="color:blue", "[1] Construction of age-related reference centiles using absolute residuals, Doug Altman shows how to model the SD"),) 
     div(p(" "))
-    # tags$a(href = "https://stats.stackexchange.com/questions/27869/fitting-a-poisson-glm-mixed-model-with-a-random-slope-and-intercept",target="_blank",
-    #        tags$span(style="color:blue", "[2] Mixed model Poisson"),)
-    # div(p(" "))
     
+       tags$a(href = "https://fontawesome.com/v4/examples/", target="_blank",
+           tags$span(style="color:blue", "[2] icons"),) 
     div(p(" "))
+     
+   
+    
+  div(p(" "))
   tags$hr()                        
 
 ```
