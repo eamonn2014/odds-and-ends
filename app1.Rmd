@@ -872,7 +872,7 @@ w <- r2()$w
 ```
 
  
-Method Comp. (no reps) {data-icon="fa-pencil"}
+Method Comp. no reps {data-icon="fa-pencil"}
 ===
 
 
@@ -1487,7 +1487,7 @@ w <- r2q()$w
 
 ```
 
-Method Comp reps! {data-icon="fa-cog"}
+Method Comp. reps! {data-icon="fa-cog"}
 ===
 
 Column {.sidebar data-width=380}
