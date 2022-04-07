@@ -1872,7 +1872,7 @@ truth <- reactive({
     
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
                
-      "The agreement between methods is considered acceptable if the variability between the observations made with different methods on the same subject is not much larger than the variability between observations with the same method on this subject.\n"))
+      "The agreement between methods is considered acceptable if the variability between the observations made with different methods on the same subject is not much larger than the variability between observations with the same method on this subject. How much is not much?\n"))
 
     )
   
@@ -4402,11 +4402,13 @@ inference <- reactive({
 
 Wiki {data-icon="fa-book"}
 ====
+
+
  
 
 ```{r}
 
-  # --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}")
 
 output$text.wiki <- renderText({  # create interactive text t1
@@ -4506,34 +4508,38 @@ output$text.wiki4 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " The Anova tab allows the user to define 4 lognormal distributed variables of user defined sample sizes, sds and proportional differences.  The idea behind this tab is to perform and understand contrasts. On the left is Frank Harrell's contrast function and on the right we step through how a contrast is calculated
+    " The Anova tab, again not directly related to method comparison, allows the user to define 4 lognormal distributed variables of user defined sample sizes, sds and proportional differences.  The idea behind this tab is to perform and understand contrasts. On the left is Frank Harrell's contrast function and on the right we step through how a contrast is calculated
     ", #),
     
     
         ".") ))
  })
 
-output$text.wiki2do <- renderText({  # create interactive text t1
-
-    print(paste0(   
-  
-    
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-               
-    "  
-      ideas to include/mention : Vicker's code ; Pitman's test ;
-      diagnostis for ANOVA ;
-       pi/2 explanation ;
- Gelmans book residuals ;
-drop some reps ;
-anova diagnostics ;
-ttest diagnostics ;
-    ", #),
-    
-    
-        ".") ))
- })
+# output$text.wiki2do <- renderText({  # create interactive text t1
+# 
+#     print(paste0(   
+#   
+#     
+#      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+#                
+#     "  
+#       ideas to include/mention :
+#       <br>
+#       <span>Vicker's code ;         </span><br>
+#       <span>Pitman's test ;         </span>
+#       <span>diagnostis for ANOVA ;  </span>
+#       <span> pi/2 explanation ;     </span>
+#       <span>Gelmans book residuals ;</span>
+#       <span>drop some reps ;        </span>
+#       <span>anova diagnostics ;     </span>
+#       <span>ttest diagnostics ;     </span>
+#     ", #),
+#     
+#     
+#         ".") ))
+#  })
  
+
  
   # --------------------------------------------------------------------------
 
@@ -4551,9 +4557,23 @@ ttest diagnostics ;
   
   h5(htmlOutput("text.wiki4"))
 
-  h5(htmlOutput("text.wiki2do"))
+  #h5(htmlOutput("text.wiki2do"))
   # --------------------------------------------------------------------------
+```
 
+**to do:** 
+
+ Vickers code.  
+ Pitman's test  
+ diagnostis for ANOVA   
+ pi/2 explanation  
+ Gelmans book residuals   
+ drop some reps  
+ anova diagnostics  
+ ttest diagnostics  
+ bayesian  
+
+```{r wiki}
     
 ```
 
