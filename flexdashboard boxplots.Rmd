@@ -1,8 +1,9 @@
 ---
-title: "Box plot example" 
+title: "flexdashboard example" 
 author: 
 output: 
   flexdashboard::flex_dashboard:
+    theme: spacelab
     orientation: rows
     vertical_layout: scroll
     social: menu
@@ -60,7 +61,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 
 Column {.tabset .tabset-fade}
------------------------------------------------------------------------
+---
 
 ### Boxplot
 
@@ -69,13 +70,13 @@ Column {.tabset .tabset-fade}
 
    # --------------------------------------------------------------------------
 
-  output$text1<- renderText({  
+output$text1 <- output$text2 <- output$text3 <- output$text4 <-  output$text5 <- renderText({  
     
         print(paste0(   
         
         tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                    
-                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum ")))
+         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum ")))
       
     })
 
@@ -195,68 +196,84 @@ renderPlot({
 
 ```
 
-### Repeat the boxplot
+### Repeat boxplot
 
 ```{r txt02, eval=TRUE}
 
 <<txt01>>
 
-```
-
-### not used yet 2
-
-```{r txt03, eval=TRUE}
-
-
-h5(htmlOutput("text1"))   
-
 
 ```
-   
-   
-Column {.tabset .tabset-fade}
+
+### mini tab3
+
+```{r}
+
+#  b1 <- reactive({
+#shinydashboard::valueBox(100, icon="fa-angry", color=warning)
+# 
+# })
+
+  
+```
+
+
+Column {.tabset .tabset-fade }
 -----------------------------------------------------------------------
 
-### not used yet 3
+### Box plot
   
 
-```{r txt1,  ref.label='txt02'}
+```{r}
 
-
-
+   renderValueBox({
+    shinydashboard::valueBox(
+      value = input$n,
+       subtitle = "The number of patients in each arm",
+      icon = icon("area-chart"),
+      color = "aqua",
+      width = .2, href="www.bbc.co.uk"
+    )
+  })
+  
  
 ```
 
-### not used yet 4
+### mini tab5
+
  
 ```{r txt2, eval=TRUE}
 
+h5(htmlOutput("text3"))   
 
 
 ```
 
-### not used yet 5
+### mini tab6
+
   
 
 ```{r txt3, eval=TRUE}
  
- 
+
+h5(htmlOutput("text4"))   
 
  
 ```
 
-### not used yet 6
+### mini tab7
+
  
  
-```{r txt4, eval=TRUE}
+```{r txt4, eval=TRUE, ref.label='txt02'}
 
  
 
   
 ```
 
-### not used yet 7
- 
+### mini tab8
+
 
 ```{r txt5, eval=TRUE}
  
@@ -264,3 +281,86 @@ Column {.tabset .tabset-fade}
   
 ```
 
+Another main tab! {data-icon="fa-cog"}
+===
+
+
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Box plot
+  
+
+```{r txt1x,  ref.label='txt02'}
+
+h5(htmlOutput("text5"))  
+
+ 
+```
+
+### Box plot
+
+ 
+```{r txt2x, eval=TRUE}
+
+<<txt01>>
+
+
+```
+
+### Box plot
+
+
+```{r txt3x, eval=TRUE}
+ 
+<<txt01>>
+ 
+```
+
+### Box plot
+
+ 
+```{r txt4x, eval=TRUE}
+
+<<txt01>>
+
+  
+```
+
+### Box plot
+
+
+```{r txt5x, eval=TRUE}
+ 
+<<txt01>>
+
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Paitents per group
+
+```{r}
+renderValueBox({
+ valueBox(input$n, icon = "fa-pencil")
+})
+```
+
+###  Common standard deviation
+
+```{r}
+renderValueBox({
+ valueBox(input$sd., icon = "fa-comments")
+})
+```
+
+### Mean Baseline 
+
+```{r}
+renderValueBox({
+ valueBox(input$mu0, 
+         icon = "fa-trash",
+         color = ifelse(input$mu0 > 10, "warning", "primary"))
+})
+```
