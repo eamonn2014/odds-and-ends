@@ -12,7 +12,7 @@ runtime: shiny
 
 
 ---
-Box plots {data-icon="fa-home"}
+Home {data-icon="fa-home"}
 ===
 
 
@@ -31,7 +31,7 @@ Box plots {data-icon="fa-home"}
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**Nonsense data to show a flexdashboard example**
+**Nonsense data minimal flexdashboard example**
 
 ```{r tab1 inputs}
 
@@ -214,29 +214,6 @@ renderPlot({
   
 ```
 
-
-
-<!-- Column {.tabset .tabset-fade } -->
-<!-- ----------------------------------------------------------------------- -->
-
-<!-- ### Box plot -->
-
-
-<!-- ```{r} -->
-
-<!--    renderValueBox({ -->
-<!--     shinydashboard::valueBox( -->
-<!--       value = input$n, -->
-<!--        subtitle = "The number of patients in each arm", -->
-<!--       icon = icon("chart-area"), -->
-<!--       color = "aqua", -->
-<!--       width = .2, href="www.bbc.co.uk" -->
-<!--     ) -->
-<!--   }) -->
-
-
-<!-- ``` -->
-
 Row 
 -----------------------------------------------------------------------
 
@@ -282,47 +259,20 @@ renderValueBox({
 
 })
 ```
-<!-- ### mini tab5 -->
+
+Row 
+-----------------------------------------------------------------------
+
+### Comment
+
+```{r , com1}
 
 
-<!-- ```{r txt2, eval=TRUE} -->
+h5(htmlOutput("text3")) 
+h5(htmlOutput("text4")) 
+h5(htmlOutput("text5")) 
 
-<!-- h5(htmlOutput("text3"))    -->
-
-
-<!-- ``` -->
-
-<!-- ### mini tab6 -->
-
-
-
-<!-- ```{r txt3, eval=TRUE} -->
-
-
-<!-- h5(htmlOutput("text4"))    -->
-
-
-<!-- ``` -->
-
-<!-- ### mini tab7 -->
-
-
-
-<!-- ```{r txt4, eval=TRUE, ref.label='txt02'} -->
-
-
-
-
-<!-- ``` -->
-
-<!-- ### mini tab8 -->
-
-
-<!-- ```{r txt5, eval=TRUE} -->
-
-
-
-<!-- ``` -->
+```
 
 Tab 2 {data-icon="fa-cog"}
 ===
@@ -413,5 +363,18 @@ Row
 ```{r}
 
 <<bx4>>
+
+```
+
+Row 
+-----------------------------------------------------------------------
+
+### Comment
+
+```{r , com2}
+
+h5(htmlOutput("text1")) 
+h5(htmlOutput("text2")) 
+
 
 ```
