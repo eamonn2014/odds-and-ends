@@ -249,7 +249,7 @@ Row
 renderValueBox({
  valueBox(input$n, 
           icon = ifelse(input$n < 10,"fa-thumbs-down", "fa-thumbs-up"),
-                   color = ifelse(input$n > 50, "warning", "primary"))
+                   color = ifelse(input$n > 50, "#6495ED", "primary"))
  # https://fontawesome.com/icons?d=gallery
 })
 ```
@@ -260,7 +260,7 @@ renderValueBox({
 renderValueBox({
  valueBox(input$mu0, 
          icon = ifelse(input$mu0 > 0, "fa-thumbs-down", "fa-thumbs-up"),
-         color = ifelse(input$mu0 > 10, "warning", "primary"))
+         color = ifelse(input$mu0 > 10, "#DC143C", "primary"))
 })
 ```
 
@@ -270,7 +270,7 @@ renderValueBox({
 renderValueBox({
  valueBox(input$eff.p, 
          icon = ifelse(input$eff.p > 0, "fa-thumbs-down", "fa-thumbs-up"),
-         color = ifelse(input$eff.p > 0, "success", "info"))
+         color = ifelse(input$eff.p > 0, "success", "danger"))
 })
 
 ```
