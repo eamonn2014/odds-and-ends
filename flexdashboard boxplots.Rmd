@@ -223,8 +223,9 @@ Row
 renderValueBox({
  valueBox(input$n, 
           icon = ifelse(input$n < 10,"fa-thumbs-down", "fa-thumbs-up"),
-                   color = ifelse(input$n > 50, "#6495ED", "primary")) 
+                   color = ifelse(input$n > 50,  "success", "danger"))
  # https://fontawesome.com/icons?d=gallery
+  # https://www.utf8icons.com/
 })
 ```
 
@@ -234,7 +235,7 @@ renderValueBox({
 renderValueBox({
  valueBox(input$mu0, 
          icon = ifelse(input$mu0 > 0, "fa-thumbs-down", "fa-thumbs-up"),
-         color = ifelse(input$mu0 > 10, "#DC143C", "primary"))
+         color = ifelse(input$mu0 > 10, "warning", "primary"))
 })
 ```
 
@@ -284,11 +285,9 @@ Column {.tabset .tabset-fade}
 ### Box plot
   
 
-```{r txt1x,  ref.label='txt02'}
+```{r txt1x, ref.label='txt02' }
 
-h5(htmlOutput("text5"))  
 
- 
 ```
 
 ### Box plot
