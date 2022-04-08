@@ -31,7 +31,7 @@ Box plots {data-icon="fa-home"}
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**Lorem ipsum dolor sit amet, consectetur adipiscing elit **
+**Nonsense data to show a flexdashboard example**
 
 ```{r tab1 inputs}
 
@@ -205,14 +205,11 @@ renderPlot({
 
 ```
 
-### mini tab3
+### Repeat boxplot
 
 ```{r}
 
-#  b1 <- reactive({
-#shinydashboard::valueBox(100, icon="fa-angry", color=warning)
-# 
-# })
+<<txt01>>
 
   
 ```
@@ -245,7 +242,7 @@ Row
 
 ### Patients per group
 
-```{r}
+```{r , bx1}
 renderValueBox({
  valueBox(input$n, 
           icon = ifelse(input$n < 10,"fa-thumbs-down", "fa-thumbs-up"),
@@ -256,7 +253,7 @@ renderValueBox({
 
 ### Mean Baseline 
 
-```{r}
+```{r, bx2}
 renderValueBox({
  valueBox(input$mu0, 
          icon = ifelse(input$mu0 > 0, "fa-thumbs-down", "fa-thumbs-up"),
@@ -266,7 +263,7 @@ renderValueBox({
 
 ### Intervention effect
 
-```{r}
+```{r, bx3}
 renderValueBox({
  valueBox(input$eff.p, 
          icon = ifelse(input$eff.p > 0, "fa-thumbs-down", "fa-thumbs-up"),
@@ -277,7 +274,7 @@ renderValueBox({
 
 ###  Common standard deviation
 
-```{r}
+```{r, bx4}
 renderValueBox({
  valueBox(input$sd., 
           icon = ifelse(input$sd. > 10,"fa-thumbs-down", "fa-thumbs-up"),
@@ -327,7 +324,7 @@ renderValueBox({
 
 <!-- ``` -->
 
-Another main tab! {data-icon="fa-cog"}
+Tab 2 {data-icon="fa-cog"}
 ===
 
 
@@ -382,31 +379,39 @@ h5(htmlOutput("text5"))
 
 ```
 
-Row
+Row 
 -----------------------------------------------------------------------
 
 ### Patients per group
 
 ```{r}
-renderValueBox({
- valueBox(input$n, icon = "fa-pencil")
-})
-```
 
-###  Common standard deviation
+<<bx1>>
 
-```{r}
-renderValueBox({
- valueBox(input$sd., icon = "fa-comments")
-})
 ```
 
 ### Mean Baseline 
 
 ```{r}
-renderValueBox({
- valueBox(input$mu0, 
-         icon = "fa-trash",
-         color = ifelse(input$mu0 > 10, "warning", "primary"))
-})
+
+<<bx2>>
+
+
+```
+
+### Intervention effect
+
+```{r}
+
+<<bx3>>
+
+
+```
+
+###  Common standard deviation
+
+```{r}
+
+<<bx4>>
+
 ```
