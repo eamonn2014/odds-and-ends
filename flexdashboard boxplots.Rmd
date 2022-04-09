@@ -35,19 +35,19 @@ Column {.sidebar}
 
 ```{r tab1 inputs}
 
-sliderInput('n', 'n in each arm', value=10,
+sliderInput('n', 'Patients per group', value=10,
                 min = 5, max = 1000, step=5, ticks=F)
 
-  sliderInput('mu0', 'Mean \u03BC', value=0,
-                min = 0, max =200, step=5, ticks=F)
+  sliderInput('mu0', 'Population \u03BC', value=100,
+                min = 50, max =200, step=5, ticks=F)
   
-  sliderInput('eff.p', 'Intervention effect on grp 2', value = c(7),
-                min = -25, max = 25 ,step=1, ticks=F)
-  
-  sliderInput('sd.', 'Common \u03C3', value=5,
-                min = 1, max = 100, step=1,ticks=F)
+  sliderInput('sd.', 'Population \u03C3', value=5,
+                min = 1, max = 10, step=1,ticks=F)
  
-  checkboxInput('perc','highlight factor', value=TRUE)
+  sliderInput('eff.p', 'Intervention effect', value = c(7),
+                min = -10, max = 10 ,step=1, ticks=F)
+
+  checkboxInput('perc','highlight factor?', value=TRUE)
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    actionButton("resample",   "Hit to simulate a new sample")
@@ -120,7 +120,7 @@ renderPlot({
     ylab("Response") + 
      
     scale_x_continuous(breaks=c(1,2), 
-                       labels=c("Group 1", "Group 2"), limits=c(0.5, 2.5) ) +
+                       labels=c("Placebo", "Treated"), limits=c(0.5, 2.5) ) +
       
      theme_bw() + 
     theme(legend.position = "none") 
@@ -229,7 +229,7 @@ renderValueBox({
 })
 ```
 
-### Mean Baseline 
+### Population Mean 
 
 ```{r, bx2}
 renderValueBox({
@@ -239,18 +239,7 @@ renderValueBox({
 })
 ```
 
-### Intervention effect
-
-```{r, bx3}
-renderValueBox({
- valueBox(input$eff.p, 
-         icon = ifelse(input$eff.p > 0, "fa-thumbs-down", "fa-thumbs-up"),
-         color = ifelse(input$eff.p > 0, "success", "danger"))
-})
-
-```
-
-###  Common standard deviation
+###  Population SD
 
 ```{r, bx4}
 renderValueBox({
@@ -259,6 +248,19 @@ renderValueBox({
                    color = ifelse(input$sd. > 10, "warning", "primary"))
 
 })
+
+```
+
+### Intervention effect
+
+```{r, bx3}
+
+renderValueBox({
+ valueBox(input$eff.p, 
+         icon = ifelse(input$eff.p > 0, "fa-thumbs-down", "fa-thumbs-up"),
+         color = ifelse(input$eff.p > 0, "success", "danger"))
+})
+
 ```
 
 Row 
