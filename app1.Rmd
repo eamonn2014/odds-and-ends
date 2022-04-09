@@ -4572,6 +4572,7 @@ output$text.wiki4 <- renderText({  # create interactive text t1
  anova diagnostics  
  ttest diagnostics  
  bayesian  
+ photo to aid understanding
 
 ```{r wiki}
     
