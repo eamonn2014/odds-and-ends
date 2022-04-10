@@ -10,7 +10,7 @@ output:
 runtime: shiny
 
 ---
-Paired data {data-icon="fa-home"}
+Method Comp. no reps {data-icon="fa-pencil"}
 ===
 
 ```{r global, include=FALSE}
@@ -123,752 +123,12 @@ normal_to_lognormal <- function(normmean=10, normsd=2) {
 # start of app
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-```
 
-Column {.sidebar}
------------------------------------------------------------------------
-
-**Design your method comparison, a simple setting, no replication **
-
-```{r tab1 inputs}
-
-  sliderInput('n', 'n pairs of data', value=100,
-                min = 5, max = 1000, step=5, ticks=F)
-
-  sliderInput('mu0', 'Initial mean  \u03BC', value=0,
-                min = -100, max = 100, step=5, ticks=F)
-  
-  sliderInput('eff.p', 'Constant intervention effect', value = c(0),
-                min = -25, max = 25 ,step=1, ticks=F)
-  
-  sliderInput('sd.', 'Common constant \u03C3', 1,
-                min = 1, max = 100, step=1,ticks=F)
-
-  sliderInput('r', 'Correlation \u03C1', value = c(.8),
-                min = -.9, max = .9, step=0.05, ticks=F)
-  
-  selectInput("SD.type", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
-  
-  selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
-  
-  selectInput("Pl.type", "Select plot",             choices = c("BA", "conv"), selected="BA")
- 
-  
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # orange button
-   actionButton("resample",   "Hit to simulate a new sample")
-      
-   #  tags$head(
-   tags$style(HTML('#resample{background-color:orange}'))
-   # )
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
-
-```
-
-The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
-
-Column {data-width=400}
--------------------------------------
-
-### Paired boxplots and scatter plot
-
-```{r, tab1 plot1}
-
-   # --------------------------------------------------------------------------
-
-renderPlot({
-  
-  A <- r1()$pp1
-  B <- r1()$pp2
-  
-  m <- ceiling(max(A,B))
-  mL <- floor(min(A,B))
-  before <- A  
-  after <-  B  
-  n <- length(before)
-  d <- data.frame(y = c(before, after), 
-                  x = rep(c(1,2), each=n),
-                  id = factor(rep(1:n,2)))
-  
-  d$xj <- jitter(d$x, amount=.13)
-  # code from count app
-  AA <- ggplot(data=d, aes(y=y) ) +
-    geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
-    geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
-    geom_point(aes(x=xj), size=2) +
-    xlab("Phase") + ylab("Count") +  
-    scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
-   # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
-    theme_bw() + theme(legend.position = "none") 
-  
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ scatter plot
-  
-
-  d <- data.frame(y = B , x = A)
-  
-  BB <- ggplot(d, aes(x, y)) +
-    geom_jitter(width = 0.1, height = 0.1, size=2) +
-   # scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
-   # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
-    scale_x_continuous( limits=c(mL,m)) +
-    scale_y_continuous(  limits=c(mL,m)) +
-    xlab("Before count") +ylab("After count") +
-    theme_bw() + theme(legend.position = "none") +
-    geom_abline(intercept=0, slope=1)
-  
-  plot1 <- AA
-  plot2 <- BB
-  grid.arrange(plot1, plot2, ncol=2)
-
-})
-  # --------------------------------------------------------------------------
-
-```
-
-### Bland Altman plot (or conversion plot) with 95% limits of agreement, within which we expect 95% of the differences to lie.
-
-```{r, tab1 plot2}
-
-  # --------------------------------------------------------------------------
-
-renderPlot({
-  
-    A <- r1()$pp1
-    B <- r1()$pp2
-    n <- input$n
-    
-    d <- data.frame(y = A , x = B)
-  
-    my_data <- data.frame( 
-      group = rep(c("before", "after"), each = n),
-      counts = c(d[,1],  d[,2]),
-      ID=rep(1:n,2)
-    )
-  
-   m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
-   
-   L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
-   
-   L <- roundUp(L)
-    
-    # we set up const dif and const sd so that will matches true data genrting mechanism
-    par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
-   
-    BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
-             # axlim=c(0,20), 
-             diflim=c(-L,L), 
-             xaxs="i", yaxs="i",
-             las=1, eqn=TRUE,  
-             pl.type=input$Pl.type, 
-             sd.type=input$SD.type, 
-             dif.type = input$Dif.type, # cons is simulatied
-             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
-
-})
-
-  # --------------------------------------------------------------------------
- 
-
-```
-
-Column {data-width=400, height=75}
------------------------------------------------------------------------
-
-### Introduction
-
-```{r tab1 generate data}
- 
-   # --------------------------------------------------------------------------
-    # I looked back to two period cross over trial to get this button working to resimulate
-    # This is where a new sample is instigated only random noise is required to be generated
-    random.sample <- reactive({
-      
-    # Dummy line to trigger off button-press
-    foo <- input$resample
-         
-    L1 <-     input$mu0
-    L2 <-     input$mu0+input$eff.p
-    r  <-     input$r
-    n <-      input$n
-    sd. <-    input$sd.
-    
-    
-   #  
-   # n     =    100
-   # mu0   =    0 
-   # eff.p =    0 
-   # sd.   =    1 
-   # r     =  0.8
-   # L1 <-     mu0
-   # L2 <-      mu0+ eff.p
-   # Sigma = sd.  
-     
-# generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
-# Sample correlated N(0, 1) distributions from a multivariate normal distribution.
-# Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
-# Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
-
-    Sigma <- matrix(c(1, r, r, 1), 2, 2)
-
-    px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
-
-    U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
-    
-    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
-    pp2 <- qnorm(U[, 2], L2, sd.) 
-        
-    return(list(pp1=pp1, pp2=pp2, sd.=sd.))
-    
-    })
-   
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-  r1 <- reactive({
- 
-    sample <- random.sample()
-     
-     r  <-     input$r
-     n <-      input$n
-     sd. <-    sample$sd.  
- 
-     pp1 <- sample$pp1     # correlated normal  
-     pp2 <- sample$pp2 
-    
-    cor. <- cor(pp1, pp2)              # capture correlation
- 
-    # create a data frame
-    my_data <- data.frame( 
-      group = rep(c("A.before", "B.after"), each = n),
-      counts = c(pp1,  pp2),
-      ID=rep(1:n,2)
-    )
-
-    ## variance of a difference from a simulation
-    est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
-    
-    ## true variance of difference
-    true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
-    
-    ## variance of a sum
-    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
-    # 
-    # 
-    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
-
- return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
-     
-  })
-  
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  h5(htmlOutput("text3"))      ## print 
-  
-```
-
-
-```{r, text}
-
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
-   # help on font size
-   h5(htmlOutput("text2"))      
-   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                              withMathJax(
-                                tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-                             helpText('
-                             $${  
-                             {\\sigma^2}{_{x \\pm y}} =  
-                             {\\sigma^2}{_{x}}  +   {\\sigma^2}{_{y}} 
-                             \\pm 2\\rho{\\sigma}{_{x}} {\\sigma}{_{y}}           
-                             }\\!$$'
-                             ))   
-                             )
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   h5(htmlOutput("text2a"))   
-     
-                            withMathJax(
-                               tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-                             helpText('
-                              $${ 
-                              \\rho {\\sigma}{_{x}}  {\\sigma}{_{y}}           
-                              }\\!$$'))        
-  
-                            )
-    # --------------------------------------------------------------------------
-    h5(htmlOutput("text4"))   
-    # --------------------------------------------------------------------------
-    h5(htmlOutput("text4a"))   
-    # --------------------------------------------------------------------------
-                            
-```
-
-```{r text2} 
-
-  # --------------------------------------------------------------------------
-output$text2 <- renderText({  
-
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")))
-  
-})
-  # --------------------------------------------------------------------------
-
-output$text2a <- renderText({  
-
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "The following is the covariance between the two variables. Add 2 x this if we are interested in the variance of the sum, for the variance of the difference subtract 2 x this component. ")))
-  
-})
-   # --------------------------------------------------------------------------
-   
-
-output$text3 <- renderText({  
-
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "This is not a typical method comparison experiment. 
-               
-               Correlated normal data are generated based on the inputs. We have ") 
-    
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
-   
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               " samples on two methods. There is a true difference (after - before) of ") 
-      
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
-     
-     
-        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-     
-    ", also there is a true correlation between the paired results of ")
-    
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
-    
-    
-        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    
-    " and between sample SD commmon to both methods of ")
-    
-      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
-    
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-               
-    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. We are not particularly interested in the between sample SD, this depends on the samples we choose and it is advisable to select samples that span range of the devices if possible. There are no technical replicates ", #),
-    
-    
-        ".") ))
-  # --------------------------------------------------------------------------
- })
- 
-
-output$text4 <- renderText({  # create interactive text t1
-
-    print(paste0(   
-
-        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "Based on the true parameters, the variance of the difference, calculated using the above equation, is ") 
-    
-         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz1( r1()$true )),
-                     
-                     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    
-     ", this equates to an SD of the differences of ") 
-    
-       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1()$true))) ,
-    
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               ". The estimate from a simulated experiment is ") 
-    
-     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1()$est )),
-                 
-                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    
-        ", this equates to an SD of the differences of ")
-    
-     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
-    
-                 ##add some more text
-                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    
-        ", this matches the methComp estimate with the default settings, see the estimate in brackets in the Bland Altman plot top right"),".") ))
-
- })
-
-
-output$text4a <- renderText({  # create interactive text t1
-
-    print(paste0(   
-
-        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-          
-     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design. Explore the other tabs to see a better design approach using technical replication!")) )
-
- })
-
-  # --------------------------------------------------------------------------
-
- output$text5 <- renderText({  # create interactive text t1
-
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "After anti-logging, the contrast of ") 
-    
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
-    
-     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               " vrs. ") 
-    
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
-    
-       , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               " estimate is ") 
-    
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$res)) ,
-   
-     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               " 95%CI ( ") 
-      
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$L)) ,
-     
-     
-        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-     
-    ",  ")
-    
-      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$H) ),
-    
-    
-       tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-    
-    " ) ") 
-    
-  ))
-  
-})
-
-
-``` 
-
-Diagnostics {data-icon="fa-cog"}
-====
-
-Diagnostics
- 
-
-Column {data-width=400, height=300}
------------------------------------------------------------------------
-
-### Constant SD assumption
-
-```{r, gp barplots, eval=TRUE}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  r2 <- reactive({
- 
-    L1 <-     input$mu0
-    L2 <-     input$mu0+input$eff.p
-    r  <-     input$r
-    n <-      input$n
-    sd. <-    input$sd.
-    
-
-    A <- r1()$pp1
-    B <- r1()$pp2
-    n <- input$n
-    
-    d <- data.frame(y = A , x = B)
-    
-    my_data <- data.frame( 
-      group = rep(c("before", "after"), each = n),
-      counts = c(d[,1],  d[,2]),
-      ID=rep(1:n,2)
-    )
-    
-    m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
-     
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  # code from my useful code, adjusted slightly
-
-  BA <- DA.reg(m, DA.slope = TRUE)
-
-  a1<-as.data.frame(unlist(BA))
-  #DA.slope.p<-a1[14,]
-  #cons.sd.p.value<-a1[38,]
-  
-  res<-rbind(a1[14,], a1[38,])
-  res<-as.matrix(res)
-  
-  rownames(res)<-c( 
-                   "DA Slope P-value",
-                   "P-value for Changing SD")
-  
-  colnames(res) <- c("Bland Altman Analysis")
- # print(res)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ## **Assess Bland Altman assumptions P-values for two hypotheses:**
-  w <- to.wide(m)
-  ## assumptions do it yourself
-
-  w$y <- w$before - w$after
-  w$y <- w$after - w$before
-  
-  w$x <-  (w$before + w$after) /2
-  
-  # Constant difference - this is the test of 0 slope in the regression of differences on averages.
-  f <- summary(lm(y~x, w))
-  con.diff <- f$coefficients["x","Pr(>|t|)"]
-  
-  # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
-  w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
-  # w$r <- (residuals(f) )
-  # plot(r~x,w)
-  f1 <- summary(lm(r~x, w))
-  con.sd <- f1$coefficients["x","Pr(>|t|)"]
-  
-  return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
-
-})
-
-renderPlot({
-  
-w <- r2()$w
-con.sd <- r2()$con.sd
-  
-  ggplot(w, aes(x=x, y=r))+
-    geom_point() +  
-    geom_smooth(method="lm", col="black")  +
-    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
-    theme_bw() +
-    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
-         x = "Averages",
-         y = "Absolute residuals")
-   
-})
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-``` 
-
-### Constant difference assumption
-
-```{r nb barplots, eval=TRUE}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-renderPlot({
-  
-  w <- r2()$w
-  con.diff <- r2()$con.diff
-
- pitman <- cor.test(w$x, w$y)$p.value
-
-  ggplot(w, aes(x=x, y=y))+
-    geom_point() +  
-    geom_smooth(method="lm", col="black")  +
-    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
-    theme_bw() +
-    labs(title = paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff), ". Note: the constant SD assumption can also be evaluated using the \np-value from the correlation of differences on the average (known as Pitman's test) p=", formatz3(pitman)),
-         x = "Averages",
-         y = "After - before")
-
-})
- 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-```
-   
-Column {.tabset .tabset-fade}
------------------------------------------------------------------------
-
-### Constant difference assumption
-  
-
-```{r diagnostics1, eval=TRUE}
-
-renderPlot({
-  
-  w <- r2()$w
-  con.diff <- r2()$con.diff
-  
-  mod1 <- lm(y ~ x, data = w) 
-  w$pred = predict(mod1)  
-  
-  p <- w %>%
-    ggplot(aes(x = x, y = y) ) +
-    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
-    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="cornflowerblue") +
-    stat_regline_equation(label.x = min(w$x), label.y = max(w$y))+
-    
-     labs(title = 
-    paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff)),
-         x = "Averages",
-         y = "After - before") +
-
-    geom_segment(
-      aes(xend = x, yend = pred),
-      size = 0.5, alpha = 0.8, lineend = "round", col="pink"
-    ) +
-    
-    theme_bw(base_size = 12)
-  
-    ggMarginal(p, type = "histogram", bins = 50)
-
-})
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-```
-
-###  Constant variance assumption
- 
-```{r diagnostics2}
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# x averages
-# y differences
-# r abs residuals
-
-renderPlot({
-  
-w <- r2()$w
-
-  con.sd <- r2()$con.sd
-  
-  f <- summary(lm(y~x, w)) # First regressing the differences on the averages 
-  w$r <- abs(residuals(f) ) 
-  mod1 <- lm(r ~ x , data = w) # regressing the absolute residuals from this on the averages
-  
- # pitman <- cor.test(w$r, w$x, data=w)$p.value
-  
-  
-  w$pred = predict(mod1) # pred and fitted no dif with linear model
- # w$pred = fitted(mod1) 
-
-p1 <-  ggplot(w, aes(x=x, y=r))+
-    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
-    geom_smooth(method = "lm", colour = "red", se=TRUE, level=.95, fill="#69b3a2") +
-     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
-    theme_bw() +
-    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages. Testing hypothesis slope=0, p=", formatz3(con.sd)),
-         x = "Averages",
-         y = "Absolute residuals") +
-    
-    geom_segment(
-      aes(xend = x, yend = pred),   ## trying to join to reg line
-      size = 0.5, alpha = 0.8, lineend = "round", col="pink"
-    ) +
-    
-    theme_bw(base_size = 12)
-
-  ggMarginal(p1, type = "histogram", bins = 50)
-
-})
-  
-
-```
-
-### histogram of differences
-  
-
-```{r diagnostics3, eval=TRUE}
- 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-# https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
-# calculate mean and sd by group
-# stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
- 
-
-renderPlot({
-  
-w <- r2()$w
-
-  df <- w
-  
-  argz1 <- c(   mean(df$y),   input$eff.p)
-  argz2 <- c(   sd(df$y),     sqrt(r1()$true) )
-  colz <-  c("black", "red")
-  
-  xv <- argz1[2]+sd(df$y)*1.5  # x co-ordinate of text
-  
-  ## https://stats.stackexchange.com/questions/143631/height-of-a-normal-distribution-curve
-  top <- 1/sqrt(2 * pi * var(df$y) )  # y co ordinate of text
-
- p <- ggplot(df, aes(y)) +      
-  
-  geom_histogram(aes(y = ..density..),
-                 colour = "white", fill = "cornflowerblue", size = 0.1) +
- 
-   theme_bw() +
-  
-  annotate("text",  x=xv, y=top*1.3, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ",          formatz3(sd(df$y)), " (black)"))  +
-  annotate("text",  x=xv, y=top*1.2,   label= paste0("True Mean difference = ",      formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
-  
-# https://stackoverflow.com/questions/2237600/how-can-i-plot-multiple-functions-in-r
- # adding density plots
- for(i in 1:2)
-   
-    p <- p +  stat_function(fun = dnorm,
-                args = list( mean = argz1[i], sd = argz2[i] ),
-                col = colz[i],
-                size = 1.5)
-    print(p)
-
-})
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- 
-```
-
-### not used yet 
- 
- 
-```{r diagnostics4}
-
-  
-```
-
-### not used yet
- 
- 
-```{r diagnostics5}
-
-   
-
-```
-
-### not used yet
-
-```{r diagnostics6, eval=TRUE}
 
 ```
 
  
-Method Comp. no reps {data-icon="fa-pencil"}
-===
+
 
 
 Column {.sidebar data-width=350}
@@ -3228,6 +2488,769 @@ output$e102 <- renderText({  # create interactive text t1
 
  })
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+```
+
+Paired data {data-icon="fa-home"}
+===
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**Design your method comparison, a simple setting, no replication **
+
+```{r tab1 inputs}
+
+  sliderInput('n', 'n pairs of data', value=100,
+                min = 5, max = 1000, step=5, ticks=F)
+
+  sliderInput('mu0', 'Initial mean  \u03BC', value=0,
+                min = -100, max = 100, step=5, ticks=F)
+  
+  sliderInput('eff.p', 'Constant intervention effect', value = c(0),
+                min = -25, max = 25 ,step=1, ticks=F)
+  
+  sliderInput('sd.', 'Common constant \u03C3', 1,
+                min = 1, max = 100, step=1,ticks=F)
+
+  sliderInput('r', 'Correlation \u03C1', value = c(.8),
+                min = -.9, max = .9, step=0.05, ticks=F)
+  
+  selectInput("SD.type", "Select \u03C3 type",          choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Dif.type", "Select difference type", choices = c("cons", "lin"), selected="cons")
+  
+  selectInput("Pl.type", "Select plot",             choices = c("BA", "conv"), selected="BA")
+ 
+  
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # orange button
+   actionButton("resample",   "Hit to simulate a new sample")
+      
+   #  tags$head(
+   tags$style(HTML('#resample{background-color:orange}'))
+   # )
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+
+```
+
+The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
+
+Column {data-width=400}
+-------------------------------------
+
+### Paired boxplots and scatter plot
+
+```{r, tab1 plot1}
+
+   # --------------------------------------------------------------------------
+
+renderPlot({
+  
+  A <- r1()$pp1
+  B <- r1()$pp2
+  
+  m <- ceiling(max(A,B))
+  mL <- floor(min(A,B))
+  before <- A  
+  after <-  B  
+  n <- length(before)
+  d <- data.frame(y = c(before, after), 
+                  x = rep(c(1,2), each=n),
+                  id = factor(rep(1:n,2)))
+  
+  d$xj <- jitter(d$x, amount=.13)
+  # code from count app
+  AA <- ggplot(data=d, aes(y=y) ) +
+    geom_boxplot(aes(x=x, group=x), width=0.2, outlier.shape = NA, col='blue', fill='lightblue') +
+    geom_line(aes(x=xj, group=id),  colour='pink', alpha=.5) +
+    geom_point(aes(x=xj), size=2) +
+    xlab("Phase") + ylab("Count") +  
+    scale_x_continuous(breaks=c(1,2), labels=c("Before", "After"), limits=c(0.5, 2.5)) +
+   # scale_y_continuous(breaks=c(mL:m), limits=c(mL,m)) +
+    theme_bw() + theme(legend.position = "none") 
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ scatter plot
+  
+
+  d <- data.frame(y = B , x = A)
+  
+  BB <- ggplot(d, aes(x, y)) +
+    geom_jitter(width = 0.1, height = 0.1, size=2) +
+   # scale_x_continuous(breaks=c(0:m), limits=c(mL,m)) +
+   # scale_y_continuous(breaks=c(0:m), limits=c(mL,m)) +
+    scale_x_continuous( limits=c(mL,m)) +
+    scale_y_continuous(  limits=c(mL,m)) +
+    xlab("Before count") +ylab("After count") +
+    theme_bw() + theme(legend.position = "none") +
+    geom_abline(intercept=0, slope=1)
+  
+  plot1 <- AA
+  plot2 <- BB
+  grid.arrange(plot1, plot2, ncol=2)
+
+})
+  # --------------------------------------------------------------------------
+
+```
+
+### Bland Altman plot (or conversion plot) with 95% limits of agreement, within which we expect 95% of the differences to lie.
+
+```{r, tab1 plot2}
+
+  # --------------------------------------------------------------------------
+
+renderPlot({
+  
+    A <- r1()$pp1
+    B <- r1()$pp2
+    n <- input$n
+    
+    d <- data.frame(y = A , x = B)
+  
+    my_data <- data.frame( 
+      group = rep(c("before", "after"), each = n),
+      counts = c(d[,1],  d[,2]),
+      ID=rep(1:n,2)
+    )
+  
+   m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+   
+   L <- max(abs(floor(min(A-B))),abs(ceiling(max(A-B))))
+   
+   L <- roundUp(L)
+    
+    # we set up const dif and const sd so that will matches true data genrting mechanism
+    par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
+   
+    BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
+             # axlim=c(0,20), 
+             diflim=c(-L,L), 
+             xaxs="i", yaxs="i",
+             las=1, eqn=TRUE,  
+             pl.type=input$Pl.type, 
+             sd.type=input$SD.type, 
+             dif.type = input$Dif.type, # cons is simulatied
+             grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
+
+})
+
+  # --------------------------------------------------------------------------
+ 
+
+```
+
+Column {data-width=400, height=75}
+-----------------------------------------------------------------------
+
+### Introduction
+
+```{r tab1 generate data}
+ 
+   # --------------------------------------------------------------------------
+    # I looked back to two period cross over trial to get this button working to resimulate
+    # This is where a new sample is instigated only random noise is required to be generated
+    random.sample <- reactive({
+      
+    # Dummy line to trigger off button-press
+    foo <- input$resample
+         
+    L1 <-     input$mu0
+    L2 <-     input$mu0+input$eff.p
+    r  <-     input$r
+    n <-      input$n
+    sd. <-    input$sd.
+    
+    
+   #  
+   # n     =    100
+   # mu0   =    0 
+   # eff.p =    0 
+   # sd.   =    1 
+   # r     =  0.8
+   # L1 <-     mu0
+   # L2 <-      mu0+ eff.p
+   # Sigma = sd.  
+     
+# generate correlated poisson ref: https://thomasward.com/simulating-correlated-data/
+# Sample correlated N(0, 1) distributions from a multivariate normal distribution.
+# Transform them to correlated Uniform(0, 1) distributions with the normal CDF.
+# Transform them to any correlated probability distribution you desire with that probability distribution’s inverse CDF.
+
+    Sigma <- matrix(c(1, r, r, 1), 2, 2)
+
+    px <- mvrnorm(n, Sigma = Sigma)   # correlated continuous, see function in global area!
+
+    U <- pnorm(px, mean = 0, sd = 1)  # correlated uniform
+    
+    pp1 <- qnorm(U[, 1], L1, sd.)      # correlated normal  
+    pp2 <- qnorm(U[, 2], L2, sd.) 
+        
+    return(list(pp1=pp1, pp2=pp2, sd.=sd.))
+    
+    })
+   
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+  r1 <- reactive({
+ 
+    sample <- random.sample()
+     
+     r  <-     input$r
+     n <-      input$n
+     sd. <-    sample$sd.  
+ 
+     pp1 <- sample$pp1     # correlated normal  
+     pp2 <- sample$pp2 
+    
+    cor. <- cor(pp1, pp2)              # capture correlation
+ 
+    # create a data frame
+    my_data <- data.frame( 
+      group = rep(c("A.before", "B.after"), each = n),
+      counts = c(pp1,  pp2),
+      ID=rep(1:n,2)
+    )
+
+    ## variance of a difference from a simulation
+    est <- var(pp1) + var(pp2) - 2 *cor. * sd(pp1) * sd(pp2)
+    
+    ## true variance of difference
+    true <- sd.^2 + sd.^2 - 2 * r * sd. * sd.
+    
+    ## variance of a sum
+    # var(pp1) + var(pp2) + 2 *cor. * sd(pp1) * sd(pp2)
+    # 
+    # 
+    # sd.^2 +sd.^2 + 2 * r * sd.*sd.
+
+ return(list( est=est, true=true , pp1=pp1, pp2=pp2 ))
+     
+  })
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  h5(htmlOutput("text3"))      ## print 
+  
+```
+
+
+```{r, text}
+
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
+   # help on font size
+   h5(htmlOutput("text2"))      
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                              withMathJax(
+                                tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+                             helpText('
+                             $${  
+                             {\\sigma^2}{_{x \\pm y}} =  
+                             {\\sigma^2}{_{x}}  +   {\\sigma^2}{_{y}} 
+                             \\pm 2\\rho{\\sigma}{_{x}} {\\sigma}{_{y}}           
+                             }\\!$$'
+                             ))   
+                             )
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   h5(htmlOutput("text2a"))   
+     
+                            withMathJax(
+                               tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+                             helpText('
+                              $${ 
+                              \\rho {\\sigma}{_{x}}  {\\sigma}{_{y}}           
+                              }\\!$$'))        
+  
+                            )
+    # --------------------------------------------------------------------------
+    h5(htmlOutput("text4"))   
+    # --------------------------------------------------------------------------
+    h5(htmlOutput("text4a"))   
+    # --------------------------------------------------------------------------
+                            
+```
+
+```{r text2} 
+
+  # --------------------------------------------------------------------------
+output$text2 <- renderText({  
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "If the variables are uncorrelated the variance of the difference is equal to the sum of the variances. If there is any correlation this information is incorporated: ")))
+  
+})
+  # --------------------------------------------------------------------------
+
+output$text2a <- renderText({  
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "The following is the covariance between the two variables. Add 2 x this if we are interested in the variance of the sum, for the variance of the difference subtract 2 x this component. ")))
+  
+})
+   # --------------------------------------------------------------------------
+   
+
+output$text3 <- renderText({  
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "This is not a typical method comparison experiment. 
+               
+               Correlated normal data are generated based on the inputs. We have ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$n) ,
+   
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " samples on two methods. There is a true difference (after - before) of ") 
+      
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$eff.p) ,
+     
+     
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     
+    ", also there is a true correlation between the paired results of ")
+    
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", input$r) ,
+    
+    
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    " and between sample SD commmon to both methods of ")
+    
+      , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", input$sd.) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+               
+    ". By design the SD is constant across the range of values. Think of this SD component as the between person SD. Increase it to see the range of scores increase. We are not particularly interested in the between sample SD, this depends on the samples we choose and it is advisable to select samples that span range of the devices if possible. There are no technical replicates ", #),
+    
+    
+        ".") ))
+  # --------------------------------------------------------------------------
+ })
+ 
+
+output$text4 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Based on the true parameters, the variance of the difference, calculated using the above equation, is ") 
+    
+         , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;",formatz1( r1()$true )),
+                     
+                     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+     ", this equates to an SD of the differences of ") 
+    
+       , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3(sqrt(r1()$true))) ,
+    
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               ". The estimate from a simulated experiment is ") 
+    
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( r1()$est )),
+                 
+                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+        ", this equates to an SD of the differences of ")
+    
+     , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", formatz3( sqrt(r1()$est)),
+    
+                 ##add some more text
+                  tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+        ", this matches the methComp estimate with the default settings, see the estimate in brackets in the Bland Altman plot top right"),".") ))
+
+ })
+
+
+output$text4a <- renderText({  # create interactive text t1
+
+    print(paste0(   
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+          
+     "Notice there are no technical replicates per sample on each method. The repeatability of each method therefore cannot be estimated, this is a deficiency in the experimental design. Explore the other tabs to see a better design approach using technical replication!")) )
+
+ })
+
+  # --------------------------------------------------------------------------
+
+ output$text5 <- renderText({  # create interactive text t1
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "After anti-logging, the contrast of ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
+    
+     , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " vrs. ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
+    
+       , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " estimate is ") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$res)) ,
+   
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " 95%CI ( ") 
+      
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$L)) ,
+     
+     
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+     
+    ",  ")
+    
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$H) ),
+    
+    
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+    
+    " ) ") 
+    
+  ))
+  
+})
+
+
+``` 
+
+Diagnostics {data-icon="fa-cog"}
+====
+
+Diagnostics
+ 
+
+Column {data-width=400, height=300}
+-----------------------------------------------------------------------
+
+### Constant SD assumption
+
+```{r, gp barplots, eval=TRUE}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  r2 <- reactive({
+ 
+    L1 <-     input$mu0
+    L2 <-     input$mu0+input$eff.p
+    r  <-     input$r
+    n <-      input$n
+    sd. <-    input$sd.
+    
+
+    A <- r1()$pp1
+    B <- r1()$pp2
+    n <- input$n
+    
+    d <- data.frame(y = A , x = B)
+    
+    my_data <- data.frame( 
+      group = rep(c("before", "after"), each = n),
+      counts = c(d[,1],  d[,2]),
+      ID=rep(1:n,2)
+    )
+    
+    m <- Meth(my_data,meth="group",item="ID",repl=NULL,y="counts",print=TRUE)
+     
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # code from my useful code, adjusted slightly
+
+  BA <- DA.reg(m, DA.slope = TRUE)
+
+  a1<-as.data.frame(unlist(BA))
+  #DA.slope.p<-a1[14,]
+  #cons.sd.p.value<-a1[38,]
+  
+  res<-rbind(a1[14,], a1[38,])
+  res<-as.matrix(res)
+  
+  rownames(res)<-c( 
+                   "DA Slope P-value",
+                   "P-value for Changing SD")
+  
+  colnames(res) <- c("Bland Altman Analysis")
+ # print(res)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ## **Assess Bland Altman assumptions P-values for two hypotheses:**
+  w <- to.wide(m)
+  ## assumptions do it yourself
+
+  w$y <- w$before - w$after
+  w$y <- w$after - w$before
+  
+  w$x <-  (w$before + w$after) /2
+  
+  # Constant difference - this is the test of 0 slope in the regression of differences on averages.
+  f <- summary(lm(y~x, w))
+  con.diff <- f$coefficients["x","Pr(>|t|)"]
+  
+  # Constant variance - this is the test of 0 slope in the regression of absolute residuals on averages.
+  w$r <- abs(residuals(f) ) # if you dont use abs the regression line slope will be 0!
+  # w$r <- (residuals(f) )
+  # plot(r~x,w)
+  f1 <- summary(lm(r~x, w))
+  con.sd <- f1$coefficients["x","Pr(>|t|)"]
+  
+  return(list( con.diff=con.diff, con.sd=con.sd , w=w ))
+
+})
+
+renderPlot({
+  
+w <- r2()$w
+con.sd <- r2()$con.sd
+  
+  ggplot(w, aes(x=x, y=r))+
+    geom_point() +  
+    geom_smooth(method="lm", col="black")  +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages.\nTesting hypothesis slope=0, p=", formatz3(con.sd)),
+         x = "Averages",
+         y = "Absolute residuals")
+   
+})
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``` 
+
+### Constant difference assumption
+
+```{r nb barplots, eval=TRUE}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+renderPlot({
+  
+  w <- r2()$w
+  con.diff <- r2()$con.diff
+
+ pitman <- cor.test(w$x, w$y)$p.value
+
+  ggplot(w, aes(x=x, y=y))+
+    geom_point() +  
+    geom_smooth(method="lm", col="black")  +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff), ". Note: the constant SD assumption can also be evaluated using the \np-value from the correlation of differences on the average (known as Pitman's test) p=", formatz3(pitman)),
+         x = "Averages",
+         y = "After - before")
+
+})
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+```
+   
+Column {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Constant difference assumption
+  
+
+```{r diagnostics1, eval=TRUE}
+
+renderPlot({
+  
+  w <- r2()$w
+  con.diff <- r2()$con.diff
+  
+  mod1 <- lm(y ~ x, data = w) 
+  w$pred = predict(mod1)  
+  
+  p <- w %>%
+    ggplot(aes(x = x, y = y) ) +
+    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+    geom_smooth(method = "lm", colour = "black", se=TRUE, level=.95, fill="cornflowerblue") +
+    stat_regline_equation(label.x = min(w$x), label.y = max(w$y))+
+    
+     labs(title = 
+    paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff)),
+         x = "Averages",
+         y = "After - before") +
+
+    geom_segment(
+      aes(xend = x, yend = pred),
+      size = 0.5, alpha = 0.8, lineend = "round", col="pink"
+    ) +
+    
+    theme_bw(base_size = 12)
+  
+    ggMarginal(p, type = "histogram", bins = 50)
+
+})
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+```
+
+###  Constant variance assumption
+ 
+```{r diagnostics2}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# x averages
+# y differences
+# r abs residuals
+
+renderPlot({
+  
+w <- r2()$w
+
+  con.sd <- r2()$con.sd
+  
+  f <- summary(lm(y~x, w)) # First regressing the differences on the averages 
+  w$r <- abs(residuals(f) ) 
+  mod1 <- lm(r ~ x , data = w) # regressing the absolute residuals from this on the averages
+  
+ # pitman <- cor.test(w$r, w$x, data=w)$p.value
+  
+  
+  w$pred = predict(mod1) # pred and fitted no dif with linear model
+ # w$pred = fitted(mod1) 
+
+p1 <-  ggplot(w, aes(x=x, y=r))+
+    geom_point(pch = 21, color = "white", fill = "black", size = 2, alpha = 0.8) +
+    geom_smooth(method = "lm", colour = "red", se=TRUE, level=.95, fill="#69b3a2") +
+     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
+    theme_bw() +
+    labs(title = paste0("First regressing the differences on the averages and then regressing the absolute residuals from this on the averages. Testing hypothesis slope=0, p=", formatz3(con.sd)),
+         x = "Averages",
+         y = "Absolute residuals") +
+    
+    geom_segment(
+      aes(xend = x, yend = pred),   ## trying to join to reg line
+      size = 0.5, alpha = 0.8, lineend = "round", col="pink"
+    ) +
+    
+    theme_bw(base_size = 12)
+
+  ggMarginal(p1, type = "histogram", bins = 50)
+
+})
+  
+
+```
+
+### histogram of differences
+  
+
+```{r diagnostics3, eval=TRUE}
+ 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# https://statisticsglobe.com/normal-density-curve-on-top-of-histogram-ggplot2-r
+# calculate mean and sd by group
+# stats <- aggregate(y~1, w, function(x) c(mean=mean(x), sd=sd(x)))
+ 
+
+renderPlot({
+  
+w <- r2()$w
+
+  df <- w
+  
+  argz1 <- c(   mean(df$y),   input$eff.p)
+  argz2 <- c(   sd(df$y),     sqrt(r1()$true) )
+  colz <-  c("black", "red")
+  
+  xv <- argz1[2]+sd(df$y)*1.5  # x co-ordinate of text
+  
+  ## https://stats.stackexchange.com/questions/143631/height-of-a-normal-distribution-curve
+  top <- 1/sqrt(2 * pi * var(df$y) )  # y co ordinate of text
+
+ p <- ggplot(df, aes(y)) +      
+  
+  geom_histogram(aes(y = ..density..),
+                 colour = "white", fill = "cornflowerblue", size = 0.1) +
+ 
+   theme_bw() +
+  
+  annotate("text",  x=xv, y=top*1.3, label= paste0("Estimated Mean differences = ", formatz3(mean(df$y))," and SD of differences = ",          formatz3(sd(df$y)), " (black)"))  +
+  annotate("text",  x=xv, y=top*1.2,   label= paste0("True Mean difference = ",      formatz3( input$eff.p),", and true SD of differences = " ,  formatz3(sqrt(r1()$true)) ,  " (red)"))
+  
+# https://stackoverflow.com/questions/2237600/how-can-i-plot-multiple-functions-in-r
+ # adding density plots
+ for(i in 1:2)
+   
+    p <- p +  stat_function(fun = dnorm,
+                args = list( mean = argz1[i], sd = argz2[i] ),
+                col = colz[i],
+                size = 1.5)
+    print(p)
+
+})
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+```
+
+### not used yet 
+ 
+ 
+```{r diagnostics4}
+
+  
+```
+
+### not used yet
+ 
+ 
+```{r diagnostics5}
+
+   
+
+```
+
+### not used yet
+
+```{r diagnostics6, eval=TRUE}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ```
