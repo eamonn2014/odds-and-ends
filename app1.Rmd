@@ -10,7 +10,7 @@ output:
 runtime: shiny
 
 ---
-Method Comp. no reps {data-icon="fa-pencil"}
+Method Comp. no reps {data-icon="fa-home"}
 ===
 
 ```{r global, include=FALSE}
@@ -2491,14 +2491,14 @@ output$e102 <- renderText({  # create interactive text t1
 
 ```
 
-Paired data {data-icon="fa-home"}
+Paired data {data-icon="fa-pencil"}
 ===
 
 
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**Design your method comparison, a simple setting, no replication **
+**Design, no replication **
 
 ```{r tab1 inputs}
 
@@ -2936,7 +2936,7 @@ output$text4a <- renderText({  # create interactive text t1
 
 ``` 
 
-Diagnostics {data-icon="fa-cog"}
+Diagnostics {data-icon="fa-pencil"}
 ====
 
 Diagnostics
@@ -3234,28 +3234,9 @@ w <- r2()$w
 
 ```{r diagnostics6, eval=TRUE}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ```
 
-T-test {data-icon="fa-pencil"}
+T-test {data-icon="fa-cog"}
 ====
 
 Column {.sidebar}
@@ -3543,7 +3524,7 @@ Column {data-width=400}
   hi <- round(ci[1],3)
   lo <- round(ci[2],3)
   
-  qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS spec. of ", qclevel), paste0("FAIL spec. of ", qclevel))
+  qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS specification of ", qclevel), paste0("FAIL specification of ", qclevel))
   GmeanR <- round(exp(res$estimate[1]),3) # geometric means
   GmeanT <- round(exp(res$estimate[2]),3) # geometric means
   
@@ -3628,7 +3609,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   ci <- exp(-res$conf.int)
   hi <- round(ci[1],3)
   lo <- round(ci[2],3)
-  qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS spec. of ", qclevel), paste0("FAIL spec. of ", qclevel))
+  qc <- ifelse(((qclevel<=lo) && (hi<=1/qclevel)), paste0("PASS specification of ", qclevel), paste0("FAIL specification of ", qclevel))
   GmeanR <- round(exp(res$estimate[1]),3) # geometric means
   GmeanT <- round(exp(res$estimate[2]),3) # geometric means
 
@@ -3691,7 +3672,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
   
 ``` 
 
-Anova (linear model) contrasts {data-icon="fa-cog"}
+Anova (linear model) contrasts {data-icon="fa-pencil"}
 ====
 
 Column {data-width=400}
@@ -4426,13 +4407,10 @@ inference <- reactive({
 Wiki {data-icon="fa-book"}
 ====
 
-
- 
-
 ```{r}
 
 # --------------------------------------------------------------------------
-tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}")
+tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}") # height of page so no clipping text
 
 output$text.wiki <- renderText({  # create interactive text t1
 
@@ -4440,7 +4418,7 @@ output$text.wiki <- renderText({  # create interactive text t1
  
            tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "A simple experiment in which any difference is constant across the range and the standard deviation is also constant and common to both methods is presented on the 'Paired tab'. Here two groups are set up using a between sample variation and a defined correlation. We determine the mean and intervention effect. If for example two measurement methods agree we expect there to be positive correlation. That is, if one method measures a sample to have a high value we would expect the second method to have a similar high value. We present a plot of the data using boxplots and join the same sample with a thin line, beside it a simple scattterplot. Top right the default plot is the familiar Bland Altman plot with 95% limits of agreement and conversion equation. There is an option to show instead the inference on a scatter plot. There are user options too for the analysis, bottom left. Here, the difference can be analysed depending on the averages assuming it is constant (default) or linear. The standard deviation can be analysed depending on the averages assuming it is constant (default) or linear", #),
+    "A simple experiment in which any difference is constant across the range and the standard deviation is also constant and common to both methods is presented on the 'Paired data' tab. Here two groups are set up using a between sample variation and a defined correlation. We determine the mean and intervention effect. If for example two measurement methods agree we expect there to be positive correlation. That is, if one method measures a sample to have a high value we would expect the second method to have a similar high value. We present a plot of the data using boxplots and join the same sample with a thin line, beside it a simple scattterplot. Top right the default plot is the familiar Bland Altman plot with 95% limits of agreement and conversion equation. There is an option to show instead the inference on a scatter plot. There are user options too for the analysis, bottom left. Here, the difference can be analysed depending on the averages assuming it is constant (default) or linear. The standard deviation can be analysed depending on the averages assuming it is constant (default) or linear", #),
     
         ".") ))
  })
@@ -4470,7 +4448,7 @@ output$text.wiki2a <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "The next tab 'Method Comp. (no replication)' is set up is a typical method comparison experiment, that is no replication, an inferior design. On the same main tab are mini tabs exploring assumptions", #),
+    "The first tab 'Method Comp. no reps' is a typical method comparison experiment, that is no replication, an inferior design. On the same main tab are mini tabs exploring assumptions", #),
     
     
         ".") ))
@@ -4484,12 +4462,13 @@ output$text.wiki2b <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "'Method Comp. with replication' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second mini tab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mini tabs A-E, presents an alternative LMM approach. There are also mini tabs presenting boxplots, plots if we permute the reps randomly. We then analyse as if each replicate were a seperate sample. We examine assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
+    "'Method Comp. reps!' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second mini tab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mini tabs A-E, presents an alternative LMM approach. There are also mini tabs presenting boxplots, plots if we permute the reps randomly. We then analyse as if each replicate were a seperate sample. We examine assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
     
     
         ".") ))
  })
 
+  # --------------------------------------------------------------------------
 
 output$text.wiki2c <- renderText({  # create interactive text t1
 
@@ -4503,10 +4482,7 @@ output$text.wiki2c <- renderText({  # create interactive text t1
     
         ".") ))
  })
-
  
-
-
   # --------------------------------------------------------------------------
 
 output$text.wiki3 <- renderText({  # create interactive text t1
@@ -4516,7 +4492,7 @@ output$text.wiki3 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "We change tack on the T test example tab. This is not directly related to method comparison but another programming exercise.
+    "We change tack on the 'T test' tab. This is not directly related to method comparison but a programming exercise.
     This tab allows the user to define a lognormal distributed variable (mean, sd and sample size) and another lognormal distributed variable of the same sample size and sd but proportionally different as defined by the user input. There are also user inputs for the confidence level and QC level. At the top we plot in blue the A group on the original scale (left) and log transformed scale. The B group is plotted similarly. At the bottom we plot boxplots (remember this is unpaired data). Also there are inferential statistics above the boxplots
     ", #),
     
@@ -4531,57 +4507,32 @@ output$text.wiki4 <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    " The Anova tab, again not directly related to method comparison, allows the user to define 4 lognormal distributed variables of user defined sample sizes, sds and proportional differences.  The idea behind this tab is to perform and understand contrasts. On the left is Frank Harrell's contrast function and on the right we step through how a contrast is calculated
+    " The Anova (linear model) contrasts tab, again not directly related to method comparison, allows the user to define 4 lognormal distributed variables of user defined sample sizes, sds and proportional differences.  The idea behind this tab is to perform and understand contrasts. On the left is Frank Harrell's contrast function and on the right we step through how a contrast is calculated
     ", #),
     
     
         ".") ))
  })
 
-# output$text.wiki2do <- renderText({  # create interactive text t1
-# 
-#     print(paste0(   
-#   
-#     
-#      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-#                
-#     "  
-#       ideas to include/mention :
-#       <br>
-#       <span>Vicker's code ;         </span><br>
-#       <span>Pitman's test ;         </span>
-#       <span>diagnostis for ANOVA ;  </span>
-#       <span> pi/2 explanation ;     </span>
-#       <span>Gelmans book residuals ;</span>
-#       <span>drop some reps ;        </span>
-#       <span>anova diagnostics ;     </span>
-#       <span>ttest diagnostics ;     </span>
-#     ", #),
-#     
-#     
-#         ".") ))
-#  })
- 
-
  
   # --------------------------------------------------------------------------
 
-  h5(htmlOutput("text.wiki"))
-
-  h5(htmlOutput("text.wiki2"))
-  
   h5(htmlOutput("text.wiki2a"))
   
   h5(htmlOutput("text.wiki2b"))
   
   h5(htmlOutput("text.wiki2c"))
   
+  h5(htmlOutput("text.wiki"))
+
+  h5(htmlOutput("text.wiki2"))
+  
   h5(htmlOutput("text.wiki3"))
   
   h5(htmlOutput("text.wiki4"))
 
-  #h5(htmlOutput("text.wiki2do"))
   # --------------------------------------------------------------------------
+  
 ```
 
 **to do:** 
