@@ -3889,7 +3889,7 @@ output$text101 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Matrix multiplication [X] [VARCOV] [X'] and take the square root to get se") 
+               "Matrix multiplication [weights] [VARCOV] [weights'] and take the square root to get se") 
     
   ))
 }) 
@@ -3928,7 +3928,7 @@ output$text101 <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Contrasts of levels with intercept") 
+               "Contrasts of levels with intercept (anti-logged)") 
     
   ))
 }) 
