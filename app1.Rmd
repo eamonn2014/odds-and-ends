@@ -3,6 +3,7 @@ title: "METHOD COMPARISON & BEYOND"
 author: 
 output: 
   flexdashboard::flex_dashboard:
+    theme: spacelab
     orientation: rows
     vertical_layout: scroll
     social: menu
