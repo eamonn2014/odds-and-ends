@@ -1,21 +1,8 @@
 
-#'trying neg binomial simulation'
+# negative binomial simulation for nth success.
 
-# failure <- success <- 0
-# 
-# nd <- function(p=.5) {
-# 
-#   x <- rbinom(1, size=1, prob=p)
-#   
-#   if (x==0) {failure =failure+1 } else {success=success+1 }
-#  
-#   return(list(s=success, f=failure))
-# }
-# 
-# res <- replicate(10, nd())
-
-
-
+# chunk 1 from
+# https://stackoverflow.com/questions/65462039/r-how-would-i-repeatedly-simulate-how-many-attempts-before-a-success-on-a-1-10
 
 foo <- function(p = 0.1) {
   i <- 0
@@ -35,8 +22,8 @@ hist(number_of_attempts, xlab = "Number of Attempts Until First Success")
 
 
 
-# same as 
-# https://stackoverflow.com/questions/65462039/r-how-would-i-repeatedly-simulate-how-many-attempts-before-a-success-on-a-1-10
+# chunk 2
+# I revamped the above to reproduce it
 
 foo <- function(p = 0.1) {
   i <- 0
@@ -56,13 +43,13 @@ number_of_attempts <- replicate(1000, foo())
 hist(number_of_attempts, xlab = "Number of Attempts Until First Success")
 
 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# chunk 3
 # my neg binomial simulation
 # for example if s = 4, we count how long it takes to get 4 heads given prob of p 
 
 formatz2 <- function(x){
-  sprintf(x, fmt = '%#.2f')  
+  sprintf(x, fmt = '%#.3f')  
 }
 
 foo <- function(p = 0.5, s = 4) { #p prob of success; s 
@@ -87,12 +74,12 @@ foo <- function(p = 0.5, s = 4) { #p prob of success; s
 # https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html see for explanation
 # Function dnbinom() calculates the negative-binomial probability. Parameter x equals the number of failures, x−r.
 
-  sim = 1000
-  P <- runif(1,0,1)  # pick a probability
+  sim = 10000
+  P <- runif(1,0.05,1)   # pick a probability
   s <- sample(2:10,1) # pick nth success
   
   # simulation bar plot
-  number_of_attempts <- replicate(sim, foo(p=P,s=s))
+  number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function mnay time
   x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels no counts included
   b <- barplot(x/sim, main = paste0("Number of attempts until we reach ",s," successes, p=",formatz2(P),""), 
                col="palegreen", ylab="Probability", xlab="Attempt (true negative binomial dist. blue line)")
