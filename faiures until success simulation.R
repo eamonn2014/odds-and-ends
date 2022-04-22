@@ -57,9 +57,13 @@ hist(number_of_attempts, xlab = "Number of Attempts Until First Success")
 
 
 
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # my neg binomial simulation
 # for example if s = 4, we count how long it takes to get 4 heads given prob of p 
+
+formatz2 <- function(x){
+  sprintf(x, fmt = '%#.2f')  
+}
 
 foo <- function(p = 0.5, s = 4) { #p prob of success; s 
   
@@ -78,76 +82,26 @@ foo <- function(p = 0.5, s = 4) { #p prob of success; s
   return(i) 
 }
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ plot
+# ref
+# https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html see for explanation
+# Function dnbinom() calculates the negative-binomial probability. Parameter x equals the number of failures, x−r.
 
-as.data.frame(xtabs(length~timeSlt, dt))
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-#par(mfrow = c(2, 1))    
-  #set.seed(42)
   sim = 1000
-  P= runif(1,0,1) # pick a probability
-  s=4
+  P= runif(1,0,1)  # pick a probability
+  s=sample(2:10,1) # pick nth success
+  
+  # simulation bar plot
   number_of_attempts <- replicate(sim, foo(p=P,s=s))
   x <- table(factor(number_of_attempts, levels = s: max(sort(unique(number_of_attempts)))))
-  #hist(number_of_attempts, xlab = "Number of Attempts Until x Success", breaks=100)
-  b <- barplot(x, xlab = paste0("Number of Attempts Until ",s," Success, p=",P,""))
+  b <- barplot(x, main = paste0("Number of Attempts Until ",s," Success, p=",formatz2(P),""), col="palegreen")
   
-
-  
-  
-  
+  # overlay true neg binomial dist
   m <- length(b)-1
-  # https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html see for explanation
-  #Function dnbinom() calculates the negative-binomial probability. Parameter x equals the number of failures, x−r.
-  d <- dnbinom(0:m, prob=P, size=4)*sim
-  
-  lines(x = b, y = d)
+  d <- dnbinom(0:m, prob=P, size=s)*sim
+  lines(x = b, y = d , col='blue')
   points(x = b, y = d)
-  
-  # barplot(d, names.arg= as.character(names(x)))
+  # bar plot(d, names.arg= as.character(names(x)))
  
-#par(mfrow = c(1, 1))    
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-plot(b+0.5, d, "l", lwd = 2,col="red",lty=1, 
-     axes=F, #ylim=c(0, 14000),
-     #xlim=c(min(b), max(b)+1))
-)
-points(b+0.5, d, pch = 18, cex = 1,col="red")
-
-
-# success <- 21
-# attempt <- 30
-# fail <- attempt - success
-# streak <- function()
-# {
-#   success.pos <- sort(sample(1:attempt, success))
-#   fail.pos <- sort((1:attempt)[-success.pos])
-#   streak <- 0
-#   prev <- success.pos[1]
-#   for(i in success.pos[-1])
-#   {
-#     current <- i
-#     if(prev == current-1)
-#     {
-#       streak <- streak + 1
-#     }
-#     prev <- current
-#   }
-#   
-#   prev <- fail.pos[1]
-#   for(i in fail.pos[-1])
-#   {
-#     current <- i
-#     if(prev == current-1)
-#     {
-#       streak <- streak + 1
-#     }
-#     prev <- current
-#   }
-#   return(streak/attempt)
-# }
+ 
