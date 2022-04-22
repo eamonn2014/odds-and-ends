@@ -72,9 +72,9 @@ foo <- function(p = 0.5, s = 4) { #p prob of success; s
   
   while ( x < s) {  # stop when x equals s 
     
-    i <- i + 1  # count each toss
+    i <- i + 1  # count each trial
     
-    res <-  rbinom(1, size=1, prob=p)  # coin flip, heads is success
+    res <-  rbinom(1, size=1, prob=p)  # ala coin flip, heads is success
     
     if (res ==1) {x=x+1}   # if heads count 
    
@@ -88,17 +88,18 @@ foo <- function(p = 0.5, s = 4) { #p prob of success; s
 # Function dnbinom() calculates the negative-binomial probability. Parameter x equals the number of failures, x−r.
 
   sim = 1000
-  P= runif(1,0,1)  # pick a probability
-  s=sample(2:10,1) # pick nth success
+  P <- runif(1,0,1)  # pick a probability
+  s <- sample(2:10,1) # pick nth success
   
   # simulation bar plot
   number_of_attempts <- replicate(sim, foo(p=P,s=s))
-  x <- table(factor(number_of_attempts, levels = s: max(sort(unique(number_of_attempts)))))
-  b <- barplot(x, main = paste0("Number of Attempts Until ",s," Success, p=",formatz2(P),""), col="palegreen")
+  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels no counts included
+  b <- barplot(x/sim, main = paste0("Number of attempts until we reach ",s," successes, p=",formatz2(P),""), 
+               col="palegreen", ylab="Probability", xlab="Attempt (true negative binomial dist. blue line)")
   
   # overlay true neg binomial dist
   m <- length(b)-1
-  d <- dnbinom(0:m, prob=P, size=s)*sim
+  d <- dnbinom(0:m, prob=P, size=s)# *sim
   lines(x = b, y = d , col='blue')
   points(x = b, y = d)
   # bar plot(d, names.arg= as.character(names(x)))
