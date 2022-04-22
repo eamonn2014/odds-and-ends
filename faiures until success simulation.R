@@ -74,17 +74,17 @@ foo <- function(p = 0.5, s = 4) { #p prob of success; s
 # https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html see for explanation
 # Function dnbinom() calculates the negative-binomial probability. Parameter x equals the number of failures, x−r.
 
-  sim = 10000
-  P <- runif(1,0.05,1)   # pick a probability
-  s <- sample(2:10,1) # pick nth success
+  sim <- 10000
+  P <- runif(1,0.05,1)   # randomly pick a probability
+  s <- sample(2:10,1)    # randomly pick nth success
   
   # simulation bar plot
-  number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function mnay time
-  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels no counts included
+  number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function many times
+  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels so no counts included
   b <- barplot(x/sim, main = paste0("Number of attempts until we reach ",s," successes, p=",formatz2(P),""), 
                col="palegreen", ylab="Probability", xlab="Attempt (true negative binomial dist. blue line)")
   
-  # overlay true neg binomial dist
+  # overlay true neg binomial dist.
   m <- length(b)-1
   d <- dnbinom(0:m, prob=P, size=s)# *sim
   lines(x = b, y = d , col='blue')
