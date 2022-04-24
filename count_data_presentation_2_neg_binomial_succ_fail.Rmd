@@ -1,5 +1,5 @@
 ---
-title: "ANALYSING COUNT DATA 1" 
+title: "Negative binomial distributions" 
 author: 
 output: 
   flexdashboard::flex_dashboard:
@@ -136,10 +136,8 @@ Probability mass functions
     #  
     # mu <- ( k/p - k )     
 
- 
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# recruitment function using neg binomial simulation
+# number of successes function to simulate neg binomial simulation
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
  foo <- function(p = 0.5, s = 4) { # p prob of success; s 
@@ -159,7 +157,6 @@ Probability mass functions
   return(i) # result captured here
 }
 
- 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # start of app
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -182,7 +179,7 @@ Column {.sidebar}
                 min = 0, max = 5 ,step=0.01, ticks=F)
  
   sliderInput('P', 'Probability of Success (bottom panels)', value=.5,
-                min = 0, max = 1, step=.1, ticks=F)
+                min = 0.01, max = 1, step=.01, ticks=F)
   
   sliderInput('s', 'No of successess (bottom panels)', value = c(3),
                 min = 1, max = 200 ,step=1, ticks=F)
@@ -240,9 +237,9 @@ Column {data-width=400, height=300}
     yb=     e_dnbinom(xx,mu,alpha_a)
   }
 
-  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='red',
+  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='lightgreen',
           ylim=c(0,ymax),
-          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", mu+alpha_a*mu^2* alpha_a,""),
+          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", (mu+alpha_a*mu^2* alpha_a),""), # mu+alpha_a*mu^2* alpha_a
           names.arg= as.character(xx))
   
   if(input$perc) {
@@ -295,20 +292,20 @@ Column {data-width=400, height=300}
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
                main = paste0("Number of attempts until we reach ",s," successes when p=",formatz2(P),
-                                    "\n True \u03BC ",formatz2(input$mu) , #" ; Simulated \u03BC (green) ",formatz2(Sm) ,
+                                    "\n True \u03BC ",formatz2(Tm) , #" ; Simulated \u03BC (green) ",formatz2(Sm) ,
                              ""),
-               col="palegreen", 
+               col="orchid1", 
                ylab="Probability of success", 
-               xlab="Attempts for success (no simulation)",
+               xlab="Attempts for success (no simulation); note we can get non-integers!",
                names.arg= as.character(z))
   
   # overlay true neg binomial dist.
   #m <- length(b)-1
  
 #  d <- dnbinom(0:m, prob=P, size=s) # s was 0 and ymax was m
-
-  lines( x = b, y = d , col='red')
-  points(x = b, y = d , col='red')
+# no need for these points and lines...
+# lines( x = b, y = d , col='red')
+ # points(x = b, y = d , col='red')
  
     if(input$perc) {
       
@@ -317,27 +314,7 @@ Column {data-width=400, height=300}
         z  <- round(d,2) *100
         z  <- paste0(z,"%")
         text(x=b[x+1],y=(y1),labels=z, cex = 1)
-  }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+}
   })
 
 ```
@@ -353,6 +330,7 @@ Column {data-width=400}
 
   sim <- input$sims
   P <- input$P   # randomly pick a probability
+  if (P==0) P=0.01
   s <- input$s   # randomly pick nth success
   
   #low =  input$x_range[1]
@@ -377,11 +355,11 @@ Column {data-width=400}
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
                main = paste0("Number of attempts until we reach ",s," successes when p=",formatz2(P),
-                                    "\n True \u03BC ",formatz2(Tm) ," ; Simulated \u03BC (green) ",formatz2(Sm) ,""),
+                                    "\n True \u03BC ",formatz2(Tm) ," ; Simulated \u03BC (lilac) ",formatz2(Sm) ,""),
                                     
-               col="palegreen", 
+               col="orchid1", 
                ylab="Probability of success", 
-               xlab="Attempts for success (true negative binomial distribution red line with true %s above bars)")
+               xlab="Attempts for success (simulated in lilac, true negative binomial distribution red line with true %s above bars)")
   
   # overlay true neg binomial dist.
   m <- length(b)-1
@@ -433,7 +411,7 @@ Column {data-width=400}
     yb=     e_dnbinom(xx,mu,alpha_a)
   }
 
-  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='red',
+  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='lightgreen',
           ylim=c(0,ymax),
           main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", mu+alpha_a*mu^2* alpha_a,""),
           names.arg= as.character(xx))
