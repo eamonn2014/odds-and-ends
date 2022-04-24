@@ -93,7 +93,7 @@ Probability mass functions
 # e_dnbinom(1, alpha=1/2,mu=3)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# This function translates the mu and alpha parameters into an alternative
+# This function translates the mu and alpha parameters into size and prob
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
   e_rnbinom=function(n,mu,alpha){
@@ -102,19 +102,24 @@ Probability mass functions
     return(rnbinom(n,size=size,prob=prob))
   }
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-  e_nb=function(n,mu,alpha){
-    size = 1/alpha          # so now we can just enter alpha this is converted to 1/ alpha
-    prob = size/(mu+size)   # so now we can enter mu the mean and that is converted to prob
-    return(list(prob=prob,size=size))
-  }
+   e_nb=function(mu,alpha){
+     size = 1/alpha          # so now we can just enter alpha this is converted to 1/ alpha
+     prob = size/(mu+size)   # so now we can enter mu the mean and that is converted to prob
+     return(list(prob=prob,size=size))
+   }
+   
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # here is where prob and size are converted to mu and alpha
   #https://geek-questions.imtqy.com/articles/1785935/index.html
    rev_nb=function(prob,size){
     alpha = 1/size          # so now we can just enter alpha this is converted to 1/ alpha
     mu = size/prob - size    # so now we can enter mu the mean and that is converted to prob
     return(list(mu=mu, alpha=alpha))
    }
-   
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
     x <- e_nb(mu=15, alpha=1.2)
     x
     rev_nb(size=x$size, prob=x$prob)
@@ -168,37 +173,34 @@ Column {.sidebar}
 
 ```{r tab1}
 
- 
-  sliderInput('mu', 'Common  \u03BC', value=1.5,
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+  sliderInput('mu', 'Top panels \u03BC', value=3,
                 min = 1, max = 25, step=.5, ticks=F)
   
-  sliderInput('alpha_a', '\u03B1 for red curve', value = c(1.3),
+  sliderInput('alpha_a', 'Top panels \u03B1', value = c(1/3),
                 min = 0, max = 5 ,step=0.01, ticks=F)
-  
-    sliderInput('P', 'Probability of Success', value=.5,
+ 
+  sliderInput('P', 'Probability of Success (bottom panels)', value=.5,
                 min = 0, max = 1, step=.1, ticks=F)
   
-  sliderInput('s', 'No of successess', value = c(3),
+  sliderInput('s', 'No of successess (bottom panels)', value = c(3),
                 min = 1, max = 200 ,step=1, ticks=F)
   
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   
-  
-  # sliderInput('alpha_b', '\u03B1 for dark blue curve', value = c(1.3),
-  #               min = 0, max = 5 ,step=0.01, ticks=F)
-  # 
-  # sliderInput('alpha_d', '\u03B1 for purple curve', value = c(1.3),
-  #               min = 0, max = 5 ,step=0.01, ticks=F)
-  
-  sliderInput('sims', 'Simulations (chart 2)', 15000,
+  sliderInput('sims', 'Simulations (bottom left panel)', 15000,
                 min = 1000, max = 20000, step=1000,ticks=F)
   
   sliderInput('x_range', 'Plot x-range', value = c(0,10),
           min = 0, max = 80,step=5,ticks=F)
   
-  sliderInput('y_range', 'Plot y-range', value = c(0,.5),
+  sliderInput('y_range', 'Plot y-range', value = c(0,.25),
           min = 0, max = 1,step=.05,ticks=F)
 
   checkboxInput('perc','show stats on barplot', value=TRUE)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 ```
 
@@ -213,140 +215,140 @@ $\alpha$ = 1/k ; k = 1/ $\alpha$ see next tab.
 
 Column {data-width=400, height=300}
 -----------------------------------------------------------------------
-### Chart 1
+### Negative binomial couched in terms of mu and alpha
 
 
-```{r tab1 plot1, eval=FALSE}
+```{r tab1 plot1, eval=TRUE}
 
-renderPlot({
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Cannot find the reference that helped with code in this tab!
-# NB density function, and overlay the Poisson distribution with the same mean
-# Normal with variance equal to mean also
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
-  mu =      input$mu
-  alpha_a = input$alpha_a
-  alpha_b = input$alpha_b
-  alpha_d = input$alpha_d
-  low =     input$x_range[1]
-  high=     input$x_range[2]
-  xmax =    high
-  ymax =    input$y_range[2]
+        renderPlot({
+  
+      mu = input$mu
+      alpha_a = input$alpha_a
+          
+      low =  input$x_range[1]
+      xmax=  input$x_range[2]
+      ymax = input$y_range[2]
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  # if else to turn neg binomial into poisson if alpha =0
-  x=c(-0.0001,seq(0,xmax,1))
-  
-  y =          dpois(x,mu)
-   
-  if(alpha_a==0) {
-  yb =          dpois(x,mu)
-  }else{
-  yb=     e_dnbinom(x,mu,alpha_a)
-  }
-  
-  if(alpha_b==0){
-  yc =          dpois(x,mu)
-  }else{
-  yc=     e_dnbinom(x,mu,alpha_b)
-  }
-  
-  if(alpha_d==0){
-  yd =          dpois(x,mu)
-  }else{
-  yd=     e_dnbinom(x,mu,alpha_d)
-  }
-  
-  nor <- dnorm(x, mu, sqrt(mu))
- 
-  x=  c(0,x)  
-  y=  c(0,y)
-  yb= c(0,yb)
-  yc= c(0,yc)
-  yd= c(0,yd)
-  nor=c(0,nor)
-  
-  l = !is.na(y+yb+yc+yd+nor)
-  
-  plot(x[l],y[l], ylim=c(0,ymax), xlim=c(low,xmax), type="l", lwd=lwd., xlab="x",
-       ylab="prob(x)", main="Probability distributions")
-  
-  lines(x[l],yb[l], col=2,lwd=lwd.,type="l")
-  lines(x[l],yc[l], col=4,lwd=lwd.,type="l")
-  lines(x[l],nor[l],col=5,lwd=lwd.,type="l")
-  lines(x[l],yd[l], col=6,lwd=lwd.,type="l")
-   
-  apois = paste("Poisson \u03BC=", mu,sep="")
-  nb_a =  paste("Neg Binom \u03BC=",mu," \u03B1=",alpha_a,sep="")
-  nb_b =  paste("Neg Binom \u03BC=",mu," \u03B1=",alpha_b,sep="")
-  nb_c =  paste("Normal \u03BC=",   mu," \u03C3=sqrt(",mu,")",sep="")
-  nb_d =  paste("Neg Binom \u03BC=",mu," \u03B1=",alpha_d,sep="")
-  
-  legend("topright",col=c(1,2,4,6,5),legend=c(apois, nb_a, nb_b, nb_d, nb_c), lwd=lwd.,bty="n")
- }
-)
-
-```
-
-### Chart 2
-
-```{r, tab1 plot2, eval=FALSE}
-
-  renderPlot({
-  
-    mu = input$mu
-    alpha_a = input$alpha_a
-    
-    
-    
-    
-    
-    
-  
-    low =  input$x_range[1]
-    xmax=  input$x_range[2]
-    ymax = input$y_range[2]
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  xx <- c(seq(0,xmax,1))
+  xx <- c(seq(0,xmax,1)) 
 
   if(alpha_a==0) {
-  yb =    dpois(xx,mu)
+    yb =    dpois(xx,mu)
   }else{
-  yb=     e_dnbinom(xx,mu,alpha_a)
+    yb=     e_dnbinom(xx,mu,alpha_a)
   }
-  
- # par(mar=c(2.1,4.1,4.1,4.1))
-      
-  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="count", col='red',
+
+  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='red',
           ylim=c(0,ymax),
-          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",alpha_a,", based on common mean and red curve \u03B1, variance = ", mu+alpha_a*mu^2* alpha_a,""),
+          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", mu+alpha_a*mu^2* alpha_a,""),
           names.arg= as.character(xx))
   
   if(input$perc) {
-  x <-0:length(b) # % onto top of bars
-  y1 <- yb + 0.02
-  z <- round(yb,2) *100
-  z <- paste0(z,"%")
-  text(x=b[x+1],y=(y1),labels=z, cex = 1)
+    x  <- 0:length(b) # % onto top of bars
+    y1 <- yb + 0.02
+    z  <- round(yb,2) *100
+    z  <- paste0(z,"%")
+    text(x=b[x+1],y=(y1),labels=z, cex = 1)
   }
 })
+    
+ 
+```
 
+### Negative binomial mu and alpha converted to probability of success and number of successful attempts  
+
+```{r, tab1 plot2, eval=TRUE}
+
+  renderPlot({
+    
+    
+  sim <- input$sims
+  # P <- input$P   # randomly pick a probability
+  
+  z <- e_nb(input$mu, input$alpha_a)
+ 
+  P = z[1][[1]]
+  s = z[2][[1]]
+  
+  #low =  input$x_range[1]
+  xmax=  input$x_range[2]
+  ymax = input$y_range[2]
+ # ymin = input$y_range[1]
+
+  
+  # simulation bar plot
+  #!!!!!!!!!!!!!!!!!!!!!!this is actually not used
+  number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function many times
+   
+  Tm <-  1/P*s 
+  Sm <- mean(number_of_attempts) 
+  
+  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels so no counts included
+   
+  m = length(x)-1
+  z <- (0:m)+3 # labels
+  d <- dnbinom(0:m, prob=P, size=s)
+  b <- barplot(d , #x/sim, 
+               
+               xlim=c(0,xmax+2),  
+               ylim=c(0,ymax),
+               main = paste0("Number of attempts until we reach ",s," successes when p=",formatz2(P),
+                                    "\n True \u03BC ",formatz2(input$mu) , #" ; Simulated \u03BC (green) ",formatz2(Sm) ,
+                             ""),
+               col="palegreen", 
+               ylab="Probability of success", 
+               xlab="Attempts for success (no simulation)",
+               names.arg= as.character(z))
+  
+  # overlay true neg binomial dist.
+  #m <- length(b)-1
+ 
+#  d <- dnbinom(0:m, prob=P, size=s) # s was 0 and ymax was m
+
+  lines( x = b, y = d , col='red')
+  points(x = b, y = d , col='red')
+ 
+    if(input$perc) {
+      
+        x  <-0:length(b) # % onto top of bars
+        y1 <- d + 0.02
+        z  <- round(d,2) *100
+        z  <- paste0(z,"%")
+        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+  }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  })
 
 ```
 
 Column {data-width=400}
 -------------------------------------
 
-### Chart 3
+### Negative binomial couched in terms of probability of success and number of successesful attempts
 
 ```{r, tab1 plot3, eval=TRUE}
  
-
  renderPlot({
 
   sim <- input$sims
@@ -370,17 +372,16 @@ Column {data-width=400}
   
  # x <- table(factor(number_of_attempts, levels = s: ymax)) # pad out so levels so no counts included
 
-  
   b <- barplot(x/sim, 
                
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
                main = paste0("Number of attempts until we reach ",s," successes when p=",formatz2(P),
-                                    "\n True mean ",formatz2(Tm) ," ; Simulated mean ",formatz2(Sm) ,""),
+                                    "\n True \u03BC ",formatz2(Tm) ," ; Simulated \u03BC (green) ",formatz2(Sm) ,""),
                                     
                col="palegreen", 
                ylab="Probability of success", 
-               xlab="Attempt (true negative binomial dist. red line)")
+               xlab="Attempts for success (true negative binomial distribution red line with true %s above bars)")
   
   # overlay true neg binomial dist.
   m <- length(b)-1
@@ -393,62 +394,56 @@ Column {data-width=400}
   points(x = b, y = d , col='red')
  
     if(input$perc) {
-        x <-0:length(b) # % onto top of bars
+      
+        x  <-0:length(b) # % onto top of bars
         y1 <- d + 0.02
-        z <- round(d,2) *100
-        z <- paste0(z,"%")
+        z  <- round(d,2) *100
+        z  <- paste0(z,"%")
         text(x=b[x+1],y=(y1),labels=z, cex = 1)
   }
-    
-    
+
  })
- 
 
 
 ```
 
-### Chart 4
+###  Negative binomial probability of success and number of successful attempts converted to mu and alpha
+
 
 ```{r, tab1 plot4}
 
     renderPlot({
   
-    # mu = input$mu
-    # alpha_a = input$alpha_a
-    
     z <-  rev_nb(input$P, input$s)
     
     mu = z[1][[1]]
     alpha_a = z[2][[1]]
         
-  
     low =  input$x_range[1]
     xmax=  input$x_range[2]
     ymax = input$y_range[2]
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  xx <- c(seq(0,xmax,1))
+  xx <- c(seq(0,xmax,1)) 
 
   if(alpha_a==0) {
-  yb =    dpois(xx,mu)
+    yb =    dpois(xx,mu)
   }else{
-  yb=     e_dnbinom(xx,mu,alpha_a)
+    yb=     e_dnbinom(xx,mu,alpha_a)
   }
-  
- # par(mar=c(2.1,4.1,4.1,4.1))
-      
-  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="count", col='red',
+
+  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='red',
           ylim=c(0,ymax),
-          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",alpha_a,", based on common mean and red curve \u03B1, variance = ", mu+alpha_a*mu^2* alpha_a,""),
+          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", mu+alpha_a*mu^2* alpha_a,""),
           names.arg= as.character(xx))
   
   if(input$perc) {
-  x <-0:length(b) # % onto top of bars
-  y1 <- yb + 0.02
-  z <- round(yb,2) *100
-  z <- paste0(z,"%")
-  text(x=b[x+1],y=(y1),labels=z, cex = 1)
+    x  <- 0:length(b) # % onto top of bars
+    y1 <- yb + 0.02
+    z  <- round(yb,2) *100
+    z  <- paste0(z,"%")
+    text(x=b[x+1],y=(y1),labels=z, cex = 1)
   }
 })
 
