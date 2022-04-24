@@ -426,4 +426,61 @@ Column {data-width=400}
 })
 
 ```
+
+
+Probability mass functions 2
+===
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**xxxxxxxxxxxx**
+
+```{r tab1x}
+
+
+
+
+```
+
+Column {data-width=400, height=300}
+-----------------------------------------------------------------------
+### a
+
+
+```{r tab1. plot1x, eval=TRUE}
+
+ 
+    
+ 
+```
+
+### b 
+
+```{r, tab1 plot2x, eval=TRUE}
+
+ 
+
+```
+
+Column {data-width=400}
+-------------------------------------
+
+### c
+
+```{r, tab1 plot3x, eval=TRUE}
+ 
+ 
+
+```
+
+###  d
+
+
+```{r, tab1 plot4x}
+
+   
+```
+
  
