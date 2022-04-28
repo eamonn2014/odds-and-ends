@@ -239,7 +239,7 @@ Column {data-width=400, height=300}
 
   b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='lightgreen',
           ylim=c(0,ymax),
-          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", (mu+alpha_a*mu^2* alpha_a),""), # mu+alpha_a*mu^2* alpha_a
+          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", (mu+alpha_a*mu^2),""), # mu+alpha_a*mu^2* alpha_a
           names.arg= as.character(xx))
   
   if(input$perc) {
@@ -413,7 +413,7 @@ Column {data-width=400}
 
   b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='lightgreen',
           ylim=c(0,ymax),
-          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", mu+alpha_a*mu^2* alpha_a,""),
+          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", mu+alpha_a*mu^2,""),
           names.arg= as.character(xx))
   
   if(input$perc) {
@@ -435,30 +435,109 @@ Probability mass functions 2
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**xxxxxxxxxxxx**
+**The negative binomial distribution asks : what is the probability that the rth success will occur on the kth trial, where k varies from r to infinity, given a fixed r, and a fixed probability of success on each trial?**
 
 ```{r tab1x}
 
 
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 
+ 
+  sliderInput('Px', 'Probability of Success (p)', value=.5,
+                min = 0.01, max = 1, step=.01, ticks=F)
+  
+  sliderInput('sx', 'No of successess (r)', value = c(3),
+                min = 1, max = 50 ,step=1, ticks=F)
+
+  sliderInput('x_rangex', 'Plot x-range', value = c(0,10),
+          min = 0, max = 80,step=5,ticks=F)
+  
+  sliderInput('y_rangex', 'Plot y-range', value = c(0,.25),
+          min = 0, max = 1,step=.05,ticks=F)
+
+  checkboxInput('percx','show stats on barplot', value=TRUE)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 
 
 
 ```
 
-Column {data-width=400, height=300}
+Recall that a binomial random variable is a count of the number of successes in n Bernoulli
+trials. That is, the number of trials is predetermined, and the number of successes is random.
+A negative binomial random variable is a count of the number of trials required to obtain r successes. That is, the number of successes is predetermined, and the number of trials is random
+
+Column {data-width=400} 
 -----------------------------------------------------------------------
-### a
+
+### Negative binomial couched in terms of probability of success and number of successesful attempts
 
 
-```{r tab1. plot1x, eval=TRUE}
-
+```{r, tab1 plot3x, eval=TRUE}
  
-    
+ renderPlot({
+
+     par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) # http://rfunction.com/archives/1302
+
+  P <- input$Px   # probability of success
+  if (P==0) P=0.01
+  s <- input$sx   # th success
+
+  
+  mu <- s / P
+  mu2 <- (s*P)/(1-P)
+  #mean(rnbinom(n = 10000, size = s, prob = p)) + s
+  # https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html
+  # Variance of distribution = (Number of success*Probability of Failure)/(Probability of Success^2)
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+  #~~~~~~~~~~~~~~~~~~~~~~~~
+  # Wikipedia: When counting the number of successes given the number r of failures, 
+  # the variance is rp/(1 − p)2. When counting the number of failures before the r-th success, 
+  # the variance is r(1 − p)/p2.
+  v <- s * (1 - P) / P^2
+  v2 <- s * P/ (1 - P)^2
+  
+  #s=3;P=0.2
+  #x <- rnbinom(n = 100000, size = s, prob = P)
+  #mean(x);var(x)
+  
  
-```
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  xmax=  input$x_rangex[2]
+  ymax = input$y_rangex[2]
 
-### b 
+  xx <- c(seq(0,xmax,1)) 
+  d <- dnbinom(0:max(xx), prob=P, size=s) #
+   
+  #Tm <- s*(1-P)/P + s
+  #Tm <-  1/P*s 
 
-```{r, tab1 plot2x, eval=TRUE}
+  b <- barplot(d, 
+               xlim=c(0,xmax+2),  
+               ylim=c(0,ymax),
+               main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P),
+                                    ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,";
+                              The expected number of failures prior to r successes is r(1-p)/p = ",s * (1 - P) / P," with variance r(1-p)/p^2 = ",v,". Average number of successes rp/(1 − p) = ",mu2,".\n Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",v2,"\nxxxxxxxxxxxxxx"),
+                                    
+               col="orchid1", 
+               ylab="Probability of success", 
+               xlab=paste("Attempts for ",s," successes"),
+               names.arg= as.character(xx+s))
+ 
+ 
+    if(input$percx) {
+      
+        x  <-0:length(b) # % onto top of bars
+        y1 <- d + 0.02
+        z  <- round(d,4) *100
+        z  <- paste0(z,"%")
+        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+  }
+par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
+ })
+
 
  
 
@@ -469,18 +548,87 @@ Column {data-width=400}
 
 ### c
 
-```{r, tab1 plot3x, eval=TRUE}
- 
- 
+```{r, tab1 plot4x, eval=TRUE}
 
-```
+renderPlot({
+  
+  par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0)
+  
+    z <-  rev_nb(input$Px, input$sx)
+    
+    mu = z[1][[1]]
+    alpha_a = z[2][[1]]
+        
+    low =  input$x_rangex[1]
+    xmax=  input$x_rangex[2]
+    ymax = input$y_rangex[2]
 
-###  d
+   #  r <- input$sx 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  xx <- c(seq(0,xmax,1)) 
 
-```{r, tab1 plot4x}
+  if(alpha_a==0) {
+    yb =    dpois(xx,mu)
+  }else{
+    yb=     e_dnbinom(xx,mu,alpha_a)
+  }
 
-   
+# check the variance calculation
+  
+  
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# my code from when ttests won't do
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # value <- 0:200
+  # freq <- e_dnbinom(value, alpha=1/3,mu=3)*100
+  # 
+  # mu<-sum(freq*value)/sum(freq)
+  # va<-(sum(freq*(value-mu)^2)/(sum(freq)-1) ) 
+  # 
+  # mu
+  # va
+  # #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # freq <- dnbinom(value, size3,mu=3)*100
+  # 
+  # mu<-sum(freq*value)/sum(freq)
+  # va<-(sum(freq*(value-mu)^2)/(sum(freq)-1) ) 
+  # 
+  # mu
+  # va
+  
+  # lets do a sanity check on mean and variance and report them as qc check in plot
+  value <-   0:1000000   # replaced xx 
+  freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
+  mux   <-  sum(freq*value)/sum(freq)
+  vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed the 0 from 1 !!
+  
+  mux
+  vax
+  
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# end 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  
+  
+  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='lightgreen',
+          ylim=c(0,ymax),
+          main =  paste0("Negative Binomial \u03BC = ",formatz2(mu)," \u03B1 = ",formatz2(alpha_a),", variance = ", formatz2(mu+alpha_a*mu^2)," [qc check mu =  ",formatz2(mux),"; qc check variance = ",formatz2(vax),"]"),
+          names.arg= as.character(xx))
+  
+  if(input$perc) {
+    x  <- 0:length(b) # % onto top of bars
+    y1 <- yb + 0.02
+    z  <- round(yb,4) *100
+    z  <- paste0(z,"%")
+    text(x=b[x+1],y=(y1),labels=z, cex = 1)
+    
+    par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
+  }
+})
+
 ```
 
  
