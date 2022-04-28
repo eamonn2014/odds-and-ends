@@ -519,7 +519,7 @@ Column {data-width=400}
                ylim=c(0,ymax),
                main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P),
                                     ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,";
-                              The expected number of failures prior to r successes is r(1-p)/p = ",s * (1 - P) / P," with variance r(1-p)/p^2 = ",v,". Average number of successes rp/(1 − p) = ",mu2,".\n Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",v2,"\nxxxxxxxxxxxxxx"),
+                              The expected number of failures prior to r successes is r(1-p)/p = ",formatz2(s * (1 - P) / P)," with variance r(1-p)/p^2 = ",formatz2(v),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\nxxxxxxxxxxxxxx"),
                                     
                col="orchid1", 
                ylab="Probability of success", 
