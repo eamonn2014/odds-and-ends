@@ -484,7 +484,7 @@ Column {data-width=400}
   s <- input$sx   # th success
 
   
-  mu <- s / P
+  mu  <- s / P
   mu2 <- (s*P)/(1-P)
   #mean(rnbinom(n = 10000, size = s, prob = p)) + s
   # https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html
@@ -495,9 +495,9 @@ Column {data-width=400}
   # Wikipedia: When counting the number of successes given the number r of failures, 
   # the variance is rp/(1 − p)2. When counting the number of failures before the r-th success, 
   # the variance is r(1 − p)/p2.
-  v <- s * (1 - P) / P^2
+  v  <- s * (1 - P) / P^2
   v2 <- s * P/ (1 - P)^2
-  
+  ef <- s * (1 - P) / P
   #s=3;P=0.2
   #x <- rnbinom(n = 100000, size = s, prob = P)
   #mean(x);var(x)
@@ -519,7 +519,7 @@ Column {data-width=400}
                ylim=c(0,ymax),
                main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P),
                                     ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,";
-                              The expected number of failures prior to r successes is r(1-p)/p = ",formatz2(s * (1 - P) / P)," with variance r(1-p)/p^2 = ",formatz2(v),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\nxxxxxxxxxxxxxx"),
+                              The expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef)," with variance r(1-p)/p^2 = ",formatz2(v),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
                                     
                col="orchid1", 
                ylab="Probability of success", 
@@ -629,6 +629,49 @@ renderPlot({
   }
 })
 
+# qc ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+r <- 3
+p <- 0.8
+
+my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
+  mean(my_dat)  # end of line 1 in top plot title
+  r / p
+
+my_dat <- rnbinom(n = 10000, size = r, prob = p)
+  mean(my_dat) # start of line 2 in top plot title
+  r*(1-p)/p
+  var(my_dat)  # end of line 2
+  r * (1 - p) / p^2
+
+A <- rnbinom(n = 10000, size = r, prob = 1-p)
+  mean(A)   # start of line 3 in top plot title
+  var(A)    # end of line 3 in top plot title
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#  barplot(table(my_dat))
+
+
+
+
+
+
+
 ```
 
+<!-- https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html -->
+<!-- https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay -->
+<!-- https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057 -->
+<!-- https://www.anesi.com/negativebinomial.htm?p=0.5&r=3 -->
+<!-- https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html -->
+
+<!-- http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R # not so good -->
+<!-- https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053 -->
+
+<!-- https://www.tutorialspoint.com/statistics/negative_binomial_distribution.htm -->
+<!-- https://www.trignosource.com/statistics/negative%20binomial%20distribution.html -->
+
+<!-- http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf -->
+<!-- https://www.johndcook.com/negative_binomial.pdf -->
+
+<!-- https://rpubs.com/mpfoley73/458738  # rcode here of course -->
  
