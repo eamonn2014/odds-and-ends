@@ -630,9 +630,8 @@ renderPlot({
 })
 
 # qc ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-r <- 3
-p <- 0.8
-
+r <- 15
+p <- 0.06
 my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
   mean(my_dat)  # end of line 1 in top plot title
   r / p
