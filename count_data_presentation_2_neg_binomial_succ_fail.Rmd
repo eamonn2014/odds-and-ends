@@ -654,10 +654,12 @@ A <- rnbinom(n = 10000, size = r, prob = 1-p)
 
 
 Wiki {data-icon="fa-cog"}
-===
+====================================
 
------------------------------------------------------------------------
+Row {data-height=600}
+------------------------------------
 
+### References
 
 [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
 
@@ -682,6 +684,16 @@ Wiki {data-icon="fa-cog"}
 [useful Rpub](https://rpubs.com/mpfoley73/458738)
 
 [Useful Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+
+
+```{r}
+
+```
+
+Row {data-height=800}
+-------------------------------------
+
+### qc 
 
 
 ```{r qc, include=TRUE, echo=TRUE}
