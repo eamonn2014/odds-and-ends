@@ -618,7 +618,7 @@ renderPlot({
           main =  paste0("Negative Binomial \u03BC = ",formatz2(mu)," \u03B1 = ",formatz2(alpha_a),", variance = ", formatz2(mu+alpha_a*mu^2)," [qc check mu =  ",formatz2(mux),"; qc check variance = ",formatz2(vax),"]"),
           names.arg= as.character(xx))
   
-  if(input$perc) {
+  if(input$percx) {
     x  <- 0:length(b) # % onto top of bars
     y1 <- yb + 0.02
     z  <- round(yb,4) *100
@@ -690,7 +690,7 @@ Row {data-height=600}
 
 ```
 
-Row {data-height=800}
+Row {data-height=1400}
 -------------------------------------
 
 ### qc 
@@ -721,3 +721,85 @@ var(A)    # end of line 3
 
 ```
 
+
+QC {data-icon="fa-rocket"}
+====================================
+
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**The negative binomial distribution asks : what is the probability that the rth success will occur on the kth trial, where k varies from r to infinity, given a fixed r, and a fixed probability of success on each trial?**
+
+```{r side3}
+
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 
+ 
+  sliderInput('Px1', 'Probability of Success (p)', value=.5,
+                min = 0.01, max = 1, step=.01, ticks=F)
+  
+  sliderInput('sx1', 'No of successess (r)', value = c(3),
+                min = 1, max = 50 ,step=1, ticks=F)
+
+  sliderInput('x_rangex1', 'Plot x-range', value = c(0,10),
+          min = 0, max = 80,step=5,ticks=F)
+  
+  sliderInput('y_rangex1', 'Plot y-range', value = c(0,.25),
+          min = 0, max = 1,step=.05,ticks=F)
+
+  checkboxInput('percx1','show stats on barplot', value=TRUE)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 
+
+
+```
+
+Recall that a binomial random variable is a count of the number of successes in n Bernoulli
+trials. That is, the number of trials is predetermined, and the number of successes is random.
+A negative binomial random variable is a count of the number of trials required to obtain r successes. That is, the number of successes is predetermined, and the number of trials is random
+
+Row {data-height=600}
+------------------------------------
+
+### xxxxx
+
+
+
+```{r}
+
+```
+
+Row {data-height=1400}
+-------------------------------------
+
+### qc 
+
+
+```{r qc1, include=TRUE, echo=TRUE}
+
+r <- 3
+p <- 0.8
+
+my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
+mean(my_dat) # end of line 1
+r / p
+
+my_dat <- rnbinom(n = 10000, size = r, prob = p)
+mean(my_dat) # start of line 2
+r*(1-p)/p
+
+# end of line 2
+var(my_dat) 
+r * (1 - p) / p^2
+
+A <- rnbinom(n = 10000, size = r, prob = 1-p)
+mean(A)   # start of line 3
+var(A)    # end of line 3
+
+
+
+```
