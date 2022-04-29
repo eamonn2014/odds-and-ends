@@ -9,7 +9,7 @@ output:
     source_code: embed
 runtime: shiny
 ---
-Probability mass functions
+Probability mass functions {data-icon="fa-home"}
 ===
 
 ```{r global, include=FALSE}
@@ -428,7 +428,7 @@ Column {data-width=400}
 ```
 
 
-Probability mass functions 2
+Probability mass functions 2 {data-icon="fa-rocket"}
 ===
 
 
@@ -648,29 +648,64 @@ A <- rnbinom(n = 10000, size = r, prob = 1-p)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #  barplot(table(my_dat))
+  
+
+```
 
 
+Wiki {data-icon="fa-cog"}
+===
+
+-----------------------------------------------------------------------
 
 
+[wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
+
+[Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
+
+[Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
+
+[Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+
+[Calcualtor2](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
+
+[Calculator3](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
+
+[Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html)
+
+[Tutorial2](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
+
+[Lecture](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
+
+[John Cook](https://www.johndcook.com/negative_binomial.pdf)
+
+[useful Rpub](https://rpubs.com/mpfoley73/458738)
+
+[Useful Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+
+
+```{r qc, include=TRUE, echo=TRUE}
+
+r <- 3
+p <- 0.8
+
+my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
+mean(my_dat) # end of line 1
+r / p
+
+my_dat <- rnbinom(n = 10000, size = r, prob = p)
+mean(my_dat) # start of line 2
+r*(1-p)/p
+
+# end of line 2
+var(my_dat) 
+r * (1 - p) / p^2
+
+A <- rnbinom(n = 10000, size = r, prob = 1-p)
+mean(A)   # start of line 3
+var(A)    # end of line 3
 
 
 
 ```
 
-<!-- https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html -->
-<!-- https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay -->
-<!-- https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057 -->
-<!-- https://www.anesi.com/negativebinomial.htm?p=0.5&r=3 -->
-<!-- https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html -->
-
-<!-- http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R # not so good -->
-<!-- https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053 -->
-
-<!-- https://www.tutorialspoint.com/statistics/negative_binomial_distribution.htm -->
-<!-- https://www.trignosource.com/statistics/negative%20binomial%20distribution.html -->
-
-<!-- http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf -->
-<!-- https://www.johndcook.com/negative_binomial.pdf -->
-
-<!-- https://rpubs.com/mpfoley73/458738  # rcode here of course -->
- 
