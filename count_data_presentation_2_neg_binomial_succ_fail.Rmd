@@ -630,21 +630,21 @@ renderPlot({
 })
 
 # qc ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-r <- 15
-p <- 0.06
-my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
-  mean(my_dat)  # end of line 1 in top plot title
-  r / p
-
-my_dat <- rnbinom(n = 10000, size = r, prob = p)
-  mean(my_dat) # start of line 2 in top plot title
-  r*(1-p)/p
-  var(my_dat)  # end of line 2
-  r * (1 - p) / p^2
-
-A <- rnbinom(n = 10000, size = r, prob = 1-p)
-  mean(A)   # start of line 3 in top plot title
-  var(A)    # end of line 3 in top plot title
+# r <- 15
+# p <- 0.06
+# my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
+#   mean(my_dat)  # end of line 1 in top plot title
+#   r / p
+# 
+# my_dat <- rnbinom(n = 10000, size = r, prob = p)
+#   mean(my_dat) # start of line 2 in top plot title
+#   r*(1-p)/p
+#   var(my_dat)  # end of line 2
+#   r * (1 - p) / p^2
+# 
+# A <- rnbinom(n = 10000, size = r, prob = 1-p)
+#   mean(A)   # start of line 3 in top plot title
+#   var(A)    # end of line 3 in top plot title
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #  barplot(table(my_dat))
@@ -698,24 +698,9 @@ Row {data-height=1400}
 
 ```{r qc, include=TRUE, echo=TRUE}
 
-r <- 3
-p <- 0.8
 
-my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
-mean(my_dat) # end of line 1
-r / p
+ 
 
-my_dat <- rnbinom(n = 10000, size = r, prob = p)
-mean(my_dat) # start of line 2
-r*(1-p)/p
-
-# end of line 2
-var(my_dat) 
-r * (1 - p) / p^2
-
-A <- rnbinom(n = 10000, size = r, prob = 1-p)
-mean(A)   # start of line 3
-var(A)    # end of line 3
 
 
 
@@ -762,44 +747,196 @@ Recall that a binomial random variable is a count of the number of successes in 
 trials. That is, the number of trials is predetermined, and the number of successes is random.
 A negative binomial random variable is a count of the number of trials required to obtain r successes. That is, the number of successes is predetermined, and the number of trials is random
 
-Row {data-height=600}
+Column {data-width=400 data-height=1200}
 ------------------------------------
 
 ### xxxxx
 
 
-
 ```{r}
 
-```
+ 
 
-Row {data-height=1400}
--------------------------------------
+renderPlot({
+
+  par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) # http://rfunction.com/archives/1302
+
+  P <- input$Px1   # probability of success
+  if (P==0) P=0.01
+  s <- input$sx1   # th success
+
+  # see references
+  mu  <- s / P
+  mu2 <- (s*P)/(1-P)
+  v  <- s * (1 - P) / P^2
+  v2 <- s * P/ (1 - P)^2
+  ef <- s * (1 - P) / P
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  xmax=  input$x_rangex1[2]
+  ymax = input$y_rangex1[2]
+
+  xx <- c(seq(0,xmax,1)) 
+  d <- dnbinom(0:max(xx), prob=P, size=s) #
+   
+  b <- barplot(d, 
+               xlim=c(0,xmax+2),  
+               ylim=c(0,ymax),
+               main = paste0("\nProbability of ",s," successes on kth trial when probability of success is ",formatz2(P),
+                                    ". \nAverage number of trials \u03BC (r/p) = ",formatz2(mu) ,";
+                              \nThe expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef)," \nwith variance r(1-p)/p^2 = ",formatz2(v),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". \nCounting the number of successes given the number r of failures, \nthe variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
+                                    
+               col="orchid1", 
+               ylab="Probability of success", 
+               xlab=paste("Attempts for ",s," successes"),
+               names.arg= as.character(xx+s))
+ 
+ 
+    if(input$percx1) {
+      
+        x  <-0:length(b) # % onto top of bars
+        y1 <- d + 0.02
+        z  <- round(d,4) *100
+        z  <- paste0(z,"%")
+        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+  }
+par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
+ })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
 
 ### qc 
 
 
-```{r qc1, include=TRUE, echo=TRUE}
+```{r qc1, include=TRUE, echo=TRUE, eval=TRUE}
 
-r <- 3
-p <- 0.8
+xx <- reactive({
+  
+      r <- input$sx1 
+      p <- input$Px1 
+      
+      my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
+      mu1 <- mean(my_dat) # end of line 1
+      mu2 <- r / p
+      
+      my_dat <- rnbinom(n = 10000, size = r, prob = p)
+      mu3 <- mean(my_dat) # start of line 2
+      mu4 <- r*(1-p)/p
+      
+      # end of line 2
+      v1 <- var(my_dat) 
+      v2 <- r * (1 - p) / p^2
+      
+      A <- rnbinom(n = 10000, size = r, prob = 1-p)
+      mu5 <- mean(A)   # start of line 3
+      v3 <- var(A)    # end of line 3
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
+     # value <-   0:1000000   # replaced xx 
+     # freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
+     # mux   <-  sum(freq*value)/sum(freq)
+     # vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed the 0 from 1 !!
+  
+      # mux
+      # vax
+      
+      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
-mean(my_dat) # end of line 1
-r / p
-
-my_dat <- rnbinom(n = 10000, size = r, prob = p)
-mean(my_dat) # start of line 2
-r*(1-p)/p
-
-# end of line 2
-var(my_dat) 
-r * (1 - p) / p^2
-
-A <- rnbinom(n = 10000, size = r, prob = 1-p)
-mean(A)   # start of line 3
-var(A)    # end of line 3
-
+ return(list( mu1=mu1, mu2=mu2, mu3=mu3, mu4=mu4, mu5=mu5, v1=v1,v2=v2, v3=v3))
+   
+})
 
 
 ```
+
+
+```{r}
+
+renderPrint({
+  
+    f <-  xx()$mu1
+     
+    print(f)
+    
+    
+    f2 <-  xx()$mu2
+     
+    print(f2)
+    
+    f3 <-  xx()$mu3
+     
+    print(f3)
+    
+    
+    f4 <-  xx()$mu4
+     
+    print(f4)
+    
+        
+    f5 <-  xx()$mu5
+     
+    print(f5)
+    
+      f6 <-  xx()$v1
+     
+    print(f6)
+    
+    
+       f7 <-  xx()$v2
+     
+    print(f7)
+    
+       f8 <-  xx()$v3
+     
+    print(f8)
+    
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
