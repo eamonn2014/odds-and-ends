@@ -598,6 +598,9 @@ renderPlot({
   # mu
   # va
   
+  
+  e_nb(mu=3, alpha=.5)
+  
   # lets do a sanity check on mean and variance and report them as qc check in plot
   value <-   0:1000000   # replaced xx 
   freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
@@ -740,22 +743,23 @@ Column {.sidebar}
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
  
 
-
 ```
 
 Recall that a binomial random variable is a count of the number of successes in n Bernoulli
 trials. That is, the number of trials is predetermined, and the number of successes is random.
 A negative binomial random variable is a count of the number of trials required to obtain r successes. That is, the number of successes is predetermined, and the number of trials is random
 
-Column {data-width=400 data-height=1200}
-------------------------------------
 
-### xxxxx
+Column {.tabset .tabset-fade }
+-----------------------------------
+
+### Bar plot   
 
 
 ```{r}
 
- 
+ # Column {data-width=400 data-height=1200}
+ #
 
 renderPlot({
 
@@ -783,9 +787,9 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("\nProbability of ",s," successes on kth trial when probability of success is ",formatz2(P),
-                                    ". \nAverage number of trials \u03BC (r/p) = ",formatz2(mu) ,";
-                              \nThe expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef)," \nwith variance r(1-p)/p^2 = ",formatz2(v),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". \nCounting the number of successes given the number r of failures, \nthe variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
+               main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P),
+                                    ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,"  with variance r(1-p)/p^2 =",formatz2(v),"
+                              The expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
                                     
                col="orchid1", 
                ylab="Probability of success", 
@@ -803,69 +807,64 @@ renderPlot({
   }
 par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
  })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 ```
 
-### qc 
+ 
+Row
+---------------------------------------------------
+
+### qc show calculations using simulation and empirical {data-height=1200}
 
 
 ```{r qc1, include=TRUE, echo=TRUE, eval=TRUE}
-
-xx <- reactive({
   
-      r <- input$sx1 
-      p <- input$Px1 
-      
-      my_dat <- rnbinom(n = 10000, size = r, prob = p) + r
-      mu1 <- mean(my_dat) # end of line 1
-      mu2 <- r / p
-      
-      my_dat <- rnbinom(n = 10000, size = r, prob = p)
-      mu3 <- mean(my_dat) # start of line 2
-      mu4 <- r*(1-p)/p
-      
-      # end of line 2
-      v1 <- var(my_dat) 
-      v2 <- r * (1 - p) / p^2
-      
-      A <- rnbinom(n = 10000, size = r, prob = 1-p)
-      mu5 <- mean(A)   # start of line 3
-      v3 <- var(A)    # end of line 3
-      
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
-     # value <-   0:1000000   # replaced xx 
-     # freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
-     # mux   <-  sum(freq*value)/sum(freq)
-     # vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed the 0 from 1 !!
-  
-      # mux
-      # vax
-      
-      #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  xx <- reactive({
+    
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        r <- input$sx1 
+        p <- input$Px1 
+        sims <- 1e4
+        
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        my_dat1 <- rnbinom(n = sims, size = r, prob = p) + r
+        my_dat2 <- rnbinom(n = sims, size = r, prob = p)
+        mu1s <- mean(my_dat1) 
+        mu1e <- r / p
+        
+        v1e  <- r*(1-p)/p^2  
+        v1s <- var(my_dat2)   
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- return(list( mu1=mu1, mu2=mu2, mu3=mu3, mu4=mu4, mu5=mu5, v1=v1,v2=v2, v3=v3))
-   
-})
+        mu2s <- mean(my_dat2)   
+        mu2e <- r*(1-p)/p     
+        
+        v2e  <- var(my_dat1)         ## 
+        #v2s  <- r * (1 - p) / p^2 # same formula as V2s
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        my_dat3 <- rnbinom(n = sims, size = r, prob = 1-p)
+        p1 <- 1-p
+        
+        mu3s <- mean(my_dat3)   # left last row
+        mu3e <- r*(1-p1)/p1
+        
+        v3e  <- r*p/(1-p)^2  
+        v3s  <- var(my_dat3)      
+        
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+   return(list( mu1s=mu1s, mu1e=mu1e,
+                mu2e=mu2e, mu2s=mu2s, 
+                mu3e=mu3e, mu3s=mu3s, 
+                v1e=v1e, v1s=v1s, 
+                v2e=v2e, #v2s=v2s,
+                v3e=v3e, v3s=v3s))
+        
+        
+        # e_nb(mu=3, alpha=.5)
+        # rev_nb(prob=.4,size=2)
+ 
+  })
 
 
 ```
@@ -873,58 +872,189 @@ xx <- reactive({
 
 ```{r}
 
-renderPrint({
-  
-    f <-  xx()$mu1
-     
-    print(f)
+  renderPrint({
     
-    
-    f2 <-  xx()$mu2
-     
-    print(f2)
-    
-    f3 <-  xx()$mu3
-     
-    print(f3)
-    
-    
-    f4 <-  xx()$mu4
-     
-    print(f4)
-    
+      # 1st row in title
+      f <-  xx()$mu1s
+      cat("1 The simulated average number of trials\n")
+      print(f)
+      f2 <-  xx()$mu1e
+      cat("2 The empirical Average number of trials (r/p)\n")
+      print(f2)
+      
+      f6 <-  xx()$v1s
+      cat("3 The simulated variance of the expected number of failures prior to r successes\n")
+      print(f6)
+      f7 <-  xx()$v1e
+      cat("4 The empirical variance of the expected number of failures prior to r successes r(1 - p) / p^2\n")
+      print(f7)
+      
+      ###2nd row in title
+      f3 <-  xx()$mu2s
+      cat("5 The simulated expected number of failures prior to r successes \n")
+      print(f3)
+      f4 <-  xx()$mu2e
+      cat("6 The empirical expected number of failures prior to r successes r(1-p)/p \n")
+      print(f4)
+      f5 <-  xx()$v2e
+      cat("7 The simulated variance of expected number of failures prior to r successes  \n")
+      print(f5)
+      
+      # reversing the initial probability..is this useful?
+      f8 <-  xx()$mu3e
+      cat("8 Empirical average number of successes rp/(1-p)\n")
+      print(f8)
+      f9 <-  xx()$mu3s
+      cat("9 Simulated average number of successes\n")
+      print(f9)
+      
+      f10 <-  xx()$v3e
+      cat("10 Empirical variance counting the number r failures rp/(1-p)^2\n")
+      print(f10)
+      f11 <-  xx()$v3s
+      cat("11 Simulated variance counting the number r failures\n")
+      print(f11)
+      
+  })
+
+
+```
+ 
+
+### qc2 show calculations { data-height=1200}
+
+
+```{r qc2, include=TRUE, echo=TRUE, eval=TRUE}
+
+
+    qc2 <- reactive({
+      
+        z <-  rev_nb(input$Px1, input$sx1)
         
-    f5 <-  xx()$mu5
-     
-    print(f5)
+        mu = z[1][[1]]
+        alpha_a = z[2][[1]]
+        
+         value <-   0:1000000   # replaced xx 
+         freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
+         mux   <-  sum(freq*value)/sum(freq)
+         vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed to 0 from 1 !
+       
+         return(list( mu=mux, v=vax))
+       
+    })
     
-      f6 <-  xx()$v1
-     
-    print(f6)
+    
+    renderPrint({
+      
+        f <-  qc2()$mu
+        cat("mu\n") 
+        print(f)
+
+        f2 <-  qc2()$v
+        cat("Variance\n") 
+        print(f2)
+        
+        
+        
+    })
+    
+```
+
+
+```{r qc3}
+ 
+  HTML("  With regard to negative binomial regression the variance can be written as ")
+                                       
+  withMathJax(
+                                           helpText('
+                             $${{ }{{{m} + \\frac{m^2}{k}}}}\\!$$'))      
+  
+  HTML(" Sometimes this relationship is used")
+                                       
+  withMathJax(
+                                           helpText('
+                             $${{ }{{{\\alpha} = \\frac{1}{k}}}}\\!$$'))      
+  
+  
+  HTML(" And then the variance is expressed as")
+                                       
+  withMathJax(
+                                           helpText('
+                             $${{ }{{{m}  + {(\\alpha)}{ (m^2)}}}}\\!$$'))  
+   
+  br()
+  br()
+  HTML(" In short, either the parameter k or its reciprocal alpha is referred to as the 'dispersion parameter' or 'shape parameter' or 'clustering coefficient' or 'heterogeneity' or 'heterogeneity (ancillary) parameter' or 'aggregation' parameter.  ")
+  br()
+  br()
+  HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha. R code below showing syntax.")
+
+  
+  HTML("Taken from John D Cooke, see references, consider µ and σ primary and r and p derived:")
+  
+  
+ withMathJax(
+                                           helpText('
+                             $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
+   
+  br()
+  br()
+  
+   HTML("Viewing µ and σ as primary, we ignore the combinatorial motivation for
+defining the negative binomial and instead view it simply as a model for count data.")
+  
+
+  
+  
+ withMathJax(
+                                           helpText('
+                             $${p = \\frac {r}{r+\\mu} }\\!$$'))
+  
+   withMathJax(
+                                           helpText('
+                             $${\\sigma^2 = \\mu + \\frac {1}{r}{\\mu^2} }\\!$$'))
+
+  
+  
+  
+```
     
     
-       f7 <-  xx()$v2
-     
-    print(f7)
     
-       f8 <-  xx()$v3
-     
-    print(f8)
     
-})
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
-
-
-
-
-
-
-
-
-
-
-
-
+```
 
 
 
