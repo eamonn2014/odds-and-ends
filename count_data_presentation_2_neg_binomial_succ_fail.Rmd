@@ -879,7 +879,7 @@ Row
       cat("1 The simulated average number of trials\n")
       print(f)
       f2 <-  xx()$mu1e
-      cat("2 The empirical Average number of trials (r/p)\n")
+      cat("2 The empirical average number of trials (r/p)\n")
       print(f2)
       
       f6 <-  xx()$v1s
@@ -929,31 +929,43 @@ Row
 
     qc2 <- reactive({
       
-        z <-  rev_nb(input$Px1, input$sx1)
+          z <-  rev_nb(input$Px1, input$sx1)  # my function
+          
+          mu = z[1][[1]]
+          alpha_a = z[2][[1]]
         
-        mu = z[1][[1]]
-        alpha_a = z[2][[1]]
-        
-         value <-   0:1000000   # replaced xx 
+         value <-   0:1000000        # these lines taken from when my ttests won't do code 
          freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
          mux   <-  sum(freq*value)/sum(freq)
          vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed to 0 from 1 !
        
-         return(list( mu=mux, v=vax))
+         return(list( mu=mux, v=vax , #sim
+                      
+                    mu1=mu, a=alpha_a  )) # from function
        
     })
     
+```
+
+```{r qc2a }
     
     renderPrint({
       
         f <-  qc2()$mu
-        cat("mu\n") 
+        cat("mu calculated from density function\n") 
         print(f)
 
         f2 <-  qc2()$v
-        cat("Variance\n") 
+        cat("Variance calculated from density function\n") 
         print(f2)
         
+        f3 <-  qc2()$mu1
+        cat("mu from user function\n") 
+        print(f3)
+
+        f4 <-  qc2()$a
+        cat("alpha from user function\n") 
+        print(f4)
         
         
     })
@@ -967,7 +979,7 @@ Row
                                        
   withMathJax(
                                            helpText('
-                             $${{ }{{{m} + \\frac{m^2}{k}}}}\\!$$'))      
+                             $${{\\sigma^2 = }{{{\\mu} + \\frac{\\mu^2}{k}}}}\\!$$'))      
   
   HTML(" Sometimes this relationship is used")
                                        
@@ -980,27 +992,25 @@ Row
                                        
   withMathJax(
                                            helpText('
-                             $${{ }{{{m}  + {(\\alpha)}{ (m^2)}}}}\\!$$'))  
+                             $${{\\sigma^2 =}{{{\\mu}  + {(\\alpha)}{ (\\mu^2)}}}}\\!$$'))  
    
   br()
-  br()
+
   HTML(" In short, either the parameter k or its reciprocal alpha is referred to as the 'dispersion parameter' or 'shape parameter' or 'clustering coefficient' or 'heterogeneity' or 'heterogeneity (ancillary) parameter' or 'aggregation' parameter.  ")
-  br()
-  br()
+
   HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha. R code below showing syntax.")
 
   
-  HTML("Taken from John D Cooke, see references, consider µ and σ primary and r and p derived:")
-  
-  
+  HTML("\nConsider µ and sigma primary and r and p derived:")
+   br()
+ 
  withMathJax(
                                            helpText('
                              $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
-   
-  br()
+    
   br()
   
-   HTML("Viewing µ and σ as primary, we ignore the combinatorial motivation for
+   HTML("Viewing µ and sigma as primary, we ignore the combinatorial motivation for
 defining the negative binomial and instead view it simply as a model for count data.")
   
 
@@ -1009,6 +1019,9 @@ defining the negative binomial and instead view it simply as a model for count d
  withMathJax(
                                            helpText('
                              $${p = \\frac {r}{r+\\mu} }\\!$$'))
+ 
+   br()
+  br()
   
    withMathJax(
                                            helpText('
