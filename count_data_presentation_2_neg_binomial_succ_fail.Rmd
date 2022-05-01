@@ -956,12 +956,9 @@ Row
     
   br()
   
-   HTML("Viewing µ and sigma as primary, we ignore the combinatorial motivation for
+   HTML("We ignore the combinatorial motivation for
 defining the negative binomial and instead view it simply as a model for count data.")
-  
 
-  
-  
  withMathJax(
                                            helpText('
                              $${p = \\frac {r}{r+\\mu} }\\!$$'))
@@ -997,41 +994,6 @@ defining the negative binomial and instead view it simply as a model for count d
 
   HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha.")
 
- 
-  
-  
-  
+
 ```
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
   
-
-
-
-
-
-
-
