@@ -58,8 +58,6 @@ Probability mass functions {data-icon="fa-home"}
     sprintf(x, fmt = '%#.4f')  
   }
   
-  
-  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # function for nice upper limits to count bar plots, stack exchange
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -220,12 +218,12 @@ Column {data-width=400, height=300}
  
         renderPlot({
   
-      mu = input$mu
-      alpha_a = input$alpha_a
-          
-      low =  input$x_range[1]
-      xmax=  input$x_range[2]
-      ymax = input$y_range[2]
+          mu = input$mu
+          alpha_a = input$alpha_a
+              
+          low =  input$x_range[1]
+          xmax=  input$x_range[2]
+          ymax = input$y_range[2]
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -347,7 +345,6 @@ Column {data-width=400}
   
  
   x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels so no counts included
-  
  # x <- table(factor(number_of_attempts, levels = s: ymax)) # pad out so levels so no counts included
 
   b <- barplot(x/sim, 
@@ -381,7 +378,6 @@ Column {data-width=400}
   }
 
  })
-
 
 ```
 
@@ -439,9 +435,7 @@ Column {.sidebar}
 
 ```{r tab1x}
 
-
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
- 
  
   sliderInput('Px', 'Probability of Success (p)', value=.5,
                 min = 0.01, max = 1, step=.01, ticks=F)
@@ -458,7 +452,6 @@ Column {.sidebar}
   checkboxInput('percx','show stats on barplot', value=TRUE)
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
- 
 
 
 ```
@@ -510,9 +503,6 @@ Column {data-width=400}
 
   xx <- c(seq(0,xmax,1)) 
   d <- dnbinom(0:max(xx), prob=P, size=s) #
-   
-  #Tm <- s*(1-P)/P + s
-  #Tm <-  1/P*s 
 
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
@@ -576,8 +566,6 @@ renderPlot({
 
 # check the variance calculation
   
-  
-  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # my code from when ttests won't do
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -604,11 +592,8 @@ renderPlot({
   # lets do a sanity check on mean and variance and report them as qc check in plot
   value <-   0:1000000   # replaced xx 
   freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
-  mux   <-  sum(freq*value)/sum(freq)
-  vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed the 0 from 1 !!
-  
-  mux
-  vax
+  (mux   <-  sum(freq*value)/sum(freq))
+  (vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) )# I changed the 0 from 1 !!
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # end 
@@ -662,7 +647,7 @@ Wiki {data-icon="fa-cog"}
 Row {data-height=600}
 ------------------------------------
 
-### References
+### References:
 
 [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
 
@@ -702,10 +687,6 @@ Row {data-height=1400}
 ```{r qc, include=TRUE, echo=TRUE}
 
 
- 
-
-
-
 
 ```
 
@@ -722,10 +703,8 @@ Column {.sidebar}
 
 ```{r side3}
 
-
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
- 
- 
+
   sliderInput('Px1', 'Probability of Success (p)', value=.5,
                 min = 0.01, max = 1, step=.01, ticks=F)
   
@@ -757,9 +736,6 @@ Column {.tabset .tabset-fade }
 
 
 ```{r}
-
- # Column {data-width=400 data-height=1200}
- #
 
 renderPlot({
 
@@ -840,7 +816,7 @@ Row
         mu2e <- r*(1-p)/p     
         
         v2e  <- var(my_dat1)         ## 
-        #v2s  <- r * (1 - p) / p^2 # same formula as V2s
+        #v2s  <- r * (1 - p) / p^2 # same formula as V1e
         #~~~~~~~~~~~~~~~~~~~~~~~~~~~
         my_dat3 <- rnbinom(n = sims, size = r, prob = 1-p)
         p1 <- 1-p
@@ -860,9 +836,6 @@ Row
                 v2e=v2e, #v2s=v2s,
                 v3e=v3e, v3s=v3s))
         
-        
-        # e_nb(mu=3, alpha=.5)
-        # rev_nb(prob=.4,size=2)
  
   })
 
@@ -929,19 +902,18 @@ Row
 
     qc2 <- reactive({
       
-          z <-  rev_nb(input$Px1, input$sx1)  # my function
-          
-          mu = z[1][[1]]
-          alpha_a = z[2][[1]]
-        
-         value <-   0:1000000        # these lines taken from when my ttests won't do code 
+         z <-  rev_nb(input$Px1, input$sx1)  # my function
+         mu = z[1][[1]]
+         alpha_a = z[2][[1]]
+         
+         # code from when my ttests won't do code 
+         value <-  0:1000000     
          freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
          mux   <-  sum(freq*value)/sum(freq)
-         vax   <- (sum(freq*(value-mu)^2)/(sum(freq)-0) ) # I changed to 0 from 1 !
+         vax   <-  sum(freq*(value-mu)^2)/(sum(freq)-0) # I changed to 0 from 1
        
-         return(list( mu=mux, v=vax , #sim
-                      
-                    mu1=mu, a=alpha_a  )) # from function
+         return(list( mu=mux, v=vax ,  # simulation result
+               mu1=mu, a=alpha_a  ))   # function result
        
     })
     
@@ -960,11 +932,11 @@ Row
         print(f2)
         
         f3 <-  qc2()$mu1
-        cat("mu from user function\n") 
+        cat("mu from rev_nb function\n") 
         print(f3)
 
         f4 <-  qc2()$a
-        cat("alpha from user function\n") 
+        cat("alpha from rev_nb function\n") 
         print(f4)
         
         
@@ -974,8 +946,33 @@ Row
 
 
 ```{r qc3}
+  
+  HTML("\nConsider µ and sigma primary and r and p derived:")
+   br()
  
-  HTML("  With regard to negative binomial regression the variance can be written as ")
+ withMathJax(
+                                           helpText('
+                             $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
+    
+  br()
+  
+   HTML("Viewing µ and sigma as primary, we ignore the combinatorial motivation for
+defining the negative binomial and instead view it simply as a model for count data.")
+  
+
+  
+  
+ withMathJax(
+                                           helpText('
+                             $${p = \\frac {r}{r+\\mu} }\\!$$'))
+ 
+   br()
+
+   withMathJax(
+                                           helpText('
+                             $${\\sigma^2 = \\mu + \\frac {1}{r}{\\mu^2} }\\!$$'))
+
+  HTML("  With regard to negative binomial regression the variance can be written as (k is equal to r)")
                                        
   withMathJax(
                                            helpText('
@@ -998,35 +995,9 @@ Row
 
   HTML(" In short, either the parameter k or its reciprocal alpha is referred to as the 'dispersion parameter' or 'shape parameter' or 'clustering coefficient' or 'heterogeneity' or 'heterogeneity (ancillary) parameter' or 'aggregation' parameter.  ")
 
-  HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha. R code below showing syntax.")
+  HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha.")
 
-  
-  HTML("\nConsider µ and sigma primary and r and p derived:")
-   br()
  
- withMathJax(
-                                           helpText('
-                             $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
-    
-  br()
-  
-   HTML("Viewing µ and sigma as primary, we ignore the combinatorial motivation for
-defining the negative binomial and instead view it simply as a model for count data.")
-  
-
-  
-  
- withMathJax(
-                                           helpText('
-                             $${p = \\frac {r}{r+\\mu} }\\!$$'))
- 
-   br()
-  br()
-  
-   withMathJax(
-                                           helpText('
-                             $${\\sigma^2 = \\mu + \\frac {1}{r}{\\mu^2} }\\!$$'))
-
   
   
   
@@ -1056,26 +1027,7 @@ defining the negative binomial and instead view it simply as a model for count d
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-```
-
-
-
-
-
-
-
-
+  
 
 
 
