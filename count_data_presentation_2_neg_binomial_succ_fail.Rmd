@@ -173,14 +173,14 @@ Column {.sidebar}
   sliderInput('mu', 'Top panels \u03BC', value=3,
                 min = 1, max = 25, step=.5, ticks=F)
   
-  sliderInput('alpha_a', 'Top panels \u03B1', value = c(1/3),
-                min = 0, max = 5 ,step=0.01, ticks=F)
+  sliderInput('alpha_a', 'Top panels \u03B1', value = c(.5),  #1/3
+                min = 0, max = 3 ,step=0.01, ticks=F)
  
-  sliderInput('P', 'Probability of Success (bottom panels)', value=.5,
+  sliderInput('P', 'Prob. of Success (bot. panels)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
-  sliderInput('s', 'No of successess (bottom panels)', value = c(3),
-                min = 1, max = 200 ,step=1, ticks=F)
+  sliderInput('s', 'No of successess (bottom panels)', value = c(2), #3
+                min = 1, max = 100 ,step=1, ticks=F)
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
   
@@ -215,8 +215,10 @@ Column {data-width=400, height=300}
 
 ```{r tab1 plot1, eval=TRUE}
 
- 
+  
         renderPlot({
+          
+          par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ;
   
           mu = input$mu
           alpha_a = input$alpha_a
@@ -247,7 +249,9 @@ Column {data-width=400, height=300}
     z  <- paste0(z,"%")
     text(x=b[x+1],y=(y1),labels=z, cex = 1)
   }
+  par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 })
+
     
  
 ```
@@ -257,7 +261,7 @@ Column {data-width=400, height=300}
 ```{r, tab1 plot2, eval=TRUE}
 
   renderPlot({
-    
+    par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ; 
     
   sim <- input$sims
   # P <- input$P   # randomly pick a probability
@@ -283,7 +287,7 @@ Column {data-width=400, height=300}
   x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels so no counts included
    
   m = length(x)-1
-  z <- (0:m)+3 # labels
+  z <- formatz2((0:m)+s) # labels
   d <- dnbinom(0:m, prob=P, size=s)
   b <- barplot(d , #x/sim, 
                
@@ -312,7 +316,8 @@ Column {data-width=400, height=300}
         z  <- round(d,2) *100
         z  <- paste0(z,"%")
         text(x=b[x+1],y=(y1),labels=z, cex = 1)
-}
+    }
+  par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
   })
 
 ```
@@ -325,7 +330,9 @@ Column {data-width=400}
 ```{r, tab1 plot3, eval=TRUE}
  
  renderPlot({
-
+   
+  par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ; 
+   
   sim <- input$sims
   P <- input$P   # randomly pick a probability
   if (P==0) P=0.01
@@ -376,6 +383,7 @@ Column {data-width=400}
         z  <- paste0(z,"%")
         text(x=b[x+1],y=(y1),labels=z, cex = 1)
   }
+par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 
  })
 
@@ -387,7 +395,7 @@ Column {data-width=400}
 ```{r, tab1 plot4}
 
     renderPlot({
-  
+  par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ;
     z <-  rev_nb(input$P, input$s)
     
     mu = z[1][[1]]
@@ -419,6 +427,7 @@ Column {data-width=400}
     z  <- paste0(z,"%")
     text(x=b[x+1],y=(y1),labels=z, cex = 1)
   }
+   par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 })
 
 ```
@@ -437,10 +446,10 @@ Column {.sidebar}
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
  
-  sliderInput('Px', 'Probability of Success (p)', value=.5,
+  sliderInput('Px', 'Probability of Success (p)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
-  sliderInput('sx', 'No of successess (r)', value = c(3),
+  sliderInput('sx', 'No of successess (r)', value = c(2), #3
                 min = 1, max = 50 ,step=1, ticks=F)
 
   sliderInput('x_rangex', 'Plot x-range', value = c(0,10),
@@ -655,10 +664,10 @@ Column {.sidebar}
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
-  sliderInput('Px1', 'Probability of Success (p)', value=.5,
+  sliderInput('Px1', 'Probability of Success (p)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
-  sliderInput('sx1', 'No of successess (r)', value = c(3),
+  sliderInput('sx1', 'No of successess (r)', value = c(2), #3
                 min = 1, max = 50 ,step=1, ticks=F)
 
   sliderInput('x_rangex1', 'Plot x-range', value = c(0,10),
@@ -946,6 +955,281 @@ defining the negative binomial and instead view it simply as a model for count d
 
 ```
 
+
+
+Gamma Poisson and Negative Binomial {data-icon="fa-rocket"}
+====================================
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+**xxxxxxxxxxxx**
+
+```{r input4}
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+
+  sliderInput('nn', 'Number of random variates', value=10000, #.5
+                min = 100, max = 100000, step=100, ticks=F)
+
+  sliderInput('rx', 'xxxxxxxxxxxxxxxxx (r)', value=.4, #.5
+                min = 0.01, max = 100, step=.01, ticks=F)
+  
+  sliderInput('betax', 'Beta', value = c(2), #3
+                min = .1, max = 40 , step=.1, ticks=F)
+
+  sliderInput('x_rangex2x', 'Plot x-range', value = c(0,10),
+          min = 0, max = 80,step=5,ticks=F)
+  
+  sliderInput('y_rangex2x', 'Plot y-range', value = c(0,1),
+          min = 0, max = 1.1 , step=.05,ticks=F)
+
+  checkboxInput('percx2','show stats on barplot', value=TRUE)
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+ 
+
+```
+
+xxxxxxxxxxxx
+
+
+Column 
+-----------------------------------
+
+### xxxxxxxxxx   
+
+
+```{r}
+
+#generate a Poisson-Gamma mixture
+
+
+ff <- reactive({
+  
+   n <- input$nn
+   r <- input$rx
+   beta <- input$betax
+ 
+ 
+   lambda <- rgamma(n, r, beta) #lambda is random
+   #now supply the sample of lambda’s as the Poisson mean
+   x <- rpois(n, lambda) #the mixture
+  
+   
+   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   xmax=  input$x_rangex2x[2]
+   ymax = input$y_rangex2x[2]
+
+   y <- table(factor(x, levels = 0: xmax) )/n # pad out to xmax upper limit
+   xx <- as.numeric(names(y) )
+   d <- as.vector(y)
+  
+   #compare with negative binomial
+   negbin <- round(dnbinom(0:max(xx), r, beta/(1+beta)), 3)
+   
+   
+   return(list( d=d, xmax=xmax, ymax=ymax, xx=xx, negbin=negbin))
+  
+  
+})
+
+ 
+renderPlot({
+
+  par(mar=c(5.1, 4.1, 7.1, 7.1), mgp=c(3, 1, 0), las=0) # http://rfunction.com/archives/1302
+
+  
+  d <- ff()$d
+  xx <- ff()$xx
+  ymax <- ff()$ymax
+  xmax <- ff()$xmax
+   r <- input$rx
+   beta <- input$betax
+  
+  b <- barplot(d, 
+               xlim=c(0,xmax+2),  
+               ylim=c(0,ymax),
+               main = paste0("The empirical distribution of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+               col="orchid1", 
+               ylab="Probability", 
+               xlab=paste("Counts"),
+               names.arg= as.character(xx))
+ 
+ 
+    if(input$percx2) {
+      
+        x  <-0:length(b) # % onto top of bars
+        y1 <- d + 0.04
+        z  <- round(d,3) *100
+        z  <- paste0(z,"%")
+        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+  }
+par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
+ })
+ 
+
+
+
+
+
+
+
+# 
+# negbin <- round(dnbinom(0:max(x), r, beta/(1+beta)), 3)
+# se <- sqrt(negbin * (1 - negbin) / n)
+#  round(rbind(mix, negbin, se), 3)
+# 
+#  
+#  
+ 
+ 
+ 
+ 
+```
+
+### xxxxxxxxxx   
+
+
+```{r}
+
+renderPlot({
+
+  par(mar=c(5.1, 4.1, 7.1, 7.1), mgp=c(3, 1, 0), las=0) # http://rfunction.com/archives/1302
+
+  
+ # d <- ff()$d
+  xx <- ff()$xx
+   ymax <- ff()$ymax
+    xmax <- ff()$xmax
+   d <- ff()$negbin
+     r <- input$rx
+   beta <- input$betax
+   
+   
+   # n <- input$nn
+   # r <- input$rx
+   # beta <- input$betax
+   # 
+   # 
+   # lambda <- rgamma(n, r, beta) #lambda is random
+   # #now supply the sample of lambda’s as the Poisson mean
+   # x <- rpois(n, lambda) #the mixture
+   # #compare with negative binomial
+   # 
+   #  xmax=  input$x_rangex2x[2]
+   #  ymax = input$y_rangex2x[2]
+   # 
+   #   y <- table(factor(x, levels = 0: xmax) )/n # pad out to xmax upper limit
+   #   xx <- as.numeric(names(y) )
+   #   d <-as.vector(y)
+   
+  b <- barplot(d, 
+               xlim=c(0,xmax+2),  
+               ylim=c(0,ymax),
+               main = paste0("PMF of Negative Binomial( size= ",r," , prob= ",beta," )\n"),
+               col="orchid1", 
+               ylab="Probability", 
+               xlab=paste("Counts"),
+               names.arg= as.character(xx))
+ 
+ 
+    if(input$percx2) {
+      
+        x  <-0:length(b) # % onto top of bars
+        y1 <- d + 0.04
+        z  <- round(d,3) *100
+        z  <- paste0(z,"%")
+        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+  }
+par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
+ })
+ 
+
+
+
+
+
+
+
+# 
+# negbin <- round(dnbinom(0:max(x), r, beta/(1+beta)), 3)
+# se <- sqrt(negbin * (1 - negbin) / n)
+#  round(rbind(mix, negbin, se), 3)
+# 
+#  
+#  
+ 
+ 
+```
+ 
+Row
+---------------------------------------------------
+
+### xxxxxxxxxxx {data-height=1200}
+
+
+```{r qc2.1, include=TRUE, echo=TRUE, eval=TRUE}
+  
+
+```
+
+
+
+
+
+```{r}
+
+ 
+```
+ 
+
+### xxxxxxxxxx { data-height=1200}
+
+
+```{r qc2.2, include=TRUE, echo=FALSE, eval=TRUE}
+
+
+
+
+
+
+ renderPrint({
+       nb <- ff()$negbin
+       pg <- ff()$d
+       se <- sqrt(nb * (1 - nb) / input$nn) # proportion
+       f <- round(rbind(pg, nb, se), 3)
+       
+       cat("The empirical distribution (first line below) of the mixture agrees very closely
+with the pmf of the Negitiva binomial (second line), se of neg bin bottom line\n") 
+       print(f)
+    })
+
+
+
+
+
+
+ 
+```
+
+```{r qc2a.2 }
+    
+    
+```
+
+
+```{r qc3.1}
+  
+
+```
+
+
+
+
+
+
 Wiki {data-icon="fa-cog"}
 ====================================
 
@@ -954,29 +1238,29 @@ Row {data-height=600}
 
 ### References:
 
-[wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
+ - [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
 
-[Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
+ - [Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
 
-[Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
+ - [Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
 
-[Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+ - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
 
-[Calcualtor2](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
+ - [Calcualtor2](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
 
-[Calculator3](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
+ - [Calculator3](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
 
-[Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html)
+- [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html)
 
-[Tutorial2](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
+- [Tutorial2](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
 
-[Lecture](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
+- [Lecture](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
 
-[John Cook](https://www.johndcook.com/negative_binomial.pdf)
+- [John Cook](https://www.johndcook.com/negative_binomial.pdf)
 
-[useful Rpub](https://rpubs.com/mpfoley73/458738)
+- [useful Rpub](https://rpubs.com/mpfoley73/458738)
 
-[Useful Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+- [Useful Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
 
 
 ```{r}
