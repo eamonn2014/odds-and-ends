@@ -23,6 +23,7 @@ Probability mass functions {data-icon="fa-home"}
   library(gridExtra)
   library(tidyverse)
  
+ 
   lwd.=3             # used when plotting
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -963,26 +964,26 @@ Gamma Poisson and Negative Binomial {data-icon="fa-rocket"}
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**xxxxxxxxxxxx**
+**Inputs**
 
 ```{r input4}
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 
-  sliderInput('nn', 'Number of random variates', value=10000, #.5
+  sliderInput('nn', 'Poisson-Gamma mixture sims', value=10000, #.5
                 min = 100, max = 100000, step=100, ticks=F)
 
-  sliderInput('rx', 'xxxxxxxxxxxxxxxxx (r)', value=.4, #.5
-                min = 0.01, max = 100, step=.01, ticks=F)
+  sliderInput('rx', 'size (r)', value=.4, #.5
+                min = 10, max = 100, step=1, ticks=F)
   
   sliderInput('betax', 'Beta', value = c(2), #3
-                min = .1, max = 40 , step=.1, ticks=F)
+                min = .01, max = 100 , step=.01, ticks=F)
 
   sliderInput('x_rangex2x', 'Plot x-range', value = c(0,10),
           min = 0, max = 80,step=5,ticks=F)
   
-  sliderInput('y_rangex2x', 'Plot y-range', value = c(0,1),
+  sliderInput('y_rangex2x', 'Plot y-range', value = c(0,.2),
           min = 0, max = 1.1 , step=.05,ticks=F)
 
   checkboxInput('percx2','show stats on barplot', value=TRUE)
@@ -992,13 +993,13 @@ Column {.sidebar}
 
 ```
 
-xxxxxxxxxxxx
+Poisson-Gamma mixture example
 
 
 Column 
 -----------------------------------
 
-### xxxxxxxxxx   
+### Generate a Poisson-Gamma mixture   
 
 
 ```{r}
@@ -1027,7 +1028,7 @@ ff <- reactive({
    d <- as.vector(y)
   
    #compare with negative binomial
-   negbin <- round(dnbinom(0:max(xx), r, beta/(1+beta)), 3)
+   negbin <- round(dnbinom(0:max(xx), size=r, prob=beta/(1+beta)), 3)
    
    
    return(list( d=d, xmax=xmax, ymax=ymax, xx=xx, negbin=negbin))
@@ -1089,7 +1090,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
  
 ```
 
-### xxxxxxxxxx   
+### Negative binomial PMF
 
 
 ```{r}
@@ -1128,7 +1129,7 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("PMF of Negative Binomial( size= ",r," , prob= ",beta," )\n"),
+               main = paste0("PMF of Negative Binomial( size= ",r," , prob= ",beta/(1+beta)," )\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1167,11 +1168,32 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 Row
 ---------------------------------------------------
 
-### xxxxxxxxxxx {data-height=1200}
+### Explanation {data-height=1200}
 
 
-```{r qc2.1, include=TRUE, echo=TRUE, eval=TRUE}
+```{r qc2.1, include=TRUE, echo=FALSE, eval=TRUE}
   
+ h5(htmlOutput("text1"))  
+
+   output$text1 <- renderText({  # create interactive text t1  
+
+    print(paste0(   
+    
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",   
+               
+               "This is an example of a continuous mixture. The negative binomial distribution is a mixture of Poisson(A) distributions, where A has a gamma distribution. Specifically, if (X|A = lambda) ∼ Poisson(lambda) and A ∼ Gamma(r, β), then X
+has the negative binomial distribution with parameters r and p = β/(1 + β). This illustrates a method of sampling from a Poisson Gamma mixture and compares the sample with the negative binomial distribution") 
+    
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+                 
+                 formatz3(input$beta) ),
+   
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+
+    ".") 
+
+         ))
+   })
 
 ```
 
@@ -1185,7 +1207,7 @@ Row
 ```
  
 
-### xxxxxxxxxx { data-height=1200}
+### Agreement { data-height=1200}
 
 
 ```{r qc2.2, include=TRUE, echo=FALSE, eval=TRUE}
