@@ -9,7 +9,7 @@ output:
     source_code: embed
 runtime: shiny
 ---
-Probability mass functions {data-icon="fa-home"}
+PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
 ===
 
 ```{r global, include=FALSE}
@@ -22,7 +22,7 @@ Probability mass functions {data-icon="fa-home"}
   library(utf8)      # codes for Greek letters
   library(gridExtra)
   library(tidyverse)
- 
+  options(width=200)
  
   lwd.=3             # used when plotting
   
@@ -434,7 +434,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 ```
 
 
-Probability mass functions 2 {data-icon="fa-rocket"}
+PMFs of two alternative formulations of negative binomial ii {data-icon="fa-rocket"}
 ===
 
 
@@ -647,6 +647,188 @@ renderPlot({
 
 #  barplot(table(my_dat))
   
+
+```
+
+Row  
+-------------------------------------
+
+### new
+
+```{r, tab4, eval=TRUE}
+
+
+  HTML("\nHere we obtain the probability for the trial at which the rth success occurs :")
+   br()
+ 
+ withMathJax(
+                                           helpText('
+                              $${P(X_1 = x|p,r) =\\binom{x-1}{r-1} p^r(1-p)^{(x-r)}}\\!$$'))
+    
+  br()
+  
+ HTML("Here we obtain the probability for the number of failed trials before the rth success:")
+
+ withMathJax(
+                                           helpText('
+                             $${P(X_2 = x|p,r) =\\binom{r+x-1}{x} p^r(1-p)^{x}}\\!$$'))
+ 
+  br()
+
+  
+  ###~
+  
+  h5(htmlOutput("text2"))      ## print text1
+  
+#-------------------------------------------------------------------------------------------------------
+# 
+   output$text2 <- renderText({  # create interactive text t1
+    
+    p <- input$Px  # prob
+    r <- input$sx  # rth success
+    #low =  input$x_rangex[1]
+    #xmax=  input$x_rangex[2]
+    
+    #x <- 0:xmax
+    
+    #succ <- choose(x-1,r-1)*p^r*(1-p)^(x-r)
+    #fail <- choose(r+x-1,x)*p^r*(1-p)^(x)
+    
+   
+    
+    print(paste0(                                                               # text
+
+    tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+
+            #   "Here we count the number of the trial at which the rth success occurs "
+            )   ,
+      br(),
+      br(),
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "The probability of success p is  ")
+
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", p) ,
+
+
+        tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+    ", the rth success sought is ")
+
+      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", r) ,
+
+    #     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    # 
+    # " for example the probability of  ")
+    # 
+    #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", p) ,
+    # 
+    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+    # 
+    # " or ")
+    # 
+    #  , tags$span(style="color:red ;font-weight:bold;font-size: 20px;", r) ,
+    # 
+    
+     ". "))
+    
+      # 
+      # 
+      # cat("1 The simulated average number of trials\n")
+      # print(succ*100)
+      #  
+      # cat("2 The empirical average number of trials (r/p)\n")
+      # print(fail*100)
+
+ })
+  
+  
+  
+  
+
+  renderPrint({
+    
+    
+     p <- input$Px  # prob
+    r <- input$sx  # rth success
+    low =  input$x_rangex[1]
+    xmax=  input$x_rangex[2]
+    
+    x <- 0:xmax
+    
+    succ <- choose(x-1,r-1)*p^r*(1-p)^(x-r)
+    fail <- choose(r+x-1,x)*p^r*(1-p)^(x)
+     
+     d <- dnbinom(x, r, prob=p)
+     
+      cat("Trial...\n")
+      print(x)
+      cat("Probability of rth success at trail x using upper equation (before the rth trial prob is zero (can be negative as John Cook mentions, see ref))\n")
+      print(succ)
+      cat("Probability of x failed trials before rth success (lower equation)\n")
+      print(fail)
+      cat("Probability using dnbinom function\n")
+      print(d)
+      
+  })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
 
 ```
 
@@ -1052,7 +1234,7 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("The empirical distribution of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+               main = paste0("The empirical distribution (via simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1062,7 +1244,7 @@ renderPlot({
     if(input$percx2) {
       
         x  <-0:length(b) # % onto top of bars
-        y1 <- d + 0.04
+        y1 <- d + 0.03 # gap above bar
         z  <- round(d,3) *100
         z  <- paste0(z,"%")
         text(x=b[x+1],y=(y1),labels=z, cex = 1)
@@ -1213,25 +1395,14 @@ has the negative binomial distribution with parameters r and p = β/(1 + β). Th
 ```{r qc2.2, include=TRUE, echo=FALSE, eval=TRUE}
 
 
-
-
-
-
  renderPrint({
        nb <- ff()$negbin
        pg <- ff()$d
        se <- sqrt(nb * (1 - nb) / input$nn) # proportion
        f <- round(rbind(pg, nb, se), 3)
-       
-       cat("The empirical distribution (first line below) of the mixture agrees very closely
-with the pmf of the Negitiva binomial (second line), se of neg bin bottom line\n") 
+       cat("The empirical distribution (first line below) of the mixture agrees very closely with the PMF of the Negative binomial (second line), se of negative binomial line\n") 
        print(f)
     })
-
-
-
-
-
 
  
 ```
