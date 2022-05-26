@@ -658,7 +658,23 @@ Row
 ```{r, tab4, eval=TRUE}
 
 
-  HTML("\nHere we obtain the probability for the trial at which the rth success occurs :")
+ h5(htmlOutput("text3"))      ## print text1
+  
+#-------------------------------------------------------------------------------------------------------
+ 
+   output$text3 <- renderText({   
+    
+    print(paste0(                                                               # text
+
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "Here we obtain the probability for the trial at which the rth success occurs :")
+   ))
+    
+
+ })
+
+ # HTML("\nHere we obtain the probability for the trial at which the rth success occurs :")
    br()
  
  withMathJax(
@@ -667,7 +683,24 @@ Row
     
   br()
   
- HTML("Here we obtain the probability for the number of failed trials before the rth success:")
+  
+  h5(htmlOutput("text4"))      ## print text1
+  
+#-------------------------------------------------------------------------------------------------------
+ 
+   output$text4<- renderText({   
+    
+    print(paste0(                                                               # text
+
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "Here we obtain the probability for the number of failed trials before the rth success:")
+   ))
+    
+
+ })
+  
+ #HTML("Here we obtain the probability for the number of failed trials before the rth success:")
 
  withMathJax(
                                            helpText('
@@ -686,21 +719,11 @@ Row
     
     p <- input$Px  # prob
     r <- input$sx  # rth success
-    #low =  input$x_rangex[1]
-    #xmax=  input$x_rangex[2]
-    
-    #x <- 0:xmax
-    
-    #succ <- choose(x-1,r-1)*p^r*(1-p)^(x-r)
-    #fail <- choose(r+x-1,x)*p^r*(1-p)^(x)
-    
-   
     
     print(paste0(                                                               # text
 
     tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
 
-            #   "Here we count the number of the trial at which the rth success occurs "
             )   ,
       br(),
       br(),
@@ -713,32 +736,17 @@ Row
 
         tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 
-    ", the rth success sought is ")
+    ", success number ")
 
       , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", r) ,
 
-    #     tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-    # 
-    # " for example the probability of  ")
-    # 
-    #   , tags$span(style="color:blue ;font-weight:bold;font-size: 20px;", p) ,
-    # 
-    #  tags$span(style="color:black;font-weight:bold;font-size: 20px;",
-    # 
-    # " or ")
-    # 
-    #  , tags$span(style="color:red ;font-weight:bold;font-size: 20px;", r) ,
-    # 
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+     
+     " is of interest"),
+   
     
      ". "))
     
-      # 
-      # 
-      # cat("1 The simulated average number of trials\n")
-      # print(succ*100)
-      #  
-      # cat("2 The empirical average number of trials (r/p)\n")
-      # print(fail*100)
 
  })
   
@@ -748,26 +756,33 @@ Row
 
   renderPrint({
     
-    
-     p <- input$Px  # prob
+    p <- input$Px  # prob
     r <- input$sx  # rth success
+    
     low =  input$x_rangex[1]
     xmax=  input$x_rangex[2]
     
     x <- 0:xmax
     
+    x<-x[x>=r]
     succ <- choose(x-1,r-1)*p^r*(1-p)^(x-r)
+    
+    x <- 0:xmax
     fail <- choose(r+x-1,x)*p^r*(1-p)^(x)
      
-     d <- dnbinom(x, r, prob=p)
+    d <- dnbinom(x, size=r, prob=p)
      
-      cat("Trial...\n")
-      print(x)
-      cat("Probability of rth success at trail x using upper equation (before the rth trial prob is zero (can be negative as John Cook mentions, see ref))\n")
+      cat(paste0("Here we obtain the probability for the trial at which success number ",r," occurs\n"))
+      print(x[x>=r])
+      cat(paste0("Probability of ",r,"th success at trail x using upper equation\n"))
       print(succ)
-      cat("Probability of x failed trials before rth success (lower equation)\n")
+      
+      cat(paste0("\nHere we obtain the probability for the number of failed trials before the ", r," success:\n"))
+      print(0:xmax)
+      cat(paste0("Probability of x failed trials before ",r,"th success (lower equation)\n"))
       print(fail)
-      cat("Probability using dnbinom function\n")
+      
+      cat("\nProbability using dnbinom function\n")
       print(d)
       
   })
