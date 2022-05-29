@@ -113,7 +113,7 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
   # here is where prob and size are converted to mu and alpha
   #https://geek-questions.imtqy.com/articles/1785935/index.html
    rev_nb=function(prob,size){
-    alpha = 1/size          # so now we can just enter alpha this is converted to 1/ alpha
+    alpha = 1/size           # so now we can just enter alpha this is converted to 1/ alpha
     mu = size/prob - size    # so now we can enter mu the mean and that is converted to prob
     return(list(mu=mu, alpha=alpha))
    }
@@ -546,7 +546,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 Column {data-width=400}
 -------------------------------------
 
-### c
+### barplot
 
 ```{r, tab1 plot4x, eval=TRUE}
 
@@ -554,16 +554,15 @@ renderPlot({
   
   par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0)
   
-    z <-  rev_nb(input$Px, input$sx)
+    z <- rev_nb(input$Px, input$sx)  #  # here is where prob and size are converted to mu and alpha
     
-    mu = z[1][[1]]
+    mu      = z[1][[1]]
     alpha_a = z[2][[1]]
         
     low =  input$x_rangex[1]
     xmax=  input$x_rangex[2]
     ymax = input$y_rangex[2]
-
-   #  r <- input$sx 
+ 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   xx <- c(seq(0,xmax,1)) 
@@ -663,6 +662,9 @@ Row
 #-------------------------------------------------------------------------------------------------------
  
    output$text3 <- renderText({   
+     
+    p <- input$Px  # prob
+    r <- input$sx  # rth success
     
     print(paste0(                                                               # text
 
@@ -689,6 +691,9 @@ Row
 #-------------------------------------------------------------------------------------------------------
  
    output$text4<- renderText({   
+     
+    p <- input$Px  # prob
+    r <- input$sx  # rth success
     
     print(paste0(                                                               # text
 
@@ -750,7 +755,7 @@ Row
 
  })
   
-  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
   
 
@@ -766,6 +771,15 @@ Row
     
     x<-x[x>=r]
     succ <- choose(x-1,r-1)*p^r*(1-p)^(x-r)
+    
+    # combinations
+    #n=10; k=2
+    #factorial(n)/((factorial(n-k)*factorial(k)))
+    ##another way
+    #choose(n,k) 
+
+    
+    
     
     x <- 0:xmax
     fail <- choose(r+x-1,x)*p^r*(1-p)^(x)
@@ -787,63 +801,7 @@ Row
       
   })
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
-
+ 
 
 ```
 
@@ -1362,7 +1320,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
  
 ```
  
-Row
+Row {data-height=150}
 ---------------------------------------------------
 
 ### Explanation {data-height=1200}
@@ -1391,21 +1349,13 @@ has the negative binomial distribution with parameters r and p = β/(1 + β). Th
 
          ))
    })
-
+   
 ```
+   
+Column 2
+--------------------------------------------------   
 
-
-
-
-
-```{r}
-
- 
-```
- 
-
-### Agreement { data-height=1200}
-
+### Agreement { data-height=800}
 
 ```{r qc2.2, include=TRUE, echo=FALSE, eval=TRUE}
 
