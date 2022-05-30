@@ -29,7 +29,7 @@ exp(lgamma(n+1))
 log(choose(n,k))
 lgamma(n+1)-lgamma(n-k+1)-lgamma(k+1)
 lgamma(n+1)-(lgamma(n-k+1)+lgamma(k+1))
-
+lfactorial(n)-(lfactorial(n-k)+lfactorial(k))
 
  
 choose(n,k)*(p^k)*(1-p)^(n-k)
@@ -43,7 +43,9 @@ exp(f)*(p^k)*(1-p)^(n-k)
 f<-lgamma(n+1)-((lgamma(n-k+1)+lgamma(k+1)))
 exp(f)*(p^k)*(1-p)^(n-k)
 
-
+# https://www.johndcook.com/blog/2008/04/24/how-to-calculate-binomial-probabilities/
+# writes it in terms of success and failures, I change it it what I am used to
+exp(lfactorial(n) - lfactorial(n-k ) - lfactorial(k ) + k*log( p ) + (n-k) *log( 1-p ) )
 
 
 # ##make a factorial function.
