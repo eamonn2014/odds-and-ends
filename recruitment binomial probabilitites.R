@@ -29,7 +29,7 @@ exp(lgamma(n+1))
 log(choose(n,k))
 lgamma(n+1)-lgamma(n-k+1)-lgamma(k+1)
 lgamma(n+1)-(lgamma(n-k+1)+lgamma(k+1))
-
+lfactorial(n)-(lfactorial(n-k)+lfactorial(k))
 
  
 choose(n,k)*(p^k)*(1-p)^(n-k)
