@@ -63,7 +63,7 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
 # function for nice upper limits to count bar plots, stack exchange
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-    roundUpNice <- function(x, nice=c(1,1.5, 2,4,5,6,8,10)) { #added 1.5 to help bar plot y scale
+  roundUpNice <- function(x, nice=c(1,1.5, 2,4,5,6,8,10)) { #added 1.5 to help bar plot y scale
     if(length(x) != 1) stop("'x' must be of length 1")
     10^floor(log10(x)) * nice[[which(x <= 10^floor(log10(x)) * nice)[[1]]]]
   }
@@ -87,9 +87,23 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
     
   }
 
-# check
-# dnbinom(   1, size=2,   mu=3)
-# e_dnbinom(1, alpha=1/2,mu=3)
+   # write an equivalent to e_dnbinom see here for Probability Mass Function on page 1
+   # this is not used but just  a qc check, this si useful doc
+   # file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/COUNT%20DATA/Gamma-Poisson%20Distribution%20_%20const-ae.pdf
+   check <- function(x, mu, alpha) {
+      y=x
+      s1 <- lgamma(y+1/alpha)-lgamma(1/alpha)-lgamma(y+1)
+      s2 <- y*log((mu^2*alpha)/(mu+mu^2*alpha))
+      s3 <- (1/alpha)*log(1/(1+mu*alpha))
+      prob=exp(s1+s2+s3)
+      return(prob)
+  }
+
+# checking
+  x <- runif(1)
+  check(    1, alpha=x,    mu=3)
+  dnbinom(  1, size=1/x,   mu=3)
+  e_dnbinom(1, alpha=x,    mu=3)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This function translates the mu and alpha parameters into size and prob
@@ -278,6 +292,9 @@ Column {data-width=400, height=300}
  # ymin = input$y_range[1]
 
   
+  # zz <- rev_nb(P, s)
+  # muz = zz[1][[1]]
+  # alphaz = zz[2][[1]]
   # simulation bar plot
   #!!!!!!!!!!!!!!!!!!!!!!this is actually not used
   number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function many times
@@ -295,8 +312,7 @@ Column {data-width=400, height=300}
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
                main = paste0("Number of attempts until we reach ",s," successes when p=",formatz2(P),
-                                    "\n True \u03BC ",formatz2(Tm) , #" ; Simulated \u03BC (green) ",formatz2(Sm) ,
-                             ""),
+                                    "\n True \u03BC ",formatz2(Tm) ,""),
                col="orchid1", 
                ylab="Probability of success", 
                xlab="Attempts for success (no simulation); note we can get non-integers!",
@@ -1129,16 +1145,16 @@ Column {.sidebar}
   sliderInput('nn', 'Poisson-Gamma mixture sims', value=10000, #.5
                 min = 100, max = 100000, step=100, ticks=F)
 
-  sliderInput('rx', 'size (r)', value=.4, #.5
-                min = 10, max = 100, step=1, ticks=F)
+  sliderInput('rx', 'size (r) ', value=2, #.5
+                min = .1, max = 20, step=.1, ticks=F)
   
-  sliderInput('betax', 'Beta', value = c(2), #3
-                min = .01, max = 100 , step=.01, ticks=F)
+  sliderInput('betax', 'Beta', value = c(2/3), #3
+                min = .01, max = 5 , step=.01, ticks=F)
 
   sliderInput('x_rangex2x', 'Plot x-range', value = c(0,10),
           min = 0, max = 80,step=5,ticks=F)
   
-  sliderInput('y_rangex2x', 'Plot y-range', value = c(0,.2),
+  sliderInput('y_rangex2x', 'Plot y-range', value = c(0,.25),
           min = 0, max = 1.1 , step=.05,ticks=F)
 
   checkboxInput('percx2','show stats on barplot', value=TRUE)
@@ -1207,7 +1223,7 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("The empirical distribution (via simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+               main = paste0("Empirical distribution (via simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1257,11 +1273,11 @@ renderPlot({
   
  # d <- ff()$d
   xx <- ff()$xx
-   ymax <- ff()$ymax
-    xmax <- ff()$xmax
-   d <- ff()$negbin
-     r <- input$rx
-   beta <- input$betax
+  ymax <- ff()$ymax
+  xmax <- ff()$xmax
+  d <- ff()$negbin
+  r <- input$rx
+  beta <- input$betax
    
    
    # n <- input$nn
@@ -1281,10 +1297,15 @@ renderPlot({
    #   xx <- as.numeric(names(y) )
    #   d <-as.vector(y)
    
+  zz<- rev_nb(prob=beta/(1+beta),size=r)
+   
+   
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("PMF of Negative Binomial( size= ",r," , prob= ",beta/(1+beta)," )\n"),
+               main = paste0("PMF of Negative Binomial (size= ",r," , prob= ",formatz3(beta/(1+beta))," )\nlet's calculate mu and alpha ",formatz2(zz[1][[1]]),", " ,formatz2(zz[2][[1]]),""),
+               
+               
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1307,7 +1328,64 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 
 
 
+```
 
+### Use the mu and alpha left and plot this for completeness
+
+
+```{r}
+
+
+  
+        renderPlot({
+           
+  
+          
+           par(mar=c(5.1, 4.1, 7.1, 7.1), mgp=c(3, 1, 0), las=0) # http://rfunction.com/archives/1302
+
+  
+ # d <- ff()$d
+  xx <- ff()$xx
+  ymax <- ff()$ymax
+  xmax <- ff()$xmax
+  r <- input$rx
+  beta <- input$betax
+   
+  zz<- rev_nb(prob=beta/(1+beta),size=r)
+          
+          mu = zz[1][[1]]
+          alpha_a = zz[2][[1]]
+              
+          #low =  input$x_range[1]
+         
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  xx <- c(seq(0,xmax,1)) 
+
+  if(alpha_a==0) {
+    yb =    dpois(xx,mu)
+  }else{
+    yb=     e_dnbinom(xx,mu,alpha_a)
+  }
+
+  b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Probability", xlab="Count of failed attempts (X-r)", col='lightgreen',
+          ylim=c(0,ymax),
+          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", formatz3(mu+alpha_a*mu^2),""), # mu+alpha_a*mu^2* alpha_a
+          names.arg= as.character(xx))
+  
+  if(input$perc) {
+    x  <- 0:length(b) # % onto top of bars
+    y1 <- yb + 0.02
+    z  <- round(yb,3) *100
+    z  <- paste0(z,"%")
+    text(x=b[x+1],y=(y1),labels=z, cex = 1)
+  }
+  par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
+})
+
+
+ 
 
 # 
 # negbin <- round(dnbinom(0:max(x), r, beta/(1+beta)), 3)
@@ -1402,23 +1480,25 @@ Row {data-height=600}
 
  - [Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
 
- - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+ <!-- - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html) -->
 
- - [Calcualtor2](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
+ - [Calcualtor3](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
 
- - [Calculator3](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
+ - [Calculator4](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
 
-- [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html)
+<!-- - [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html) -->
 
-- [Tutorial2](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
+- [Nice definitions and examples using negative binomial distribution](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
 
-- [Lecture](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
+- [PMFs defined](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
 
-- [John Cook](https://www.johndcook.com/negative_binomial.pdf)
+- [John D Cook's Notes on the Negative Binomial Distribution](https://www.johndcook.com/negative_binomial.pdf)
 
-- [useful Rpub](https://rpubs.com/mpfoley73/458738)
+- [Negative binomial prob problem showing use of dnbinom 1](https://rpubs.com/mpfoley73/458738)
 
-- [Useful Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+- [Negative binomial prob problem showing use of dnbinom 2](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+
+- [Statistical Computing with R, Maria L. Rizzo Section 3.5 Sums and Mixtures page 69](https://www.google.co.uk/books/edition/Statistical_Computing_with_R/jdjLBQAAQBAJ?hl=en&gbpv=0)
 
 
 ```{r}
