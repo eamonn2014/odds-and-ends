@@ -9,8 +9,7 @@ output:
     source_code: embed
 runtime: shiny
 ---
-PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
-===
+ 
 
 ```{r global, include=FALSE}
 
@@ -87,8 +86,8 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
     
   }
 
-   # write an equivalent to e_dnbinom see here for Probability Mass Function on page 1
-   # this is not used but just  a qc check, this si useful doc
+   # write an equivalent to e_dnbinom see link for Probability Mass Function on page 1
+   # this is not used but just  a qc check, this is a useful doc
    # file:///C:/Users/Lenovo/OneDrive/Documents/PAPERS/COUNT%20DATA/Gamma-Poisson%20Distribution%20_%20const-ae.pdf
    check <- function(x, mu, alpha) {
       y=x
@@ -99,7 +98,7 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
       return(prob)
   }
 
-# checking
+# checking self written functions
   x <- runif(1)
   check(    1, alpha=x,    mu=3)
   dnbinom(  1, size=1/x,   mu=3)
@@ -125,14 +124,14 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
    
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # here is where prob and size are converted to mu and alpha
-  #https://geek-questions.imtqy.com/articles/1785935/index.html
+  # https://geek-questions.imtqy.com/articles/1785935/index.html
    rev_nb=function(prob,size){
     alpha = 1/size           # so now we can just enter alpha this is converted to 1/ alpha
     mu = size/prob - size    # so now we can enter mu the mean and that is converted to prob
     return(list(mu=mu, alpha=alpha))
    }
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
+  # another qc check
     x <- e_nb(mu=15, alpha=1.2)
     x
     rev_nb(size=x$size, prob=x$prob)
@@ -150,7 +149,7 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
     # mu <- ( k/p - k )     
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# number of successes function to simulate neg binomial simulation
+# number of successes function, to simulate neg binomial simulation
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
  foo <- function(p = 0.5, s = 4) { # p prob of success; s 
@@ -162,9 +161,9 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
     
     i <- i + 1  # count every attempt
     
-    res <-  rbinom(1, size=1, prob=p)  # a la coin flip, heads is success
+    res <-  rbinom(1, size=1, prob=p)  # Ala coin flip, heads is success
     
-    if (res ==1) {x=x+1}   # if heads count , if not we fail
+    if (res ==1) {x = x + 1}           # if heads count, if not we fail
    
   }
   return(i) # result captured here
@@ -173,8 +172,83 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # start of app
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ 
+```
+
+Wiki {data-icon="fa-cog"}
+====================================
+
+Row {data-height=600}
+------------------------------------
+
+
+```{r}
+
+h5(htmlOutput("intro1")) 
+br()
+ 
+#-------------------------------------------------------------------------------------------------------
+
+ output$intro1 <- renderText({  # create interactive text t1
+
+ 
+    print(paste0(
+      
+       tags$span(style="color:blue;font-weight:bold;font-size: 20px;", 
+               
+               "Introduction")   ,
+      br(), 
+         br(), 
+          br(), 
+     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Exploration of common distributions used in the analysis of count data. ") ,
+      
+       "."))
+
+ })
+
 
 ```
+
+Row {data-height=1400}
+-------------------------------------
+
+### References:
+
+ - [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
+
+ - [Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
+
+ - [Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
+
+ <!-- - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html) -->
+
+ - [Calcualtor3](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
+
+ - [Calculator4](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
+
+<!-- - [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html) -->
+
+- [Nice definitions and examples using negative binomial distribution](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
+
+- [PMFs defined](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
+
+- [John D Cook's Notes on the Negative Binomial Distribution](https://www.johndcook.com/negative_binomial.pdf)
+
+- [Negative binomial prob problem showing use of dnbinom 1](https://rpubs.com/mpfoley73/458738)
+
+- [Negative binomial prob problem showing use of dnbinom 2](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+
+- [Statistical Computing with R, Maria L. Rizzo Section 3.5 Sums and Mixtures page 69](https://www.google.co.uk/books/edition/Statistical_Computing_with_R/jdjLBQAAQBAJ?hl=en&gbpv=0)
+
+- [Poisson regression for linguists: A tutorial introduction to modelling count data with brms](https://compass.onlinelibrary.wiley.com/doi/epdf/10.1111/lnc3.12439)
+
+ 
+
+PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
+===
 
 Column {.sidebar}
 -----------------------------------------------------------------------
@@ -191,7 +265,7 @@ Column {.sidebar}
   sliderInput('alpha_a', 'Top panels \u03B1', value = c(.5),  #1/3
                 min = 0, max = 3 ,step=0.01, ticks=F)
  
-  sliderInput('P', 'Prob. of Success (bot. panels)', value=.4, #.5
+  sliderInput('P', 'Prob. of Success (bottom panels)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
   sliderInput('s', 'No of successess (bottom panels)', value = c(2), #3
@@ -216,7 +290,7 @@ Column {.sidebar}
 
 $\alpha$ takes on positive rational values, rarely above 4. Values of $\alpha$ greater than 2 usually indicate that there is substantial over-dispersion.
 
-When $\alpha$ approaches 0, k approaches infinity and Poisson emerges (move red $\alpha$ slider to 0).
+When $\alpha$ approaches 0, k approaches infinity and Poisson emerges (move $\alpha$ slider to 0).
 
 When $\alpha$ > 1, k < 1 leads to over dispersed data.
 
@@ -246,10 +320,10 @@ Column {data-width=400, height=300}
 
   xx <- c(seq(0,xmax,1)) 
 
-  if(alpha_a==0) {
-    yb =    dpois(xx,mu)
+  if(alpha_a==0) { # if alpha = 0, force Poisson to avoid error
+    yb = dpois(xx,mu)
   }else{
-    yb=     e_dnbinom(xx,mu,alpha_a)
+    yb=  e_dnbinom(xx,mu,alpha_a)
   }
 
   b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Percent", xlab="Count of failed attempts (X-r)", col='lightgreen',
@@ -276,10 +350,14 @@ Column {data-width=400, height=300}
 ```{r, tab1 plot2, eval=TRUE}
 
   renderPlot({
-    par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ; 
+    
+  par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ; 
     
   sim <- input$sims
   # P <- input$P   # randomly pick a probability
+  
+ # if (input$alpha_a==0) {a=1} else { a = input$alpha_a } # stop plot error
+  
   
   z <- e_nb(input$mu, input$alpha_a)
  
@@ -352,7 +430,7 @@ Column {data-width=400}
    
   sim <- input$sims
   P <- input$P   # randomly pick a probability
-  if (P==0) P=0.01
+  if (P==0) {P=0.01}
   s <- input$s   # randomly pick nth success
   
   #low =  input$x_range[1]
@@ -408,11 +486,12 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 
 ###  Negative binomial probability of success and number of successful attempts converted to mu and alpha
 
-
 ```{r, tab1 plot4}
 
     renderPlot({
-  par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) ;
+      
+    par(mar=c(5.1, 4.1, 4.1, 7.1), mgp=c(3, 1, 0), las=0) 
+      
     z <-  rev_nb(input$P, input$s)
     
     mu = z[1][[1]]
@@ -448,7 +527,6 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 })
 
 ```
-
 
 PMFs of two alternative formulations of negative binomial ii {data-icon="fa-rocket"}
 ===
@@ -921,7 +999,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 Row
 ---------------------------------------------------
 
-### qc show calculations using simulation and empirical {data-height=1200}
+### qc show calculations including simulation  {data-height=1200}
 
 
 ```{r qc1, include=TRUE, echo=TRUE, eval=TRUE}
@@ -982,14 +1060,14 @@ Row
       cat("1 The simulated average number of trials\n")
       print(f)
       f2 <-  xx()$mu1e
-      cat("2 The empirical average number of trials (r/p)\n")
+      cat("2 The average number of trials (r/p)\n")
       print(f2)
       
       f6 <-  xx()$v1s
       cat("3 The simulated variance of the expected number of failures prior to r successes\n")
       print(f6)
       f7 <-  xx()$v1e
-      cat("4 The empirical variance of the expected number of failures prior to r successes r(1 - p) / p^2\n")
+      cat("4 The variance of the expected number of failures prior to r successes r(1 - p) / p^2\n")
       print(f7)
       
       ###2nd row in title
@@ -997,7 +1075,7 @@ Row
       cat("5 The simulated expected number of failures prior to r successes \n")
       print(f3)
       f4 <-  xx()$mu2e
-      cat("6 The empirical expected number of failures prior to r successes r(1-p)/p \n")
+      cat("6 The expected number of failures prior to r successes r(1-p)/p \n")
       print(f4)
       f5 <-  xx()$v2e
       cat("7 The simulated variance of expected number of failures prior to r successes  \n")
@@ -1005,14 +1083,14 @@ Row
       
       # reversing the initial probability..is this useful?
       f8 <-  xx()$mu3e
-      cat("8 Empirical average number of successes rp/(1-p)\n")
+      cat("8 Average number of successes rp/(1-p)\n")
       print(f8)
       f9 <-  xx()$mu3s
       cat("9 Simulated average number of successes\n")
       print(f9)
       
       f10 <-  xx()$v3e
-      cat("10 Empirical variance counting the number r failures rp/(1-p)^2\n")
+      cat("10 Variance counting the number r failures rp/(1-p)^2\n")
       print(f10)
       f11 <-  xx()$v3s
       cat("11 Simulated variance counting the number r failures\n")
@@ -1148,7 +1226,7 @@ Column {.sidebar}
   sliderInput('rx', 'size (r) ', value=2, #.5
                 min = .1, max = 20, step=.1, ticks=F)
   
-  sliderInput('betax', 'Beta', value = c(2/3), #3
+  sliderInput('betax', 'Beta', value = c(.666666666), #3
                 min = .01, max = 5 , step=.01, ticks=F)
 
   sliderInput('x_rangex2x', 'Plot x-range', value = c(0,10),
@@ -1223,7 +1301,7 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("Empirical distribution (via simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+               main = paste0("Empirical distribution (simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1306,7 +1384,7 @@ renderPlot({
                main = paste0("PMF of Negative Binomial (size= ",r," , prob= ",formatz3(beta/(1+beta))," )\nlet's calculate mu and alpha ",formatz2(zz[1][[1]]),", " ,formatz2(zz[2][[1]]),""),
                
                
-               col="orchid1", 
+               col="lightgreen", 
                ylab="Probability", 
                xlab=paste("Counts"),
                names.arg= as.character(xx))
@@ -1443,78 +1521,9 @@ Column 2
        pg <- ff()$d
        se <- sqrt(nb * (1 - nb) / input$nn) # proportion
        f <- round(rbind(pg, nb, se), 3)
-       cat("The empirical distribution (first line below) of the mixture agrees very closely with the PMF of the Negative binomial (second line), se of negative binomial line\n") 
+       cat("The empirical distribution (first line below) of the mixture agrees very closely with the PMF of the negative binomial (second line), se of negative binomial line\n") 
        print(f)
     })
 
- 
-```
-
-```{r qc2a.2 }
-    
-    
-```
-
-
-```{r qc3.1}
-  
 
 ```
-
-
-
-
-
-
-Wiki {data-icon="fa-cog"}
-====================================
-
-Row {data-height=600}
-------------------------------------
-
-### References:
-
- - [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
-
- - [Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
-
- - [Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
-
- <!-- - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html) -->
-
- - [Calcualtor3](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
-
- - [Calculator4](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
-
-<!-- - [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html) -->
-
-- [Nice definitions and examples using negative binomial distribution](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
-
-- [PMFs defined](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
-
-- [John D Cook's Notes on the Negative Binomial Distribution](https://www.johndcook.com/negative_binomial.pdf)
-
-- [Negative binomial prob problem showing use of dnbinom 1](https://rpubs.com/mpfoley73/458738)
-
-- [Negative binomial prob problem showing use of dnbinom 2](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
-
-- [Statistical Computing with R, Maria L. Rizzo Section 3.5 Sums and Mixtures page 69](https://www.google.co.uk/books/edition/Statistical_Computing_with_R/jdjLBQAAQBAJ?hl=en&gbpv=0)
-
-
-```{r}
-
-```
-
-Row {data-height=1400}
--------------------------------------
-
-### qc 
-
-
-```{r qc, include=TRUE, echo=TRUE}
-
-
-
-```
-
-  
