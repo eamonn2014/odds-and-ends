@@ -22,24 +22,23 @@ arrival_times <- sort(arrival_times)
 # check example 3.25
 
 #--------------------------------------------------------------------------------------------------------
-##work question re combinations
+# work question re combinations
 
-x <- c(5,5,3,2,5,5)
+x <- c(5,5,3,2,5,5) # 6 groups and their sizes
 res <- c()
 
 # example we are selecting one group so there are 5,5,3,2,5,5 ways
 combn(x,1) # we add these up to give 25, so there are 25 extra groups created
-combn(x,2) # WHEN i IS 2 WE SAY WE ARE UsING 2 OPTIONAL GROUPS, THERE ARE 15 WAYS OF CHOOSING 2 GROUPS FROM 6
+combn(x,2) # WHEN i IS 2 WE SAY WE ARE UsING 2 OPTIONAL GROUPS, THERE ARE 15 WAYS OF CHOOSING 2 FROM 6
 
 # now go through all, so there could be 1,2,3,4,5 or 6 groups, collect the information
 
 for (i in 1:6) {
    z <- combn(x,i)  # WHEN i IS 1 THE NO OF WAYS OF SELECTING 1 FROM EACH GROUP = N
-                    # WHEN i IS 2 WE SAY WE ARE UsING 2 OPTIONAL GROUPS, THERE ARE 15 WAYS OF CHOOSING 2 GROUPS FROM 6
-   # WHEN i IS 2 WE SAY WE ARE UsING 2 OPTIONAL GROUPS, THERE ARE 15 WAYS OF CHOOSING 2 GROUPS FROM 6
+                    # WHEN i IS 2 WE SAY WE ARE USING 2 OPTIONAL GROUPS, THERE ARE 15 WAYS OF CHOOSING 2 GROUPS FROM 6
+   # WHEN i IS 3 WE SAY WE ARE UsING 3 OPTIONAL GROUPS, THERE ARE 20 WAYS OF CHOOSING 3 GROUPS FROM 6
    res[i] <- sum(apply(z,2,prod)) # prod of cols gives combinations, then sum them all
 }
-
 res
 sum(res)
 
@@ -49,13 +48,12 @@ x <- c(4,4,4,2,3)
 z <- combn(x,5)
 zz <- sum(apply(z,2,prod))
 
-
 sum(res+zz)  # answer
 
 
-#-----------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------
 # simulation to check exact answer
-#-----------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------
 
   require(tidyverse)
 
@@ -80,7 +78,7 @@ sum(res+zz)  # answer
   df$y <- substr(df$grade,3,3)
   df
   
-  #-----------------------------------------------------------------------------------------------------------
+  #-------------------------------------------------------------------------------------------------------------
   # DT package is fast for stratified sampling
   require(data.table)
 
@@ -94,7 +92,7 @@ sum(res+zz)  # answer
     setDT(df1)  # make a data table
     
     # now select randomly 1 amino-acid from each group, this is the molecule
-    #https://stackoverflow.com/questions/16289182/sample-random-rows-within-each-group-in-a-data-table
+    # https://stackoverflow.com/questions/16289182/sample-random-rows-within-each-group-in-a-data-table
        
     d <- df1[,.SD[sample(.N, min(1,.N))],by = g]   # DT stratified sampling
     
@@ -102,7 +100,7 @@ sum(res+zz)  # answer
     
   }
 
-  #----------------execute function and manage
+  #----------------execute function and manage-------------------------------------------------------------------
   
   set.seed(23413)
   sims <- 1e6                                    # number of simulations
