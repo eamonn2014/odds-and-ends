@@ -2899,7 +2899,7 @@ output$text4a <- renderText({  # create interactive text t1
     
     tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "After anti-logging, the contrast of ") 
+               "After anti-logging, the contrast ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i )
     
@@ -2911,7 +2911,7 @@ output$text4a <- renderText({  # create interactive text t1
     
        , tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               " estimate is ") 
+               " est. is ") 
     
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", formatz3(inference()$res)) ,
    
@@ -3823,110 +3823,110 @@ Column {.sidebar}
        
    output$text100 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "The design matrix for ") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "The design matrix for ")
+
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
 
   ))
 })
-   
+
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   
+
 output$text101 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "The design matrix for the subtraction ") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "The design matrix for the subtraction ")
+
      , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$i ) ,
 
-                tags$span(style="color:black;font-weight:bold;font-size: 20px;", " - ") 
-  
-     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )     
-    
-    ,   tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with intercept added (aka weights) ") 
-    
-    
+                tags$span(style="color:black;font-weight:bold;font-size: 20px;", " - ")
+
+     , tags$span(style="color:blue;font-weight:bold;font-size: 20px;", inference()$j )
+
+    ,   tags$span(style="color:black;font-weight:bold;font-size: 20px;", " with intercept added (aka weights) ")
+
+
   ))
-     
+
 })
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
    output$text102 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "The betas ") 
-      
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "The betas ")
+
   ))
 })
-    
+
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
       output$text103 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "The variance covariance matrix ") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "The variance covariance matrix ")
+
   ))
 })
-   
+
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
       output$text104 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "Matrix multiplication [weights] [VARCOV] [weights'] and take the square root to get se") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "Matrix multiplication [weights] [VARCOV] [weights'] and take the square root to get se")
+
   ))
-}) 
-      
+})
+
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      
+
            output$text105 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "Multiply betas by weights and sum to get the contrast estimate!") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "Multiply betas by weights and sum to get the contrast estimate!")
+
   ))
-}) 
-      
+})
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-            
+
            output$text106 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "Lower and upper limits (estimate +/- zcrit * se)") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "Lower and upper limits (estimate +/- zcrit * se)")
+
   ))
-}) 
-      
+})
+
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
            
-          output$text107 <- renderText({  # create interactive text t1
+          output$text107a <- renderText({  # create interactive text t1
 
     print(paste0(   
     
@@ -3941,77 +3941,113 @@ output$text101 <- renderText({  # create interactive text t1
            
            output$text108 <- renderText({  # create interactive text t1
 
-    print(paste0(   
-    
-    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
-               
-               "The contrast function as specified by user inputs") 
-    
+    print(paste0(
+
+    tags$span(style="color:black;font-weight:bold;font-size: 20px;",
+
+               "The contrast function as specified by user inputs")
+
   ))
-})                 
+})
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 ```
 
-Column {data-width=400, height=75}
+Column 
 -----------------------------------------------------------------------
+ 
+  
+```{r top , height=50, eval=FALSE}
+
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ #h5(htmlOutput("text5"))
+# h5(htmlOutput("text107a")) # this works here!
+  
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ 
+  # renderPrint({
+  
+   # model <- inference()$f
+    #print(model)
+  
+  #})
+
+#<!-- ``` -->
+
+#<!-- Row -->
+
+#<!-- ----------------------------------------------------------------------- -->
+
+#<!-- ### -->
+
+
+#```{r, eval=FALSE }
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  h5(htmlOutput("text107a"))
+#   
+# 
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#    
+#   renderPrint({
+# 
+#     model <- inference()$x
+#     print(model)
+# 
+#   })
+
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text108"))
+#  
+# #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#   renderPrint({
+#   
+#     model <- inference()$res1
+#     print(model,X =TRUE) #  print(res1, X=TRUE)
+#   
+#   })
+  
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  
+```
+
+Row
+-------------------------------------
   
 ### rms package analysis and contrast function
   
-```{r top}
+```{r, eval=TRUE} 
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text5"))
-
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  renderPrint({
+ 
+   renderPrint({
   
     model <- inference()$f
     print(model)
   
   })
 
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  h5(htmlOutput("text107"))
   
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
-  renderPrint({
   
-    model <- inference()$x
-    print(model)
-  
-  })
-  
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- h5(htmlOutput("text108"))
- 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  renderPrint({
-  
-    model <- inference()$res1
-    print(model,X =TRUE) #  print(res1, X=TRUE)
-  
-  })
-  
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 ```
 
- 
--------------------------------------
   
-### Walking through the calculation steps for a contrast
+### Walking through the calculation steps for a contrast 
   
-```{r left1test, eval=TRUE}  
- 
+```{r, eval=TRUE} 
+
+
+
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text99"))
@@ -4027,9 +4063,42 @@ renderPrint({
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- h5(htmlOutput("text100"))
 
-  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  
+```
+
+ 
+
+Row
+-------------------------------------
+  
+### C
+  
+```{r, eval=TRUE} 
+  
+
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ h5(htmlOutput("text107a"))
+  
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   
+  renderPrint({
+
+    model <- inference()$x
+    print(model)
+
+  })
+  
+```
+
+  
+### D
+  
+```{r, eval=TRUE} 
+  
+     h5(htmlOutput("text100"))
 
 renderPrint({
 
@@ -4037,94 +4106,344 @@ renderPrint({
   print(model)
 
 })
+```
+
+
+
+
+  
+
+Row
+-------------------------------------
+  
+### E
+  
+```{r, eval=TRUE} 
+
+
+ h5(htmlOutput("text108"))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  renderPrint({
+
+    model <- inference()$res1
+    print(model,X =TRUE) #  print(res1, X=TRUE)
+
+  })
+  
+  
+```
+
+  
+### F
+  
+```{r, eval=TRUE} 
+
+
+h5(htmlOutput("text101"))
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- h5(htmlOutput("text101"))
+ renderPrint({
 
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   model <- inference()$X2
+   print(model)
 
-renderPrint({
+ })
+  
+  
+```
 
-  model <- inference()$X2
-  print(model)
+Row
+-------------------------------------
+  
+### G
+  
+```{r, eval=TRUE} 
+  
+  
+```
 
-})
+  
+### H
+  
+```{r, eval=TRUE} 
+  
+  
 
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
  h5(htmlOutput("text102"))
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   renderPrint({
-  
+
     model <- inference()$betas
     print(model)
-  
+
   })
 
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+```
 
+Row
+-------------------------------------
+  
+### I
+  
+```{r, eval=TRUE} 
+  
+  
+```
+
+  
+### J
+  
+```{r, eval=TRUE} 
+  
  h5(htmlOutput("text103"))
 
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 
+
   renderPrint({
-  
+
     model <- inference()$var.cov
     print(model)
-  
+
   })
 
+  
+```
+
+Row
+-------------------------------------
+  
+### K
+  
+```{r, eval=TRUE} 
+  
+  
+```
+
+  
+### L
+  
+```{r, eval=TRUE} 
+  
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
  h5(htmlOutput("text105"))
- 
+
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
   renderPrint({
-  
+
     model <- inference()$est
     print(model)
-  
+
   })
 
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+```
 
- h5(htmlOutput("text104"))
+Row
+-------------------------------------
+  
+### M
+  
+```{r, eval=TRUE} 
+  
+  
+```
+
+  
+### N
+  
+```{r, eval=TRUE} 
+  
+  h5(htmlOutput("text104"))
 
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
    renderPrint({
-  
+
     model <- inference()$se
     print(model)
-  
+
   })
+  
+  
+```
 
- #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Row
+-------------------------------------
+  
+### O
+  
+```{r, eval=TRUE} 
+  
+  
+```
 
+  
+### P
+  
+```{r, eval=TRUE} 
+  
  h5(htmlOutput("text106"))
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   renderPrint({
-  
-    model <- inference()$lower
-    print(model)
-  
+
+    model1 <- inference()$lower
+     model2 <- inference()$upper
+    print(model1)
+    print(model2)
+
   })
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  renderPrint({
+  # renderPrint({
+  # 
+  #   model <- inference()$upper
+  #   print(model)
+  # 
+  # })
+
   
-    model <- inference()$upper
-    print(model)
   
-  })
+  
+  
+  
+#   
+#   
+# 
+# ```
+# 
+# Column
+# -------------------------------------
+#   
+# ### Walking through the calculation steps for a contrast { data-height=1200}
+#   
+# ```{r left1test, eval=TRUE}  
+#  
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text99"))
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# renderPrint({
+# 
+#   model <- inference()$Xa
+#   print(model)
+# 
+# })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  h5(htmlOutput("text100"))
+
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# renderPrint({
+# 
+#   model <- inference()$Xb
+#   print(model)
+# 
+# })
+
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ #h5(htmlOutput("text101"))
+
+ #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# renderPrint({
+# 
+#   model <- inference()$X2
+#   print(model)
+# 
+# })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text102"))
+# 
+#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#   renderPrint({
+#   
+#     model <- inference()$betas
+#     print(model)
+#   
+#   })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text103"))
+# 
+#   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#  
+#   renderPrint({
+#   
+#     model <- inference()$var.cov
+#     print(model)
+#   
+#   })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text105"))
+#  
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+# 
+#   renderPrint({
+#   
+#     model <- inference()$est
+#     print(model)
+#   
+#   })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text104"))
+# 
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#    renderPrint({
+#   
+#     model <- inference()$se
+#     print(model)
+#   
+#   })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#  h5(htmlOutput("text106"))
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#   renderPrint({
+#   
+#     model <- inference()$lower
+#     print(model)
+#   
+#   })
+# 
+#  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# 
+#   renderPrint({
+#   
+#     model <- inference()$upper
+#     print(model)
+#   
+#   })
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4305,7 +4624,7 @@ inference <- reactive({
     }
     
     # left side
-    da <- do.call("gendata", list(fit, factors = a, expand = TRUE)) # creates a df of levels of intrest
+    da <- do.call("gendata", list(fit, factors = a, expand = TRUE)) # creates a df of levels of interest
     xa <- pred(da)    # will give a design matrix
  
     # right side
@@ -4317,7 +4636,7 @@ inference <- reactive({
     
      mall <- c(ma, mb)
     
-    # if you dont do this design matrices could be wrong
+    # if you don't do this design matrices could be wrong
       mm <- max(mall)
     if (mm > 1 && any(mall == 1)) {
         if (ma == 1) 
