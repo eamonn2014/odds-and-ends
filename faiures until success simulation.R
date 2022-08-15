@@ -77,10 +77,13 @@ foo <- function(p = 0.5, s = 4) { # p prob of success; s
   sim <- 10000
   P <- runif(1,0.05,1)   # randomly pick a probability
   s <- sample(2:10,1)    # randomly pick nth success
+ 
+  #s<-100
   # simulation bar plot
   number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function many times
   
   Tm <- s*(1-P)/P + s
+  Tm <-  1/P*s 
   Sm <- mean(number_of_attempts) 
   
  
@@ -97,6 +100,8 @@ foo <- function(p = 0.5, s = 4) { # p prob of success; s
   d <- dnbinom(0:m, prob=P, size=s)# *sim
   lines(x = b, y = d , col='red')
   points(x = b, y = d, col='red')
+  #abline(v=Tm, col='blue', lty=3)
+  #abline(v = 0.7 +Tm*1.2, col = "red")
   # bar plot(d, names.arg= as.character(names(x)))
  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
