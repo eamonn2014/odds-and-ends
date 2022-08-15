@@ -1,0 +1,63 @@
+---
+title: "Test"
+output: flexdashboard::flex_dashboard
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+require(shinydashboard)
+require(shiny)
+require(plotly)
+```
+
+
+A {data-orientation=rows}
+===================================================
+
+Row
+-----------------------------------------------------------------------
+
+```{r}
+
+p1 <- plot_ly(x = 1:10, y = rnorm(10))
+
+tabBox(width=5,
+       tabPanel("Tab1", p1), 
+       tabPanel("Tab2"), height = "450px")
+```
+
+```{r}
+
+tabBox(width=7, 
+       tabPanel("Tab3", p1),
+       tabPanel("Tab4","Some text"), height = "450px")
+
+```
+
+B {data-orientation=rows}
+===================================================
+
+Row
+-----------------------------------------------------------------------
+
+```{r}
+p1 <- plot_ly(x = 1:10, y = rnorm(10))
+tabBox(width=5,tabPanel("Tab1", p1), tabPanel("Tab2"), height = "450px")
+```
+
+```{r}
+tabBox(width=7, tabPanel("Tab3","Some text"), height = "450px")
+```
+
+Row
+-----------------------------------------------------------------------
+
+```{r}
+p2 <- plot_ly(x = 1:10, y = rnorm(10))
+tabBox(width=5, tabPanel("Tab4",p2), tabPanel("Tab5"), height = "450px")
+```
+
+
+```{r}
+tabBox(width=7, id = "tabset4", tabPanel("Tab6","Some text"), height = "450px")
+``` 
