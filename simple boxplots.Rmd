@@ -9,11 +9,39 @@ output:
     source_code: embed
 runtime: shiny
 
+
+
+
 ---
 Box plots {data-icon="fa-home"}
 ===
 
+<style>                     
+.navbar {
+  background-color:green;
+  border-color:black;
+}
+.navbar-brand {
+color:black!important;
+}
+</style> 
+
+
+
+
+
 ```{r global, include=FALSE}
+tags$style(".well {background-color:[green];}")
+# tags$head(tags$style(
+#     HTML('
+#          #sidebar {
+#             background-color: green;
+#         }
+# 
+#         body, label, input, button, select { 
+#           font-family: "Arial";
+#         }')
+#   ))
 
   rm(list=ls())
 
@@ -73,14 +101,14 @@ renderPlot({
   n <- input$n
   # --------------------------------------------------------------------------
 
-  # color dots 50:50 randomly
+  # color dots randomly
    if(input$perc) {
       d$r <- sample(1:2, n, prob=c(.4,.6), replace=TRUE)
    }
 
   #~~~~~~~~~~~~~~~~~~~~
 
-     my_colors <- c("pink","yellow")
+     my_colors <- c("pink","palegreen")
   
      d$r <- factor(d$r)
   
@@ -98,9 +126,9 @@ renderPlot({
     ylab("Response") + 
      
     scale_x_continuous(breaks=c(1,2), 
-                       labels=c("Group 1", "Group 2"), limits=c(0.5, 2.5)) +
-     
-    theme_bw() + 
+                       labels=c("Group 1", "Group 2"), limits=c(0.5, 2.5) ) +
+      
+     theme_bw() + 
     theme(legend.position = "none") 
         
    #~~~~~~~~~~~~~~~~~~~~
