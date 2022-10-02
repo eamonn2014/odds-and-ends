@@ -1,0 +1,186 @@
+---
+title: "Quarto Report Example"
+knitr:
+  opts_chunk:
+    dpi: 600
+    message: FALSE
+    warning: FALSE
+    echo: TRUE
+    eval: TRUE
+    cache: FALSE
+    comment: ">"
+    tidyverse-quiet: TRUE
+share:
+  permalink: "https://www.google.com/"
+  description: "A report showing how to xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  twitter: true
+  facebook: true
+  reddit: true
+  stumble: true
+  tumblr: true
+  linkedin: true
+  email: true
+citation:
+  type: webpage
+  author: Jeremy Selva
+  issued: 8/8/2022
+  keyword: plotly, trelliscopejs, Data Visualisation
+  abstract: A report showing how to xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+  url: https://www.google.com/
+format:
+  html:
+    theme: 
+      light: cerulean 
+      dark: cyborg
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    number-sections: false
+    code-fold: show
+    code-overflow: scroll
+    code-line-numbers: true
+    code-copy: true
+    code-tools: true
+    self-contained: false
+    smooth-scroll: true
+---
+
+Written by Eamonn  
+
+# Introduction
+
+Here is a report showing how to create ixxxxxxxxxxxxxxxxxxx using [`plotly`](https://plotly.com/r/) for xxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+
+::: panel-tabset
+
+## Injection Sequence Plot
+
+```{r}
+
+plot(1:10, rnorm(10))
+
+```
+
+## Dilution Plot
+
+```{r}
+
+
+plot(1:10, rnorm(10))
+
+
+```
+:::
+
+These multiple interactive plots will be displayed as a trellis using [`trelliscopejs`](https://hafen.github.io/trelliscopejs/).
+
+The source code used to generate this report can be found in this [GitHub page](https://www.google.com/).
+
+# Background
+
+Here is some background knowledge about the use of the xxxxxxxxxxxxxxxxxx.
+
+### blah
+
+xxxxxxxxxxxxxxxxx [webpage](https://www.google.com) by xxxxxxxxxxxxxx
+
+### balah
+
+xxxxxxxxxxxxxxxxxxxxxxx. 
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.
+
+xxxxxxxxxxxxxxxxxxxxxxxxx. A [raincloud plot](https://google.com) [@xxxx2021] xxxxxxxxxxxxxxxxxx
+
+xxxxxxxxxxxxxxxx[detector saturation](https://www.google.com) or [matrix effect]((https://www.google.com).
+
+# R Packages Used
+
+```{r load_library, results='asis'}
+#| code-fold: true
+
+# For session info and package reporting
+library("report")
+
+# For reading files
+library("readr")
+
+# For interactive tables
+library("reactable")
+library("htmltools")
+
+# For data wrangling
+library("dplyr")
+library("tidyr")
+library("tibble")
+library("purrr")
+library("broom")
+library("glue")
+
+# For palatte colours
+library("scales")
+
+# For lipid annotation
+# Install from BioConductor
+library("rgoslin")
+
+# For plotting
+library("plotly")
+
+# For cognostics
+library("assertable")
+
+# For combining plotly plots
+library("manipulateWidget")
+
+# For trellis plot
+library("trelliscopejs")
+
+sessionInfo() |> 
+  report::report() |> 
+  summary()
+```
+
+# Input Data
+
+The data we are using are from [Wolrab et. al 2022](https://doi.org/10.1038/s41467-021-27765-9) [@Wolrab2022].
+
+xxxxx xxxxxxxxxxx.
+
+The first column is the name of the sample. Subsequent columns are the transition's integrated peak areas.
+ 
+
+A `docs` folder will be created. It is currently placed in this [GitHub repository](http://google.com). 
+
+Below is just an embedded webpage of the trellis plot. It can be accessed via this [GitHub Page link](http://google.com).
+
+```{=html}
+<iframe width="780" height="500" src="https://jauntyjjs.github.io/Trelliscopejs_In_Quarto_Supplementary1/"></iframe>
+```
+
+# Package References
+
+```{r package references, results='asis'}
+#| code-fold: true
+
+get_citation <- function(package_name) {
+  transform_name <- package_name |> 
+    citation() |> 
+    format(style="text")
+  return(transform_name)
+} 
+
+packages <- c("base","here", "readr", "reactable",
+              "htmltools", "dplyr", "tidyr", "tibble",
+              "broom", "glue", "purrr", "scales",
+              "rgoslin", "plotly", "assertable",
+              "manipulateWidget", "trelliscopejs",
+              "report")
+
+table <- tibble::tibble(Packages = packages)
+
+ 
+
+```
+
+# References
