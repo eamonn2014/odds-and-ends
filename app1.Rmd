@@ -9,10 +9,9 @@ output:
     social: menu
     source_code: embed
 runtime: shiny
-
 ---
-Method Comp. no reps {data-icon="fa-home"}
-===
+
+# No reps {data-icon="fa-home"}
 
 ```{r global, include=FALSE}
 
@@ -33,6 +32,14 @@ Method Comp. no reps {data-icon="fa-home"}
   library(rms)
   library(nlme)
   lwd.=3             # used when plotting
+  
+   tags$style("
+              body {
+    -moz-transform: scale(0.8, 0.8); /* Moz-browsers */
+    zoom: 0.8; /* Other non-webkit browsers */
+    zoom: 80%; /* Webkit browsers */
+}
+              ")
   
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  # FUNCTIONS ROUNDING/GEN COR DATA.ROUNDING/LOGNORMAL
@@ -128,14 +135,9 @@ normal_to_lognormal <- function(normmean=10, normsd=2) {
 
 ```
 
- 
+## Column {.sidebar data-width="350"}
 
-
-
-Column {.sidebar data-width=350}
------------------------------------------------------------------------
-
-**Design your method comparison, a simple setting, no replication, sample are chosen uniformally to span the range**
+**Design your method comparison, a simple setting, no replication, samples are chosen uniformally to span the range**
 
 ```{r tab1q}
  
@@ -174,8 +176,15 @@ Column {.sidebar data-width=350}
    #tags$style(HTML('#resampleq{background-color:orange}'))
    # )
    #https://stackoverflow.com/questions/33620133/change-the-color-of-action-button-in-shiny
-   actionButton("resampleq", "Hit to simulate a new sample", icon("paper-plane"), 
-    style="color: orange; background-color:#fff ; border-color: #2e6da4; width:100%;")
+ # actionButton("resampleq", "Hit to simulate a new sample", icon("paper-plane"), 
+  # style="color: orange; background-color:#fff ; border-color: #2e6da4; width:100%;")
+
+  actionButton("resampleq", "Hit to simulate a new sample",
+                      style="color: #fff; background-color: #e95420; border-color: #c34113;
+                                border-radius: 10px; 
+                                border-width: 2px; width:100%;")
+   
+  
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  
 
@@ -183,8 +192,7 @@ Column {.sidebar data-width=350}
 
 The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
 
-Column {data-width=400}
--------------------------------------
+## Column {data-width="400"}
 
 ### Paired boxplots and scatter plot
 
@@ -294,8 +302,7 @@ if ( input$Pl.typeq=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 
 ```
 
-Column {.tabset .tabset-fade}
------------------------------------------------------------------------
+## Column {.tabset .tabset-fade}
 
 ### Introduction
 
@@ -579,7 +586,6 @@ random.sampleq <- reactive({
 ```
 
 ### Constant difference assumption
-  
 
 ```{r xx1, eval=TRUE}
 
@@ -645,8 +651,8 @@ renderPlot({
  
 ```
 
-###  Constant variance assumption
- 
+### Constant variance assumption
+
 ```{r xx2}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -693,7 +699,7 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 ```
 
 ### Distribution of differences
-  
+
 ```{r xx3, eval=TRUE}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -746,13 +752,11 @@ w <- r2q()$w
 
 ```
 
-Method Comp. reps! {data-icon="fa-cog"}
-===
+# reps! {data-icon="fa-cog"}
 
-Column {.sidebar data-width=380}
------------------------------------------------------------------------
+## Column {.sidebar data-width="380"}
 
-**Design your method comparison, replication! **
+**Design your method comparison, replication!**
 
 ```{r mc2}
 
@@ -782,11 +786,11 @@ output$text.reg.notes2 <- renderText({  # create text
  splitLayout(
        textInput('methodz', 
           strong(div(h5(tags$span(style="color:blue", 
-            "No of methods")))), "3,1,2"),
+            "# of methods")))), "3,1,2"),
        
  textInput('samplez', 
            strong(div(h5(tags$span(style="color:blue", 
-             "No of samples")))), "20"),
+             "# of samples")))), "20"),
  
 textInput('repz', 
           strong(div(h5(tags$span(style="color:blue", 
@@ -866,8 +870,7 @@ output$text.reg.notes <- renderText({  # create text
 
 ...have fun...
 
-Column {data-width=400}
--------------------------------------
+## Column {data-width="400"}
 
 ### Bland Altman or conversion plot, comparison and plot can be selected by user (lines joining dots only applicable for linked replicates). Note: Here we fit a model on subsetted data only so may not match model results on the full data (more than 2 methods). Restrict overall simulated experiment to 2 methods to see!
 
@@ -963,8 +966,7 @@ renderPlot({
 
 ```
 
-Column {.tabset .tabset-fade}
------------------------------------------------------------------------
+## Column {.tabset .tabset-fade}
 
 ### Introduction
 
@@ -1147,7 +1149,6 @@ truth <- reactive({
 ```
 
 ### Analysis, exchangable reps
- 
 
 ```{r mcomp2.2}
 
@@ -1219,7 +1220,6 @@ standard deviation is not needed as the replicates are not linked and should be 
 ```
 
 ### Analysis, linked reps
-  
 
 ```{r mcomp2.3}
 
@@ -1291,7 +1291,6 @@ standard deviation is not related to the method comparison, but only to the stud
 ```
 
 ### A No constraints
-  
 
 ```{r not metcomp}
  
@@ -1343,7 +1342,6 @@ standard deviation is not related to the method comparison, but only to the stud
 ```
 
 ### B flex within only
-  
 
 ```{r not metcomp2}
    
@@ -1379,7 +1377,6 @@ for between-subject (i.e. Equality constraint imposed) & symmetric structure wit
 ```
 
 ### C flex Btwn only
-  
 
 ```{r not metcomp3, eval=TRUE}
    
@@ -1417,7 +1414,6 @@ within-subject variances (i.e. Equality Constraint imposed)\n"))
 ```
 
 ### D No flexibilty within btwn
-  
 
 ```{r not metcomp4, eval=TRUE}
    
@@ -1453,7 +1449,6 @@ for both between-subject & within-subject variances.\n"))
 ```
 
 ### E LR Tests
-  
 
 ```{r not metcomp5, eval=TRUE}
    
@@ -1631,10 +1626,8 @@ for both between-subject & within-subject variances.\n"))
 
 ```
 
+### Boxplots
 
-### Boxplots 
- 
- 
 ```{r mcomp2.4}
 
  renderPlot({
@@ -1669,8 +1662,7 @@ for both between-subject & within-subject variances.\n"))
 ```
 
 ### Permute the reps
- 
- 
+
 ```{r mcomp2.5}
 
 cat("Replicates within samples within methods are permuted, this therefore evaluates the exchangability assumption, if the replicates are linked  this should make a difference to limits")
@@ -1744,8 +1736,7 @@ if ( input$Pl.typez=="conv") abline(a=0, b=1,   lty=2, col = "purple", lwd=2)
 ```
 
 ### Const. sd assumption
- 
- 
+
 ```{r mcomp2.7}
 
   mixed.assump <- reactive({
@@ -1833,8 +1824,7 @@ con.sd <- mixed.assump()$con.sd
 ```
 
 ### Const. diff. assumption
- 
- 
+
 ```{r mcomp2.8}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1897,9 +1887,8 @@ con.diff <- mixed.assump()$con.diff
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
 
 ```
- 
- 
-```{r texts} 
+
+```{r texts}
 
   # --------------------------------------------------------------------------
 output$text2z <- renderText({  # create interactive text t1
@@ -2014,13 +2003,11 @@ output$text4az <- renderText({  # create interactive text t1
  
 ```
 
-Method Comp. listing  {data-icon="fa-cog"}
-===
+# Listing {data-icon="fa-cog"}
 
-Column {.sidebar data-width=380}
------------------------------------------------------------------------
+## Column {.sidebar data-width="380"}
 
-**Design your method comparison, replication! **
+**Design your method comparison, replication!**
 
 ```{r mc2B}
  
@@ -2049,11 +2036,11 @@ output$text.reg.notes2B <- renderText({  # create text
  splitLayout(
        textInput('methodzB', 
           strong(div(h5(tags$span(style="color:blue", 
-            "No of methods")))), "2"),
+            "# of methods")))), "2"),
        
  textInput('samplezB', 
            strong(div(h5(tags$span(style="color:blue", 
-             "No of samples")))), "10"),
+             "# of samples")))), "10"),
  
 textInput('repzB', 
           strong(div(h5(tags$span(style="color:blue", 
@@ -2117,8 +2104,7 @@ output$text.reg.notesB <- renderText({  # create text
 
 ...have fun...
 
-Row {data-height=650}
--------------------------------------
+## Row {data-height="650"}
 
 ### Listing (design, parameters, realisation and y)
 
@@ -2401,10 +2387,9 @@ options(width = 300)
  
 ```
 
--------------------------------------
+------------------------------------------------------------------------
 
-### Explanation  {data-commentary-width=400}
- 
+### Explanation {data-commentary-width="400"}
 
 ```{r xxx}
 
@@ -2495,14 +2480,11 @@ output$e102 <- renderText({  # create interactive text t1
 
 ```
 
-Paired data {data-icon="fa-pencil"}
-===
+# Paired data {data-icon="fa-pencil"}
 
+## Column {.sidebar}
 
-Column {.sidebar}
------------------------------------------------------------------------
-
-**Design, no replication **
+**Design, no replication**
 
 ```{r tab1 inputs}
 
@@ -2542,8 +2524,7 @@ Column {.sidebar}
 
 The top two drop down menus allow different modelling approaches. Note, the default settings reflect the true data generating mechanism.
 
-Column {data-width=400}
--------------------------------------
+## Column {data-width="400"}
 
 ### Paired boxplots and scatter plot
 
@@ -2646,8 +2627,7 @@ renderPlot({
 
 ```
 
-Column {data-width=400, height=75}
------------------------------------------------------------------------
+## Column {data-width="400," height="75"}
 
 ### Introduction
 
@@ -2740,7 +2720,6 @@ Column {data-width=400, height=75}
   
 ```
 
-
 ```{r, text}
 
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2777,7 +2756,7 @@ Column {data-width=400, height=75}
                             
 ```
 
-```{r text2} 
+```{r text2}
 
   # --------------------------------------------------------------------------
 output$text2 <- renderText({  
@@ -2938,16 +2917,13 @@ output$text4a <- renderText({  # create interactive text t1
 })
 
 
-``` 
+```
 
-Diagnostics {data-icon="fa-pencil"}
-====
+# Diagnostics {data-icon="fa-pencil"}
 
 Diagnostics
- 
 
-Column {data-width=400, height=300}
------------------------------------------------------------------------
+## Column {data-width="400," height="300"}
 
 ### Constant SD assumption
 
@@ -3041,7 +3017,7 @@ con.sd <- r2()$con.sd
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``` 
+```
 
 ### Constant difference assumption
 
@@ -3071,12 +3047,10 @@ renderPlot({
 
 
 ```
-   
-Column {.tabset .tabset-fade}
------------------------------------------------------------------------
+
+## Column {.tabset .tabset-fade}
 
 ### Constant difference assumption
-  
 
 ```{r diagnostics1, eval=TRUE}
 
@@ -3114,8 +3088,8 @@ renderPlot({
 
 ```
 
-###  Constant variance assumption
- 
+### Constant variance assumption
+
 ```{r diagnostics2}
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -3164,7 +3138,6 @@ p1 <-  ggplot(w, aes(x=x, y=r))+
 ```
 
 ### histogram of differences
-  
 
 ```{r diagnostics3, eval=TRUE}
  
@@ -3217,17 +3190,15 @@ w <- r2()$w
  
 ```
 
-### not used yet 
- 
- 
+### not used yet
+
 ```{r diagnostics4}
 
   
 ```
 
 ### not used yet
- 
- 
+
 ```{r diagnostics5}
 
    
@@ -3240,11 +3211,9 @@ w <- r2()$w
 
 ```
 
-T-test {data-icon="fa-cog"}
-====
+# T-test {data-icon="fa-cog"}
 
-Column {.sidebar}
------------------------------------------------------------------------
+## Column {.sidebar}
 
 Here we define the parameters of a log normal distribution and a proportional change (independent groups)
 
@@ -3319,7 +3288,6 @@ Here we define the parameters of a log normal distribution and a proportional ch
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ```
-
 
 ```{r text power, eval=TRUE}
 
@@ -3397,11 +3365,9 @@ Here we define the parameters of a log normal distribution and a proportional ch
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ```
- 
-Column {data-width=400, height=75}
------------------------------------------------------------------------
- 
-   
+
+## Column {data-width="400," height="75"}
+
 ### The top left panel are histograms on the original scale, the right, natural log transformed versions
 
 ```{r power typical barplot}
@@ -3491,12 +3457,11 @@ renderPlot({
  
 ```
 
-Column {data-width=400}
--------------------------------------
+## Column {data-width="400"}
 
 ### Boxplots on the original scale plus inferential calculations
-  
-```{r}  
+
+```{r}
   
   renderPlot({
   
@@ -3575,7 +3540,7 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
 
  
 ```
-  
+
 ### Boxplots of log transformed data, labelled with antilogs plus inferential calculations
 
 ```{r BApylot}
@@ -3674,17 +3639,15 @@ gx <- ggplot(d, aes(x=x, y=Y)) +
 
   })
   
-``` 
+```
 
-Anova (linear model) contrasts {data-icon="fa-pencil"}
-====
+# Anova contrasts {data-icon="fa-pencil"}
 
-Column {data-width=400}
--------------------------------------
-  
+## Column {data-width="400"}
+
 ### Plot on original scale
-  
-```{r left1, eval=TRUE}  
+
+```{r left1, eval=TRUE}
 
 
 renderPlot({
@@ -3713,9 +3676,9 @@ renderPlot({
 
 
 ```
-Column {data-width=400, height=75}
------------------------------------------------------------------------
-  
+
+## Column {data-width="400," height="75"}
+
 ### Plots of natural log data with anti-log y-axis labels
 
 ```{r right2}
@@ -3765,12 +3728,10 @@ print(xx)
 
 ```
 
-Column {.sidebar}
------------------------------------------------------------------------
-  
+## Column {.sidebar}
+
 **User inputs for 4 independent groups**
 
- 
 ```{r}
 
       sliderInput("range1", 
@@ -3964,12 +3925,11 @@ output$text101 <- renderText({  # create interactive text t1
   
 ```
 
-Row
--------------------------------------
-  
+## Row
+
 ### rms package analysis and contrast function
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -3989,10 +3949,9 @@ Row
   
 ```
 
-  
-### Walking through the calculation steps for a contrast 
-  
-```{r, eval=TRUE} 
+### Walking through the calculation steps for a contrast
+
+```{r, eval=TRUE}
 
 
 
@@ -4014,12 +3973,11 @@ renderPrint({
   
 ```
 
-Row {data-height=200}
--------------------------------------
-  
+## Row {data-height="200"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
 
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4036,10 +3994,9 @@ Row {data-height=200}
   
 ```
 
-  
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
      h5(htmlOutput("text100"))
 
@@ -4051,12 +4008,11 @@ renderPrint({
 })
 ```
 
-Row {data-height=400}
--------------------------------------
-  
+## Row {data-height="400"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
 
 
  h5(htmlOutput("text108"))
@@ -4073,10 +4029,9 @@ Row {data-height=400}
   
 ```
 
-  
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
 
 
 h5(htmlOutput("text101"))
@@ -4093,20 +4048,18 @@ h5(htmlOutput("text101"))
   
 ```
 
-Row {data-height=200}
--------------------------------------
-  
+## Row {data-height="200"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
   
 ```
 
-  
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
  
 
  h5(htmlOutput("text102"))
@@ -4123,20 +4076,18 @@ Row {data-height=200}
   
 ```
 
-Row {data-height=200}
--------------------------------------
-  
+## Row {data-height="200"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
   
 ```
 
-  
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
  h5(htmlOutput("text103"))
 
@@ -4152,20 +4103,18 @@ Row {data-height=200}
   
 ```
 
-Row {data-height=200}
--------------------------------------
-  
+## Row {data-height="200"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
   
 ```
 
-  
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -4183,20 +4132,18 @@ Row {data-height=200}
 
 ```
 
-Row {data-height=200}
--------------------------------------
-  
+## Row {data-height="200"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
   
 ```
 
-  
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
   h5(htmlOutput("text104"))
 
@@ -4213,19 +4160,18 @@ Row {data-height=200}
   
 ```
 
-Row {data-height=200}
--------------------------------------
-  
+## Row {data-height="200"}
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
   
 ```
-  
+
 ### 
-  
-```{r, eval=TRUE} 
+
+```{r, eval=TRUE}
   
  h5(htmlOutput("text106"))
  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -4521,10 +4467,9 @@ inference <- reactive({
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-```  
+```
 
-Wiki {data-icon="fa-book"}
-====
+# Wiki {data-icon="fa-book"}
 
 ```{r}
 
@@ -4567,7 +4512,7 @@ output$text.wiki2a <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "The first tab 'Method Comp. no reps' is a typical method comparison experiment, that is no replication, an inferior design. On the same main tab are mini tabs exploring assumptions", #),
+    "The first tab 'No reps' is a typical method comparison experiment, that is no replication, an inferior design. On the same main tab are mini tabs exploring assumptions", #),
     
     
         ".") ))
@@ -4581,7 +4526,7 @@ output$text.wiki2b <- renderText({  # create interactive text t1
     
      tags$span(style="color:black;font-weight:bold;font-size: 20px;",
                
-    "'Method Comp. reps!' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second mini tab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mini tabs A-E, presents an alternative LMM approach. There are also mini tabs presenting boxplots, plots if we permute the reps randomly. We then analyse as if each replicate were a seperate sample. We examine assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
+    "'reps!' is next, there is alot of flexibility in the design. Scatter plots and Bland Altman plots are presented. We use the superb MethComp R package. The second mini tab on this tab, presents an analysis assuming replicates are exchangable. The next tab assumes replicates are linked. The next mini tabs A-E, presents an alternative LMM approach. There are also mini tabs presenting boxplots, plots if we permute the reps randomly. We then analyse as if each replicate were a seperate sample. We examine assumptions on the next mini tabs and provide a data listing on the last mini tab", #),
     
     
         ".") ))
@@ -4654,25 +4599,24 @@ output$text.wiki4 <- renderText({  # create interactive text t1
   
 ```
 
-**to do:** 
+<!-- **to do:** -->
 
- Vickers code.  
- Pitman's test  
- diagnostis for ANOVA   
- pi/2 explanation  
- Gelmans book residuals   
- drop some reps  
- anova diagnostics  
- ttest diagnostics  
- bayesian  
- photo to aid understanding
+<!-- Vickers code.\ -->
+<!-- Pitman's test\ -->
+<!-- diagnostis for ANOVA\ -->
+<!-- pi/2 explanation\ -->
+<!-- Gelmans book residuals\ -->
+<!-- drop some reps\ -->
+<!-- anova diagnostics\ -->
+<!-- ttest diagnostics\ -->
+<!-- bayesian\ -->
+<!-- photo to aid understanding -->
 
 ```{r wiki}
     
 ```
 
-References {data-icon="fa-pencil"}
-====
+# References {data-icon="fa-pencil"}
 
 ```{r, refs}
  
@@ -4684,7 +4628,15 @@ References {data-icon="fa-pencil"}
            tags$span(style="color:blue", "[2] icons"),) 
     div(p(" "))
      
-   
+     tags$a(href = "https://cran.r-project.org/web/packages/MethComp/index.html", target="_blank",
+           tags$span(style="color:blue", "[3] MethComp R package"),) 
+    div(p(" "))
+    
+     tags$a(href = "https://duckduckgo.com/?q=Bendix+Carstensen+method+comparison&atb=v314-1&ia=web", target="_blank",
+           tags$span(style="color:blue", "[4] Author of MethComp R package"),) 
+    div(p(" "))
+    
+    
     
   div(p(" "))
   tags$hr()                        
