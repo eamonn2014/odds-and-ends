@@ -33,6 +33,8 @@ runtime: shiny
   library(nlme)
   lwd.=3             # used when plotting
   
+  # https://stackoverflow.com/questions/40172024/zoom-out-shiny-app-at-default-in-browser
+  
    tags$style("
               body {
     -moz-transform: scale(0.8, 0.8); /* Moz-browsers */
