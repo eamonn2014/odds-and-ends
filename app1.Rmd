@@ -2106,7 +2106,7 @@ output$text.reg.notesB <- renderText({  # create text
 
 ...have fun...
 
-## Row {data-height="650"}
+## Row {data-height="850"}
 
 ### Listing (design, parameters, realisation and y)
 
@@ -2609,7 +2609,7 @@ renderPlot({
    
    L <- roundUp(L)
     
-    # we set up const dif and const sd so that will matches true data genrting mechanism
+    # we set up const dif. and const sd. so that will matches true data generating mechanism
     par( mfrow=c(1,1), mar=c(3,3,1,3), mgp=c(3,1,0)/1.6 )
    
     BA.plot( m, model=NULL, repl.conn=TRUE, col.lines="blue",
@@ -2619,7 +2619,7 @@ renderPlot({
              las=1, eqn=TRUE,  
              pl.type=input$Pl.type, 
              sd.type=input$SD.type, 
-             dif.type = input$Dif.type, # cons is simulatied
+             dif.type = input$Dif.type, # cons is simulated
              grid=1:9*10, digits=3,font.eqn=1  , eqax=T)
 
 })
@@ -2629,7 +2629,7 @@ renderPlot({
 
 ```
 
-## Column {data-width="400," height="75"}
+## Column {data-height="1000"}
 
 ### Introduction
 
@@ -2718,13 +2718,15 @@ renderPlot({
   })
   
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  h5(htmlOutput("text3"))      ## print 
+ # h5(htmlOutput("text3"))      ## print 
   
 ```
+
 
 ```{r, text}
 
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+h5(htmlOutput("text3"))      
    # https://stackoverflow.com/questions/63507171/shiny-increase-mathjaxs-font-size
    # help on font size
    h5(htmlOutput("text2"))      
@@ -3039,7 +3041,7 @@ renderPlot({
     geom_smooth(method="lm", col="black")  +
     stat_regline_equation(label.x = min(w$x), label.y = max(w$r))+
     theme_bw() +
-    labs(title = paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff), ". Note: the constant SD assumption can also be evaluated using the \np-value from the correlation of differences on the average (known as Pitman's test) p=", formatz3(pitman)),
+    labs(title = paste0("Regression of differences on averages. Testing hypothesis slope=0, p=", formatz3(con.diff), ". Note: the constant SD assumption \ncan also be evaluated using the \np-value from the correlation of differences on the average (known as Pitman's test) p=", formatz3(pitman)),
          x = "Averages",
          y = "After - before")
 
@@ -3192,24 +3194,24 @@ w <- r2()$w
  
 ```
 
-### not used yet
+### placeholder1
 
-```{r diagnostics4}
+```{r placeholder1}
 
   
 ```
 
-### not used yet
+### placeholder2
 
-```{r diagnostics5}
+```{r placeholder2}
 
    
 
 ```
 
-### not used yet
+### placeholder3
 
-```{r diagnostics6, eval=TRUE}
+```{r placeholder3, eval=TRUE}
 
 ```
 
@@ -4474,9 +4476,30 @@ inference <- reactive({
 # Wiki {data-icon="fa-book"}
 
 ```{r}
+  h5(htmlOutput("text.wiki2a"))
+  
+  h5(htmlOutput("text.wiki2b"))
+  
+  h5(htmlOutput("text.wiki2c"))
+  
+  h5(htmlOutput("text.wiki"))
+
+  h5(htmlOutput("text.wiki2"))
+  
+  h5(htmlOutput("text.wiki3"))
+  
+  h5(htmlOutput("text.wiki4"))
+
+```
+
+## Row {data-height="900"}
+ 
+
+
+```{r}
 
 # --------------------------------------------------------------------------
-tags$style(type = "text/css", "#map {height: calc(100vh - 80px) !important;}") # height of page so no clipping text
+tags$style(type = "text/css", "#map {height: calc(1000vh - 80px) !important;}") # height of page so no clipping text
 
 output$text.wiki <- renderText({  # create interactive text t1
 
@@ -4583,19 +4606,19 @@ output$text.wiki4 <- renderText({  # create interactive text t1
  
   # --------------------------------------------------------------------------
 
-  h5(htmlOutput("text.wiki2a"))
-  
-  h5(htmlOutput("text.wiki2b"))
-  
-  h5(htmlOutput("text.wiki2c"))
-  
-  h5(htmlOutput("text.wiki"))
-
-  h5(htmlOutput("text.wiki2"))
-  
-  h5(htmlOutput("text.wiki3"))
-  
-  h5(htmlOutput("text.wiki4"))
+  # h5(htmlOutput("text.wiki2a"))
+  # 
+  # h5(htmlOutput("text.wiki2b"))
+  # 
+  # h5(htmlOutput("text.wiki2c"))
+  # 
+  # h5(htmlOutput("text.wiki"))
+  # 
+  # h5(htmlOutput("text.wiki2"))
+  # 
+  # h5(htmlOutput("text.wiki3"))
+  # 
+  # h5(htmlOutput("text.wiki4"))
 
   # --------------------------------------------------------------------------
   
