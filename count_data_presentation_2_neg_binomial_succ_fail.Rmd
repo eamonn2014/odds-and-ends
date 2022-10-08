@@ -176,18 +176,21 @@ runtime: shiny
  
 ```
 
-Wiki {data-icon="fa-cog"}
+Wiki {data-icon="fa-home"}
 ====================================
 
-Row {data-height=600}
-------------------------------------
+<!-- column {data-height=600} -->
+<!-- ------------------------------------ -->
 
 
 ```{r}
 
 h5(htmlOutput("intro1")) 
 br()
- 
+h5(htmlOutput("intro2")) 
+br()
+h5(htmlOutput("intro3")) 
+br()
 #-------------------------------------------------------------------------------------------------------
 
  output$intro1 <- renderText({  # create interactive text t1
@@ -203,51 +206,63 @@ br()
           br(), 
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Exploration of common distributions used in the analysis of count data. ") ,
+               "Exploration of a not so well known, but common distribution used in the analysis of count data...the negative binomial distribution") ,
       
        "."))
 
  })
 
 
-```
-
-Row {data-height=1400}
--------------------------------------
-
-### References:
-
- - [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
-
- - [Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
-
- - [Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
-
- <!-- - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html) -->
-
- - [Calcualtor3](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
-
- - [Calculator4](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
-
-<!-- - [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html) -->
-
-- [Nice definitions and examples using negative binomial distribution](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
-
-- [PMFs defined](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
-
-- [John D Cook's Notes on the Negative Binomial Distribution](https://www.johndcook.com/negative_binomial.pdf)
-
-- [Negative binomial prob problem showing use of dnbinom 1](https://rpubs.com/mpfoley73/458738)
-
-- [Negative binomial prob problem showing use of dnbinom 2](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
-
-- [Statistical Computing with R, Maria L. Rizzo Section 3.5 Sums and Mixtures page 69](https://www.google.co.uk/books/edition/Statistical_Computing_with_R/jdjLBQAAQBAJ?hl=en&gbpv=0)
-
-- [Poisson regression for linguists: A tutorial introduction to modelling count data with brms](https://compass.onlinelibrary.wiley.com/doi/epdf/10.1111/lnc3.12439)
+ output$intro2 <- renderText({  # create interactive text t1
 
  
+    print(paste0(
+      
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "Imagine a basketball player, whose average success at dunking a basketball has probability 50%. The negative binomial distribution can be used to answer what is the probability of the rth dunk/success on the xth throw. Or, how long does it take to get pregnant? Or, a large lot of tyres contains 4% defectives. 4 tyres are to be chosen for a car. Find the probability that you find 2 defective tyres before 4 good ones. The probability of male birth is 0.5. Another example, a couple wish to have children until they have exactly two female children in their family. What is the probability that the family has four children?")   ,
+    #  br(), 
+    #     br(), 
+     #      br(),
+   tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " ") ,
+      
+       "."))
 
-PMFs two alternative formulations of negative binomial {data-icon="fa-home"}
+ })
+ 
+ 
+ 
+ output$intro3 <- renderText({  # create interactive text t1
+
+ 
+    print(paste0(
+      
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               "For modelling occurrences of discrete events, like tornado outbreaks, the negative binomial distribution can be used to give more accurate models than the Poisson distribution by allowing the mean and variance to be different. The negative binomial distribution has a variance mu /(1-p), with the distribution becoming identical to Poisson in the limit p -> 0 for a given mean mu (p is the probability of success in each experiment). This can make the distribution a useful overdispersed alternative to the Poisson distribution. So it may be appropriate where events have positively correlated occurrences causing a larger variance than if the occurrences were independent, due to a positive covariance term. [Wikipedia]")   ,
+      br(), 
+      #   br(), 
+       #    br(),
+   tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " ") ,
+      
+       "."))
+
+ })
+ 
+ 
+ 
+ 
+  
+
+
+
+```
+
+PMFs two alternative formulations of negative binomial {data-icon="fa-cog"}
 ===
 
 Column {.sidebar}
@@ -268,7 +283,7 @@ Column {.sidebar}
   sliderInput('P', 'Prob. of Success (bottom panels)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
-  sliderInput('s', 'No of successess (bottom panels)', value = c(2), #3
+  sliderInput('s', 'No of successes (bottom panels)', value = c(2), #3
                 min = 1, max = 100 ,step=1, ticks=F)
   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -544,7 +559,7 @@ Column {.sidebar}
   sliderInput('Px', 'Probability of Success (p)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
-  sliderInput('sx', 'No of successess (r)', value = c(2), #3
+  sliderInput('sx', 'No of successes (r)', value = c(2), #3
                 min = 1, max = 50 ,step=1, ticks=F)
 
   sliderInput('x_rangex', 'Plot x-range', value = c(0,10),
@@ -589,11 +604,10 @@ Column {data-width=400}
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    
   #~~~~~~~~~~~~~~~~~~~~~~~~
-  # Wikipedia: When counting the number of successes given the number r of failures, 
-  # the variance is rp/(1 − p)2. When counting the number of failures before the r-th success, 
-  # the variance is r(1 − p)/p2.
-  v  <- s * (1 - P) / P^2
-  v2 <- s * P/ (1 - P)^2
+  # Wikipedia: 
+
+  v  <- s * (1 - P) / P^2   #  When counting the number of failures  before the r-th success, the variance is r(1 − p)/p2.
+  v2 <- s * P/ ((1 - P)^2)    # When counting the number of successes given the number r of failures, the variance is rp/(1 − p)2.
   ef <- s * (1 - P) / P
   #s=3;P=0.2
   #x <- rnbinom(n = 100000, size = s, prob = P)
@@ -611,9 +625,11 @@ Column {data-width=400}
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P),
-                                    ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,";
-                              The expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef)," with variance r(1-p)/p^2 = ",formatz2(v),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
+               main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P), ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,";\nThe expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef)," with variance r(1-p)/p^2 = ",formatz2(v),"\n"),
+                             
+                             # 
+                             # 
+                             # \nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
                                     
                col="orchid1", 
                ylab="Probability of success", 
@@ -917,7 +933,7 @@ Column {.sidebar}
   sliderInput('Px1', 'Probability of Success (p)', value=.4, #.5
                 min = 0.01, max = 1, step=.01, ticks=F)
   
-  sliderInput('sx1', 'No of successess (r)', value = c(2), #3
+  sliderInput('sx1', 'No of successes (r)', value = c(2), #3
                 min = 1, max = 50 ,step=1, ticks=F)
 
   sliderInput('x_rangex1', 'Plot x-range', value = c(0,10),
@@ -972,9 +988,11 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P),
-                                    ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,"  with variance r(1-p)/p^2 =",formatz2(v),"
-                              The expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef),".\nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
+               main = paste0("Probability of ",s," successes on kth trial when probability of success is ",formatz2(P), ". Average number of trials \u03BC (r/p) = ",formatz2(mu) ,"  with variance r(1-p)/p^2 =",formatz2(v),"\nThe expected number of failures prior to r successes is r(1-p)/p = ",formatz2(ef),"\n"),
+                             
+                             
+                             # 
+                             # \nAverage number of successes rp/(1 − p) = ",formatz2(mu2),". Counting the number of successes given the number r of failures, the variance is rp/(1 − p)^2 = ",formatz2(v2),"\n"),
                                     
                col="orchid1", 
                ylab="Probability of success", 
@@ -1301,7 +1319,8 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("Empirical distribution (simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+               main = 
+                 paste0("Empirical distribution (simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1408,7 +1427,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 
 ```
 
-### Use the mu and alpha left and plot this for completeness
+### Use the mu and alpha in the middle panel and plot this for completeness
 
 
 ```{r}
@@ -1452,7 +1471,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
           main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", formatz3(mu+alpha_a*mu^2),""), # mu+alpha_a*mu^2* alpha_a
           names.arg= as.character(xx))
   
-  if(input$perc) {
+  if(input$percx2) {
     x  <- 0:length(b) # % onto top of bars
     y1 <- yb + 0.02
     z  <- round(yb,3) *100
@@ -1527,3 +1546,40 @@ Column 2
 
 
 ```
+
+References {data-icon="fa-cog"}
+====================================
+
+Row {data-height=1400}
+-------------------------------------
+
+### References:
+
+ - [wiki](https://en.wikipedia.org/wiki/Negative_binomial_distribution#Length_of_hospital_stay)
+
+ - [Calculator](https://www.calculatoratoz.com/en/variance-of-negative-binomial-distributiond-calculator/Calc-5057?FormulaId=5057)
+
+ - [Calculator2](https://www.anesi.com/negativebinomial.htm?p=0.5&r=3)
+
+ <!-- - [Bookdown](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html) -->
+
+ - [Calcualtor3](http://www.sfu.ca/~bjonoska/STAT380/week2/NegativeBinomial.R)
+
+ - [Calculator4](https://www.calculatoratoz.com/en/mean-of-negative-binomial-distribution-calculator/Calc-5053?FormulaId=5053)
+
+<!-- - [Tutorial](https://www.tutorialspoint.com/statistics/negative_binomial_distribution.html) -->
+
+- [Nice definitions and examples using negative binomial distribution](https://www.trignosource.com/statistics/negative%20binomial%20distribution.html)
+
+- [PMFs defined](http://www.math.ntu.edu.tw/~hchen/teaching/StatInference/notes/lecture16.pdf)
+
+- [John D Cook's Notes on the Negative Binomial Distribution](https://www.johndcook.com/negative_binomial.pdf)
+
+- [Negative binomial prob problem showing use of dnbinom 1](https://rpubs.com/mpfoley73/458738)
+
+- [Negative binomial prob problem showing use of dnbinom 2](https://bookdown.org/mpfoley1973/data-sci/negative-binomial.html)
+
+- [Statistical Computing with R, Maria L. Rizzo Section 3.5 Sums and Mixtures page 69](https://www.google.co.uk/books/edition/Statistical_Computing_with_R/jdjLBQAAQBAJ?hl=en&gbpv=0)
+
+- [Poisson regression for linguists: A tutorial introduction to modelling count data with brms](https://compass.onlinelibrary.wiley.com/doi/epdf/10.1111/lnc3.12439)
+
