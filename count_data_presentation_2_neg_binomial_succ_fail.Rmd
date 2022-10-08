@@ -149,12 +149,12 @@ runtime: shiny
     # mu <- ( k/p - k )     
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# number of successes function, to simulate neg binomial simulation
+# number of successes function, to simulate neg binomial 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
  foo <- function(p = 0.5, s = 4) { # p prob of success; s 
   
-  i <- 0 # count of how many attempt we need to get s successes
+  i <- 0 # count of how many attempts we need to get s successes
   x <- 0 # use this to know when to stop function
   
   while ( x < s) {  # stop when x equals s 
@@ -178,18 +178,75 @@ runtime: shiny
 
 Wiki {data-icon="fa-home"}
 ====================================
+ 
 
-<!-- column {data-height=600} -->
-<!-- ------------------------------------ -->
+```{r}
+
+```
+
+###   {data-height=1200}
 
 
 ```{r}
+
 
 h5(htmlOutput("intro1")) 
 br()
 h5(htmlOutput("intro2")) 
 br()
+
+  HTML("\nConsider µ and sigma primary and r and p derived:")
+   br()
+ 
+ withMathJax(
+                                           helpText('
+                             $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
+    
+  br()
+  
+#    HTML("We ignore the combinatorial motivation for
+# defining the negative binomial and instead view it simply as a model for count data.")
+# 
+#  withMathJax(
+#                                            helpText('
+#                              $${p = \\frac {r}{r+\\mu} }\\!$$'))
+#  
+#    br()
+# 
+#    withMathJax(
+#                                            helpText('
+#                              $${\\sigma^2 = \\mu + \\frac {1}{r}{\\mu^2} }\\!$$'))
+# 
+#   HTML("  With regard to negative binomial regression the variance can be written as (k is equal to r)")
+#                                        
+#   withMathJax(
+#                                            helpText('
+#                              $${{\\sigma^2 = }{{{\\mu} + \\frac{\\mu^2}{k}}}}\\!$$'))      
+#   
+#   HTML(" Sometimes this relationship is used")
+#                                        
+#   withMathJax(
+#                                            helpText('
+#                              $${{ }{{{\\alpha} = \\frac{1}{k}}}}\\!$$'))      
+#   
+#   
+#   HTML(" And then the variance is expressed as")
+#                                        
+#   withMathJax(
+#                                            helpText('
+#                              $${{\\sigma^2 =}{{{\\mu}  + {(\\alpha)}{ (\\mu^2)}}}}\\!$$'))  
+#    
+#   br()
+# 
+#   HTML(" In short, either the parameter k or its reciprocal alpha is referred to as the 'dispersion parameter' or 'shape parameter' or 'clustering coefficient' or 'heterogeneity' or 'heterogeneity (ancillary) parameter' or 'aggregation' parameter.  ")
+# 
+#   HTML("  These two formulations can introduce confusion, so it is important to clarify if a dispersion value is k or alpha.")
+
+
+
 h5(htmlOutput("intro3")) 
+br()
+h5(htmlOutput("intro5")) 
 br()
 #-------------------------------------------------------------------------------------------------------
 
@@ -203,7 +260,7 @@ br()
                "Introduction")   ,
       br(), 
          br(), 
-          br(), 
+         # br(), 
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                "Exploration of a not so well known, but common distribution used in the analysis of count data...the negative binomial distribution") ,
@@ -220,7 +277,7 @@ br()
       
        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Imagine a basketball player, whose average success at dunking a basketball has probability 50%. The negative binomial distribution can be used to answer what is the probability of the rth dunk/success on the xth throw. Or, how long does it take to get pregnant? Or, a large lot of tyres contains 4% defectives. 4 tyres are to be chosen for a car. Find the probability that you find 2 defective tyres before 4 good ones. The probability of male birth is 0.5. Another example, a couple wish to have children until they have exactly two female children in their family. What is the probability that the family has four children?")   ,
+               "Imagine a basketball player, whose average success at dunking a basketball has probability 50%. The negative binomial distribution can be used to answer what is the probability of the rth dunk/success on the xth throw. Or, how long does it take to get pregnant? Or, a large lot of tyres contains 4% defectives. 4 tyres are to be chosen for a car. Find the probability that you find 2 defective tyres before 4 good ones.  Another example, the probability of male birth is 0.5. A couple wish to have children until they have exactly two female children in their family. What is the probability that the family has four children?")   ,
     #  br(), 
     #     br(), 
      #      br(),
@@ -234,6 +291,8 @@ br()
  
  
  
+ 
+ 
  output$intro3 <- renderText({  # create interactive text t1
 
  
@@ -242,7 +301,7 @@ br()
        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
                "For modelling occurrences of discrete events, like tornado outbreaks, the negative binomial distribution can be used to give more accurate models than the Poisson distribution by allowing the mean and variance to be different. The negative binomial distribution has a variance mu /(1-p), with the distribution becoming identical to Poisson in the limit p -> 0 for a given mean mu (p is the probability of success in each experiment). This can make the distribution a useful overdispersed alternative to the Poisson distribution. So it may be appropriate where events have positively correlated occurrences causing a larger variance than if the occurrences were independent, due to a positive covariance term. [Wikipedia]")   ,
-      br(), 
+     # br(), 
       #   br(), 
        #    br(),
    tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
@@ -250,6 +309,65 @@ br()
                " ") ,
       
        "."))
+   
+ })
+   
+   
+   output$intro5 <- renderText({  # create interactive text t1
+
+ 
+    print(paste0(
+      
+       tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+   
+   
+   "In the first tab the user can input the mean mu, and alpha of the negative binomial distribution and the resultant probability mass function (PMF) is displayed, top left. On the right mu and alpha are converted to the probability of success and number of successful attempts sought.\n\n
+
+The inputs 'probability of success' and 'number of successes' dictate the PMF bottom left, the red line is the PMF whilst the bar are from a simlation. The input parameters this time are then converted to mu and alpha and displayed bottom right.\n\n"
+
+
+ 
+)   ,
+      br(),   br(), 
+
+
+tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+   
+   
+   "The second panel allows the user to enter the 'Probability of success (p)' and the 'Number of successes (r)'. The top panel presents the PMF for the probability for number of attempts need to reach r successes. Whilst the lower panel presents the number of failed trials before the rth success, using the equivalent mu and alpha. Underneath are the  probability mass functions."
+)   ,
+
+   br(),   br(), 
+
+
+tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+   
+   
+   "The QC tab allows the user to enter the 'Probability of success (p)' and the 'Number of successes (r)' and the associated PMF presented for the attempts for r successes. Below are a number of calculations to check understanding, reproducing means and variances."
+)   ,
+
+   br(),   br(), 
+
+
+tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+   
+   
+   "The fourth tab explores the Poisson-Gamma mixture distribution allowing the user to enter r and β of a gamma distribution which if the Poisson mean. the resulting distribution is presented top left. The equivalent Negative binomial is presented in the center panel and the right panel converts the middle panel's size and probabilty to mu and alpha. Below is an illustration of sampling from a Poisson Gamma mixture and compares the sample with the negative binomial distribution\n\n"
+)   ,
+
+   br(), 
+ 
+
+      br(), 
+ 
+ 
+   tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
+               
+               " ") ,
+      
+       "."))
+     
+   
 
  })
  
@@ -268,7 +386,7 @@ PMFs two alternative formulations of negative binomial {data-icon="fa-cog"}
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-**Count data analysis is explored**
+**The Probability Mass Function is explored**
 
 ```{r tab1}
 
@@ -379,23 +497,23 @@ Column {data-width=400, height=300}
   P = z[1][[1]]
   s = z[2][[1]]
   
-  #low =  input$x_range[1]
+  
   xmax=  input$x_range[2]
   ymax = input$y_range[2]
- # ymin = input$y_range[1]
-
+ 
   
   # zz <- rev_nb(P, s)
   # muz = zz[1][[1]]
   # alphaz = zz[2][[1]]
   # simulation bar plot
-  #!!!!!!!!!!!!!!!!!!!!!!this is actually not used
+  #!!!!!!!!!!!!!!!!!!!!!!this above is actually not used
+  
   number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function many times
    
   Tm <-  1/P*s 
   Sm <- mean(number_of_attempts) 
   
-  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels so no counts included
+  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels of no counts included
    
   m = length(x)-1
   z <- formatz2((0:m)+s) # labels
@@ -448,11 +566,9 @@ Column {data-width=400}
   if (P==0) {P=0.01}
   s <- input$s   # randomly pick nth success
   
-  #low =  input$x_range[1]
   xmax=  input$x_range[2]
   ymax = input$y_range[2]
- # ymin = input$y_range[1]
-   
+
   # simulation bar plot
   number_of_attempts <- replicate(sim, foo(p=P,s=s))  # run function many times
   
@@ -461,7 +577,7 @@ Column {data-width=400}
   Sm <- mean(number_of_attempts) 
   
  
-  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels so no counts included
+  x <- table(factor(number_of_attempts, levels = s: max(number_of_attempts))) # pad out so levels of no counts included
  # x <- table(factor(number_of_attempts, levels = s: ymax)) # pad out so levels so no counts included
 
   b <- barplot(x/sim, 
@@ -708,7 +824,7 @@ renderPlot({
   
   e_nb(mu=3, alpha=.5)
   
-  # lets do a sanity check on mean and variance and report them as qc check in plot
+  # sanity check on mean and variance and report them as qc check in plot
   value <-   0:1000000   # replaced xx 
   freq  <-  e_dnbinom(value, alpha=alpha_a,mu=mu)*100
   (mux   <-  sum(freq*value)/sum(freq))
