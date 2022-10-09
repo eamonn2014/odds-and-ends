@@ -1446,7 +1446,7 @@ renderPlot({
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
                main = 
-                 paste0("Empirical distribution (simulation) of the Poisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+                 paste0("Empirical distribution (simulation) of the \nPoisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1456,10 +1456,10 @@ renderPlot({
     if(input$percx2) {
       
         x  <-0:length(b) # % onto top of bars
-        y1 <- d + 0.03 # gap above bar
+        y1 <- d + 0.02 # gap above bar
         z  <- round(d,3) *100
         z  <- paste0(z,"%")
-        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+        text(x=b[x+1],y=(y1),labels=z, cex = .8)
   }
 par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
  })
@@ -1526,8 +1526,7 @@ renderPlot({
   b <- barplot(d, 
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
-               main = paste0("PMF of Negative Binomial (size= ",r," , prob= ",formatz3(beta/(1+beta))," )\nlet's calculate mu and alpha ",formatz2(zz[1][[1]]),", " ,formatz2(zz[2][[1]]),""),
-               
+               main = paste0("PMF of Negative Binomial (size= ",r," , prob= ",formatz3(beta/(1+beta))," )\nlet's calculate \u03BC and \u03B1 ",formatz2(zz[1][[1]]),", " ,formatz2(zz[2][[1]])," respectively"),
                
                col="lightgreen", 
                ylab="Probability", 
@@ -1538,22 +1537,21 @@ renderPlot({
     if(input$percx2) {
       
         x  <-0:length(b) # % onto top of bars
-        y1 <- d + 0.04
+        y1 <- d + 0.02
         z  <- round(d,3) *100
         z  <- paste0(z,"%")
-        text(x=b[x+1],y=(y1),labels=z, cex = 1)
+        text(x=b[x+1],y=(y1),labels=z, cex = .8)
   }
 par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
  })
  
-
-
+ 
 
 
 
 ```
 
-### Use the mu and alpha in the middle panel and plot this for completeness
+### Use the mu and alpha in the middle panel and plot this
 
 
 ```{r}
@@ -1594,7 +1592,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 
   b <- barplot(yb, xlim=c(0,xmax+2), ylab = "Probability", xlab="Count of failed attempts (X-r)", col='lightgreen',
           ylim=c(0,ymax),
-          main =  paste0("Negative Binomial \u03BC = ",mu," \u03B1 = ",formatz2(alpha_a),", variance = ", formatz3(mu+alpha_a*mu^2),""), # mu+alpha_a*mu^2* alpha_a
+          main =  paste0("PMF of Negative Binomial\n \u03BC = ",formatz2(mu)," \u03B1 = ",formatz2(alpha_a),", variance = ", formatz3(mu+alpha_a*mu^2),""), # mu+alpha_a*mu^2* alpha_a
           names.arg= as.character(xx))
   
   if(input$percx2) {
@@ -1602,7 +1600,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
     y1 <- yb + 0.02
     z  <- round(yb,3) *100
     z  <- paste0(z,"%")
-    text(x=b[x+1],y=(y1),labels=z, cex = 1)
+    text(x=b[x+1],y=(y1),labels=z, cex = .8)
   }
   par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 })
