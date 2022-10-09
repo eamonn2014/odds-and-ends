@@ -273,7 +273,7 @@ br()
          # br(), 
      tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
                
-               "Exploration of a not so well known, but common distribution used in the analysis of count data...the negative binomial distribution") ,
+               "Exploration of a not so well known, but common distribution used in the analysis of count data...the negative binomial distribution also know as the gamma-Poisson distribution") ,
       
        "."))
 
@@ -1386,7 +1386,7 @@ Column {.sidebar}
 
 ```
 
-Gamma-Poissonmixture example
+Gamma-Poisson mixture example
 
 
 Column 
@@ -1406,11 +1406,12 @@ ff <- reactive({
    r <- input$rx
    beta <- input$betax
  
- 
+   #------------------------------------------------------------------------
    lambda <- rgamma(n, r, beta) #lambda is random
    #now supply the sample of lambda’s as the Poisson mean
    x <- rpois(n, lambda) #the mixture
-  
+   #------------------------------------------------------------------------
+
    
    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    xmax=  input$x_rangex2x[2]
@@ -1520,7 +1521,7 @@ renderPlot({
    #   xx <- as.numeric(names(y) )
    #   d <-as.vector(y)
    
-  zz<- rev_nb(prob=beta/(1+beta),size=r)
+  zz <- rev_nb(prob=beta/(1+beta),size=r)
    
    
   b <- barplot(d, 
