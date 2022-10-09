@@ -362,7 +362,7 @@ tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
    
    
-   "The fourth tab explores the Poisson-Gamma mixture distribution allowing the user to enter r and β of a gamma distribution which is the Poisson mean. The resulting distribution is presented top left. The equivalent Negative binomial PMF is presented in the center panel and the right panel converts the middle panel's size and probabilty to mu and alpha. Below that is an illustration of sampling from a Poisson-Gamma mixture and compares the sample with the negative binomial distribution\n\n"
+   "The fourth tab explores the Gamma-Poisson mixture distribution allowing the user to enter r and β of a gamma distribution which is the Poisson mean. The resulting distribution is presented top left. The equivalent Negative binomial PMF is presented in the center panel and the right panel converts the middle panel's size and probabilty to mu and alpha. Below that is an illustration of sampling from a Gamma-Poisson mixture and compares the sample with the negative binomial distribution\n\n"
 )   ,
 
    br(), 
@@ -1364,7 +1364,7 @@ Column {.sidebar}
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
 
-  sliderInput('nn', 'Poisson-Gamma mixture sims', value=10000, #.5
+  sliderInput('nn', 'Gamma-Poisson mixture sims', value=10000, #.5
                 min = 100, max = 100000, step=100, ticks=F)
 
   sliderInput('rx', 'size (r) ', value=2, #.5
@@ -1386,18 +1386,18 @@ Column {.sidebar}
 
 ```
 
-Poisson-Gamma mixture example
+Gamma-Poissonmixture example
 
 
 Column 
 -----------------------------------
 
-### Generate a Poisson-Gamma mixture   
+### Generate Gamma-Poisson mixture   
 
 
 ```{r}
 
-#generate a Poisson-Gamma mixture
+#generate a Gamma-Poisson mixture
 
 
 ff <- reactive({
@@ -1446,7 +1446,7 @@ renderPlot({
                xlim=c(0,xmax+2),  
                ylim=c(0,ymax),
                main = 
-                 paste0("Empirical distribution (simulation) of the \nPoisson-Gamma mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
+                 paste0("Empirical distribution (simulation) of the \nGamma-Poisson mixture\nThe Poisson mean is rgamma(shape= ", r,", rate= ", beta,")\n"),
                col="orchid1", 
                ylab="Probability", 
                xlab=paste("Counts"),
@@ -1707,5 +1707,5 @@ Row {data-height=1400}
 
 - [Poisson regression for linguists: A tutorial introduction to modelling count data with brms](https://compass.onlinelibrary.wiley.com/doi/epdf/10.1111/lnc3.12439)
 
--[My presentation on count data](https://github.com/eamonn2014/count-data/blob/main/Count%20data%20analysis%20using%20R%2012Aug2022.pptx)
+- [My presentation on count data](https://github.com/eamonn2014/count-data/blob/main/Count%20data%20analysis%20using%20R%2012Aug2022.pptx)
 
