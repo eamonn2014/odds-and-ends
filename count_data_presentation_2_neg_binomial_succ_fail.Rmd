@@ -25,6 +25,16 @@ runtime: shiny
  
   lwd.=3             # used when plotting
   
+   # https://stackoverflow.com/questions/40172024/zoom-out-shiny-app-at-default-in-browser
+  
+   tags$style("
+              body {
+    -moz-transform: scale(0.8, 0.8); /* Moz-browsers */
+    zoom: 0.8; /* Other non-webkit browsers */
+    zoom: 80%; /* Webkit browsers */
+}
+              ")
+   
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # function to format decimals
   # https://stackoverflow.com/questions/3245862/format-numbers-to-significant-figures-nicely-in-r
@@ -195,14 +205,14 @@ br()
 h5(htmlOutput("intro2")) 
 br()
 
-  HTML("\nConsider µ and sigma primary and r and p derived:")
-   br()
- 
- withMathJax(
-                                           helpText('
-                             $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
-    
-  br()
+ #  HTML("\nConsider µ and sigma primary and r and p derived:")
+ #   br()
+ # 
+ # withMathJax(
+ #                                           helpText('
+ #                             $${r = \\frac {\\mu^2}{\\sigma^2-\\mu} }\\!$$'))
+ #    
+ #  br()
   
 #    HTML("We ignore the combinatorial motivation for
 # defining the negative binomial and instead view it simply as a model for count data.")
@@ -321,9 +331,9 @@ br()
        tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
    
    
-   "In the first tab the user can input the mean mu, and alpha of the negative binomial distribution and the resultant probability mass function (PMF) is displayed, top left. On the right mu and alpha are converted to the probability of success and number of successful attempts sought.\n\n
+   "In the first tab the user can input the mean mu, and alpha of the negative binomial distribution and the resultant probability mass function (PMF) is displayed, top left. On the right, mu and alpha are converted to the probability of success and number of successful attempts sought.\n\n
 
-The inputs 'probability of success' and 'number of successes' dictate the PMF bottom left, the red line is the PMF whilst the bar are from a simlation. The input parameters this time are then converted to mu and alpha and displayed bottom right.\n\n"
+The inputs 'probability of success' and 'number of successes' dictate the PMF bottom left, the red line is the PMF whilst the bars are from a simulation. The input parameters this time are then converted to mu and alpha and displayed bottom right.\n\n"
 
 
  
@@ -334,7 +344,7 @@ The inputs 'probability of success' and 'number of successes' dictate the PMF bo
 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
    
    
-   "The second panel allows the user to enter the 'Probability of success (p)' and the 'Number of successes (r)'. The top panel presents the PMF for the probability for number of attempts need to reach r successes. Whilst the lower panel presents the number of failed trials before the rth success, using the equivalent mu and alpha. Underneath are the  probability mass functions."
+   "The second panel allows the user to enter the 'Probability of success (p)' and the 'Number of successes (r)'. The top panel presents the PMF for the probability for number of attempts need to reach r successes. The lower panel presents the number of failed trials before the rth success, using the equivalent mu and alpha. Underneath are the  probability mass functions."
 )   ,
 
    br(),   br(), 
@@ -352,7 +362,7 @@ tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 tags$span(style="color:black;font-weight:bold;font-size: 20px;", 
    
    
-   "The fourth tab explores the Poisson-Gamma mixture distribution allowing the user to enter r and β of a gamma distribution which if the Poisson mean. the resulting distribution is presented top left. The equivalent Negative binomial is presented in the center panel and the right panel converts the middle panel's size and probabilty to mu and alpha. Below is an illustration of sampling from a Poisson Gamma mixture and compares the sample with the negative binomial distribution\n\n"
+   "The fourth tab explores the Poisson-Gamma mixture distribution allowing the user to enter r and β of a gamma distribution which is the Poisson mean. The resulting distribution is presented top left. The equivalent Negative binomial PMF is presented in the center panel and the right panel converts the middle panel's size and probabilty to mu and alpha. Below that is an illustration of sampling from a Poisson-Gamma mixture and compares the sample with the negative binomial distribution\n\n"
 )   ,
 
    br(), 
@@ -380,7 +390,7 @@ tags$span(style="color:black;font-weight:bold;font-size: 20px;",
 
 ```
 
-PMFs two alternative formulations of negative binomial {data-icon="fa-cog"}
+Negative binomial PMFs {data-icon="fa-cog"}
 ===
 
 Column {.sidebar}
@@ -659,7 +669,7 @@ par(mar=c(5.1, 4.1, 4.1, 2.1), mgp=c(3, 1, 0), las=0)
 
 ```
 
-PMFs of two alternative formulations of negative binomial ii {data-icon="fa-rocket"}
+Negative binomial PMFs (ii) {data-icon="fa-rocket"}
 ===
 
 
@@ -1341,7 +1351,7 @@ defining the negative binomial and instead view it simply as a model for count d
 
 
 
-Gamma Poisson and Negative Binomial {data-icon="fa-rocket"}
+Gamma Poisson {data-icon="fa-rocket"}
 ====================================
 
 Column {.sidebar}
