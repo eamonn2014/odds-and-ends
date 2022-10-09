@@ -1707,3 +1707,5 @@ Row {data-height=1400}
 
 - [Poisson regression for linguists: A tutorial introduction to modelling count data with brms](https://compass.onlinelibrary.wiley.com/doi/epdf/10.1111/lnc3.12439)
 
+-[My presentation on count data](https://github.com/eamonn2014/count-data/blob/main/Count%20data%20analysis%20using%20R%2012Aug2022.pptx)
+
